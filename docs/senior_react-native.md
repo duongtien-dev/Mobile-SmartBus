@@ -1,1 +1,0 @@
-## Role: Senior React Native
