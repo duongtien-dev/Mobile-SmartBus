@@ -14,4 +14,4 @@ class AuthService extends BaseService {
     }
 }
 
-export default new AuthService();
+export default AuthService;
