@@ -4,6 +4,7 @@ interface IUser {
     name: string;
     email: string;
     avatar: string;
+    token: string;
 }
 
 type AuthState = {
@@ -14,6 +15,7 @@ type AuthState = {
     setIsAuthenticated: (value: boolean) => void;
     setUser: (user: IUser | null) => void;
     setLoading: (loading: boolean) => void;
+    logout: () => void;
     // fetchAuthenticatedUser: () => Promise<void>;
 }
 
@@ -25,7 +27,7 @@ const useAuthStore = create<AuthState>((set) => ({
     setIsAuthenticated: (value) => set({ isAuthenticated: value }),
     setUser: (user) => set({ user }),
     setLoading: (value) => set({ isLoading: value }),
-
+    logout: () => set({ isAuthenticated: false, user: null, isLoading: false }),
     // fetchAuthenticatedUser: async () => {
     //     set({ isLoading: true });
 
