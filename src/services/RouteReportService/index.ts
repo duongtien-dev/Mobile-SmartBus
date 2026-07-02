@@ -1,6 +1,6 @@
 import BaseService from '@/services/BaseService';
 
-class RouteService extends BaseService {
+class RouteReportService extends BaseService {
     constructor() {
         super('/route-reports');
     }
@@ -27,4 +27,4 @@ class RouteService extends BaseService {
 
 }
 
-export default RouteService;
+export default RouteReportService;
