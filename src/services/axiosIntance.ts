@@ -1,48 +1,41 @@
 import useAuthStore from '@/store/auth.store';
-import axios, { AxiosError } from 'axios';
+import axios, { AxiosError, AxiosInstance } from 'axios';
 
-const API_BASE = 'http://localhost:3000/api';
-// const API_BASE = 'https://nestjs-api-coursera.onrender.com/';
+const API_BASE = 'http://10.0.2.2:3000/api'; // Android Emulator
+// const API_BASE = 'http://localhost:3000/api'; // iOS Simulator
 
-const axiosInstance = axios.create({
-    baseURL: API_BASE,
-    headers: {
-        'Content-Type': 'application/json',
-    },
-    withCredentials: true,
-    timeout: 30000,
-});
+export const createApi = (module: string): AxiosInstance => {
+    const api = axios.create({
+        baseURL: `${API_BASE}${module}`,
+        timeout: 30000,
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    });
 
-axiosInstance.interceptors.request.use(
-    (config) => {
-        const token = useAuthStore.getState().user?.token;
+    api.interceptors.request.use(
+        (config) => {
+            const token = useAuthStore.getState().user?.token;
 
-        if (token) {
-            config.headers.Authorization = `Bearer ${token}`;
-        }
-
-        return config;
-    },
-    (error: AxiosError) => Promise.reject(error),
-);
-
-axiosInstance.interceptors.response.use(
-    (response) => response,
-    (error: AxiosError) => {
-        if (error.response?.status === 401) {
-            const { isAuthenticated, logout } = useAuthStore.getState();
-
-            if (isAuthenticated) {
-                logout();
-
-                if (window.location.pathname !== '/signin') {
-                    window.location.href = '/signin';
-                }
+            if (token) {
+                config.headers.Authorization = `Bearer ${token}`;
             }
-        }
 
-        return Promise.reject(error);
-    },
-);
+            return config;
+        },
+        (error: AxiosError) => Promise.reject(error),
+    );
 
-export default axiosInstance;
+    api.interceptors.response.use(
+        (response) => response,
+        (error: AxiosError) => {
+            if (error.response?.status === 401) {
+                useAuthStore.getState().logout();
+            }
+
+            return Promise.reject(error);
+        },
+    );
+
+    return api;
+};
