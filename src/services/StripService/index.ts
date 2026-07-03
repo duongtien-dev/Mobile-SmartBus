@@ -2,7 +2,7 @@ import BaseService from '@/services/BaseService';
 
 class StripService extends BaseService {
     constructor() {
-        super('/');
+        super('');
     }
     suggestionLocation(body: object) {
         return this.post('/suggest-locations', body);
