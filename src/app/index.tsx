@@ -33,7 +33,8 @@ export default function Index() {
 
             <View className="mb-4 gap-3">
                 <Button label="Book a ticket" variant="primary" />
-                <Button label="View routes" variant="secondary" />
+                <Button label="View routes" variant="outline" />
+                <Button label="More options" variant="secondary" />
                 <Button label="Learn more" variant="ghost" />
                 <Button label="Unavailable" variant="primary" disabled />
             </View>
