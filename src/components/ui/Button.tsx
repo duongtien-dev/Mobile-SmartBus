@@ -1,51 +1,80 @@
+import type { ReactNode } from "react";
 import { Pressable, Text, type PressableProps } from "react-native";
 
-type ButtonVariant = "primary" | "secondary" | "outline" | "ghost";
+type ButtonVariant = "outline" | "bold";
+type ButtonType = "primary" | "secondary" | "danger";
+type ButtonSize = "md";
 
 type ButtonProps = Omit<PressableProps, "children"> & {
-    label: string;
+    children: ReactNode;
     variant?: ButtonVariant;
+    type?: ButtonType;
+    size?: ButtonSize;
     className?: string;
     labelClassName?: string;
 };
 
-const containerClasses: Record<ButtonVariant, string> = {
-    primary:
-        "flex-row items-center justify-center rounded-xl px-5 py-3 bg-accent active:bg-accent-dark disabled:bg-accent-muted disabled:opacity-70",
-    secondary:
-        "flex-row items-center justify-center rounded-xl border border-border-strong px-5 py-3 bg-surface active:bg-border disabled:bg-disabled-bg disabled:opacity-70",
-    outline:
-        "flex-row items-center justify-center rounded-xl border-2 border-accent px-5 py-3 bg-transparent active:bg-accent-light disabled:border-accent-muted disabled:opacity-70",
-    ghost:
-        "flex-row items-center justify-center rounded-xl px-5 py-3 active:bg-accent-light",
-};
+const baseClass = "group flex-row items-center justify-center rounded-lg";
 
-const labelClasses: Record<ButtonVariant, string> = {
-    primary: "font-bold text-on-accent",
-    secondary: "font-bold text-text-primary disabled:text-disabled",
-    outline: "font-bold text-accent disabled:text-accent-muted",
-    ghost: "font-bold text-accent",
-};
+const classType = {
+    outline: {
+        primary:
+            "border border-primary bg-transparent active:bg-primary disabled:border-primary-muted disabled:opacity-70",
+        secondary:
+            "border border-border-strong bg-transparent active:bg-text-secondary disabled:opacity-70",
+        danger:
+            "border border-alert bg-transparent active:bg-alert disabled:border-alert-muted disabled:opacity-70",
+    },
+    bold: {
+        primary:
+            "bg-primary active:bg-primary-dark disabled:bg-primary-muted disabled:opacity-70",
+        secondary:
+            "bg-text-secondary active:bg-text-primary disabled:bg-disabled disabled:opacity-70",
+        danger:
+            "bg-alert active:bg-alert-dark disabled:bg-alert-muted disabled:opacity-70",
+    },
+    size: {
+        md: "px-4 py-2",
+    },
+} as const;
+
+const labelClassType = {
+    outline: {
+        primary:
+            "font-bold text-base text-primary group-active:text-on-primary disabled:text-primary-muted",
+        secondary:
+            "font-bold text-base text-text-secondary group-active:text-on-primary disabled:text-disabled",
+        danger:
+            "font-bold text-base text-alert group-active:text-on-alert disabled:text-alert-muted",
+    },
+    bold: {
+        primary: "font-bold text-base text-on-primary",
+        secondary: "font-bold text-base text-on-primary",
+        danger: "font-bold text-base text-on-alert",
+    },
+} as const;
 
 export function Button({
-    label,
-    variant = "primary",
-    className,
-    labelClassName,
+    children,
+    variant = "bold",
+    type = "primary",
+    size = "md",
+    className = "",
+    labelClassName = "",
     disabled,
     ...props
 }: ButtonProps) {
     return (
         <Pressable
             accessibilityRole="button"
-            className={`${containerClasses[variant]}${className ? ` ${className}` : ""}`}
+            className={`${baseClass} ${classType[variant][type]} ${classType.size[size]} ${className}`}
             disabled={disabled}
             {...props}
         >
             <Text
-                className={`${labelClasses[variant]}${labelClassName ? ` ${labelClassName}` : ""}`}
+                className={`${labelClassType[variant][type]}${labelClassName ? ` ${labelClassName}` : ""}`}
             >
-                {label}
+                {children}
             </Text>
         </Pressable>
     );

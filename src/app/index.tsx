@@ -32,11 +32,21 @@ export default function Index() {
             </View>
 
             <View className="mb-4 gap-3">
-                <Button label="Book a ticket" variant="primary" />
-                <Button label="View routes" variant="outline" />
-                <Button label="More options" variant="secondary" />
-                <Button label="Learn more" variant="ghost" />
-                <Button label="Unavailable" variant="primary" disabled />
+                <Button type="primary" variant="bold">
+                    Book a ticket
+                </Button>
+                <Button type="primary" variant="outline">
+                    View routes
+                </Button>
+                <Button type="secondary" variant="bold">
+                    More options
+                </Button>
+                <Button type="danger" variant="outline">
+                    Cancel trip
+                </Button>
+                <Button disabled type="primary" variant="bold">
+                    Unavailable
+                </Button>
             </View>
 
             <Alert
