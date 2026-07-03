@@ -20,7 +20,7 @@ const InputNumberV2: React.FC<InputNumberV2Props> = ({
             keyboardType="numeric"
             thousandSeparator=","
             displayType="input"
-            className={`text-base py-2.5 px-3 rounded-lg text-text-primary placeholder:text-text-muted      border ${disabled ? 'bg-disabled-bg text-disabled opacity-80' : 'bg-background'}
+            className={`text-base py-2.5 md:py-3 px-3 rounded-lg text-text-primary placeholder:text-text-muted border ${disabled ? 'bg-disabled-bg text-disabled opacity-80' : 'bg-background'}
             ${className}
             `}
             {...props}
