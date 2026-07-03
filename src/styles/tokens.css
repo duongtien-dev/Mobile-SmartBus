@@ -1,0 +1,190 @@
+@layer base {
+    :root {
+        color-scheme: light;
+
+        /* ── Brand: Primary (deep navy) ── */
+        --color-primary: #005f8b;
+        --color-primary-light: #e6f2f8;
+        --color-primary-dark: #004a6e;
+        --color-primary-muted: #80afca;
+
+        /* ── Brand: Accent (sky blue) ── */
+        --color-accent: #00a2e8;
+        --color-accent-light: #e6f7fd;
+        --color-accent-dark: #007aaa;
+        --color-accent-muted: #80d1f4;
+
+        /* ── Brand: Highlight (yellow) ── */
+        --color-highlight: #ffc20e;
+        --color-highlight-light: #fff8e1;
+        --color-highlight-dark: #e6ae00;
+        --color-highlight-muted: #ffe082;
+
+        /* ── Brand: Alert (crimson) ── */
+        --color-alert: #e50049;
+        --color-alert-light: #fce4ec;
+        --color-alert-dark: #b8003a;
+        --color-alert-muted: #f291b2;
+
+        /* ── Neutrals ── */
+        --color-background: #ffffff;
+        --color-surface: #f5f8fa;
+        --color-surface-elevated: #ffffff;
+        --color-text-primary: #0f172a;
+        --color-text-secondary: #475569;
+        --color-text-muted: #64748b;
+        --color-border: #e2e8f0;
+        --color-border-strong: #cbd5e1;
+        --color-disabled: #94a3b8;
+        --color-disabled-bg: #f1f5f9;
+
+        /* ── Foreground on brand surfaces (WCAG AA) ── */
+        --color-on-primary: #ffffff;
+        --color-on-accent: #ffffff;
+        --color-on-highlight: #1a2e3b;
+        --color-on-alert: #ffffff;
+
+        /* ── Semantic aliases ── */
+        --color-header-bg: var(--color-primary);
+        --color-header-text: var(--color-on-primary);
+        --color-splash-bg: var(--color-primary);
+        --color-nav-bg: var(--color-primary);
+        --color-nav-text: var(--color-on-primary);
+        --color-nav-active: var(--color-accent);
+        --color-nav-inactive: var(--color-primary-muted);
+        --color-cta-bg: var(--color-accent-dark);
+        --color-cta-bg-hover: var(--color-accent);
+        --color-cta-bg-pressed: var(--color-primary-dark);
+        --color-cta-bg-disabled: var(--color-accent-muted);
+        --color-cta-text: var(--color-on-accent);
+        --color-badge-promo-bg: var(--color-highlight);
+        --color-badge-promo-text: var(--color-on-highlight);
+        --color-badge-alert-bg: var(--color-alert);
+        --color-badge-alert-text: var(--color-on-alert);
+        --color-status-error: var(--color-alert);
+        --color-status-error-bg: var(--color-alert-light);
+        --color-status-error-border: var(--color-alert-muted);
+        --color-status-cancelled: var(--color-alert-dark);
+    }
+
+    @media (prefers-color-scheme: dark) {
+        :root {
+            color-scheme: dark;
+
+            /* Brand colors — slightly lifted for dark surfaces */
+            --color-primary: #007aaa;
+            --color-primary-light: #0a2a3d;
+            --color-primary-dark: #005f8b;
+            --color-primary-muted: #4a8fad;
+
+            --color-accent: #33b5ed;
+            --color-accent-light: #0a2a3d;
+            --color-accent-dark: #00a2e8;
+            --color-accent-muted: #1a5f7a;
+
+            --color-highlight: #ffd04a;
+            --color-highlight-light: #3d3200;
+            --color-highlight-dark: #ffc20e;
+            --color-highlight-muted: #665500;
+
+            --color-alert: #ff4d7a;
+            --color-alert-light: #3d0a1a;
+            --color-alert-dark: #e50049;
+            --color-alert-muted: #7a2040;
+
+            /* Neutrals */
+            --color-background: #0b1220;
+            --color-surface: #141e2e;
+            --color-surface-elevated: #1e293b;
+            --color-text-primary: #f1f5f9;
+            --color-text-secondary: #94a3b8;
+            --color-text-muted: #64748b;
+            --color-border: #1e293b;
+            --color-border-strong: #334155;
+            --color-disabled: #475569;
+            --color-disabled-bg: #1e293b;
+
+            /* Foreground on brand surfaces */
+            --color-on-primary: #ffffff;
+            --color-on-accent: #ffffff;
+            --color-on-highlight: #1a2e3b;
+            --color-on-alert: #ffffff;
+
+            /* Semantic aliases */
+            --color-header-bg: var(--color-primary-dark);
+            --color-nav-bg: var(--color-primary-dark);
+            --color-nav-inactive: var(--color-text-muted);
+            --color-cta-bg: var(--color-accent-dark);
+            --color-cta-bg-hover: var(--color-accent);
+            --color-cta-bg-pressed: var(--color-primary-dark);
+            --color-cta-bg-disabled: var(--color-accent-muted);
+            --color-status-error-bg: var(--color-alert-light);
+            --color-status-error-border: var(--color-alert-muted);
+        }
+    }
+}
+
+@layer theme {
+    @theme inline {
+        /* Brand */
+        --color-primary: var(--color-primary);
+        --color-primary-light: var(--color-primary-light);
+        --color-primary-dark: var(--color-primary-dark);
+        --color-primary-muted: var(--color-primary-muted);
+
+        --color-accent: var(--color-accent);
+        --color-accent-light: var(--color-accent-light);
+        --color-accent-dark: var(--color-accent-dark);
+        --color-accent-muted: var(--color-accent-muted);
+
+        --color-highlight: var(--color-highlight);
+        --color-highlight-light: var(--color-highlight-light);
+        --color-highlight-dark: var(--color-highlight-dark);
+        --color-highlight-muted: var(--color-highlight-muted);
+
+        --color-alert: var(--color-alert);
+        --color-alert-light: var(--color-alert-light);
+        --color-alert-dark: var(--color-alert-dark);
+        --color-alert-muted: var(--color-alert-muted);
+
+        /* Neutrals */
+        --color-background: var(--color-background);
+        --color-surface: var(--color-surface);
+        --color-surface-elevated: var(--color-surface-elevated);
+        --color-text-primary: var(--color-text-primary);
+        --color-text-secondary: var(--color-text-secondary);
+        --color-text-muted: var(--color-text-muted);
+        --color-border: var(--color-border);
+        --color-border-strong: var(--color-border-strong);
+        --color-disabled: var(--color-disabled);
+        --color-disabled-bg: var(--color-disabled-bg);
+
+        /* Foreground on brand */
+        --color-on-primary: var(--color-on-primary);
+        --color-on-accent: var(--color-on-accent);
+        --color-on-highlight: var(--color-on-highlight);
+        --color-on-alert: var(--color-on-alert);
+
+        /* Semantic */
+        --color-header-bg: var(--color-header-bg);
+        --color-header-text: var(--color-header-text);
+        --color-splash-bg: var(--color-splash-bg);
+        --color-nav-bg: var(--color-nav-bg);
+        --color-nav-text: var(--color-nav-text);
+        --color-nav-active: var(--color-nav-active);
+        --color-nav-inactive: var(--color-nav-inactive);
+        --color-cta-bg: var(--color-cta-bg);
+        --color-cta-bg-hover: var(--color-cta-bg-hover);
+        --color-cta-bg-pressed: var(--color-cta-bg-pressed);
+        --color-cta-bg-disabled: var(--color-cta-bg-disabled);
+        --color-cta-text: var(--color-cta-text);
+        --color-badge-promo-bg: var(--color-badge-promo-bg);
+        --color-badge-promo-text: var(--color-badge-promo-text);
+        --color-badge-alert-bg: var(--color-badge-alert-bg);
+        --color-badge-alert-text: var(--color-badge-alert-text);
+        --color-status-error: var(--color-status-error);
+        --color-status-error-bg: var(--color-status-error-bg);
+        --color-status-error-border: var(--color-status-error-border);
+        --color-status-cancelled: var(--color-status-cancelled);
+    }
+}
