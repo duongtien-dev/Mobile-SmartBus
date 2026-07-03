@@ -11,7 +11,7 @@ type ButtonProps = Omit<PressableProps, "children"> & {
 
 const containerClasses: Record<ButtonVariant, string> = {
     primary:
-        "flex-row items-center justify-center rounded-xl px-5 py-3 bg-cta-bg active:bg-cta-bg-pressed disabled:opacity-70",
+        "flex-row items-center justify-center rounded-xl px-5 py-3 bg-accent active:bg-accent-dark disabled:bg-accent-muted disabled:opacity-70",
     secondary:
         "flex-row items-center justify-center rounded-xl border border-border-strong px-5 py-3 bg-surface active:bg-border disabled:bg-disabled-bg disabled:opacity-70",
     ghost:
@@ -19,9 +19,9 @@ const containerClasses: Record<ButtonVariant, string> = {
 };
 
 const labelClasses: Record<ButtonVariant, string> = {
-    primary: "font-semibold text-cta-text",
+    primary: "font-semibold text-on-accent",
     secondary: "font-semibold text-text-primary disabled:text-disabled",
-    ghost: "font-semibold text-accent-dark",
+    ghost: "font-semibold text-accent",
 };
 
 export function Button({

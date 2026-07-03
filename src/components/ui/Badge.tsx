@@ -9,15 +9,15 @@ type BadgeProps = ViewProps & {
 };
 
 const badgeClasses: Record<BadgeVariant, string> = {
-    promo: "flex-row items-center rounded-full px-2 py-0.5 bg-badge-promo-bg",
-    alert: "flex-row items-center rounded-full px-2 py-0.5 bg-badge-alert-bg",
+    promo: "flex-row items-center rounded-full px-2 py-0.5 bg-highlight",
+    alert: "flex-row items-center rounded-full px-2 py-0.5 bg-alert",
     neutral:
         "flex-row items-center rounded-full border border-border px-2 py-0.5 bg-surface",
 };
 
 const labelClasses: Record<BadgeVariant, string> = {
-    promo: "text-xs font-bold text-badge-promo-text",
-    alert: "text-xs font-bold text-badge-alert-text",
+    promo: "text-xs font-bold text-on-highlight",
+    alert: "text-xs font-bold text-on-alert",
     neutral: "text-xs font-bold text-text-secondary",
 };
 

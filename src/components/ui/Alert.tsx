@@ -18,11 +18,11 @@ export function Alert({
 }: AlertProps) {
     return (
         <View
-            className={`rounded-xl border border-status-error-border bg-status-error-bg p-4${className ? ` ${className}` : ""}`}
+            className={`rounded-xl border border-alert-muted bg-alert-light p-4${className ? ` ${className}` : ""}`}
             {...props}
         >
             <Text
-                className={`font-bold text-status-error${titleClassName ? ` ${titleClassName}` : ""}`}
+                className={`font-bold text-alert${titleClassName ? ` ${titleClassName}` : ""}`}
             >
                 {title}
             </Text>

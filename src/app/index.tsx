@@ -5,8 +5,8 @@ import { Alert, Badge, Button } from "@/components/ui";
 export default function Index() {
     return (
         <View className="flex-1 bg-background px-6 py-10">
-            <View className="mb-6 rounded-2xl bg-header-bg px-5 py-4">
-                <Text className="text-lg font-bold text-header-text">
+            <View className="mb-6 rounded-2xl bg-primary px-5 py-4">
+                <Text className="text-lg font-bold text-on-primary">
                     SmartBus
                 </Text>
                 <Text className="mt-1 text-sm text-primary-muted">
