@@ -15,7 +15,7 @@ const InputText: React.FC<InputTextProps> = ({
         <TextInput
             editable={!disabled}
             className={`text-base py-2.5 px-3 rounded-lg text-text-primary
-            placeholder:text-text-muted border border-border focus:border-accent
+            placeholder:text-text-muted border border-border focus:border-primary
             ${disabled ? 'bg-disabled-bg text-disabled border-border opacity-80' : 'bg-background'}
             ${className}
         `}

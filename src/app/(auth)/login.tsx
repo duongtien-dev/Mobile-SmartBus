@@ -1,7 +1,7 @@
 import InputText from "@/components/Input/TextInput";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
-import { Eye, EyeOff, X } from "lucide-react-native";
+import { Eye, EyeOff } from "lucide-react-native";
 import { useState } from "react";
 import {
     Image,
@@ -31,50 +31,41 @@ export default function Login() {
                 className="flex-1"
             >
                 <View className="flex-1 justify-center px-6">
-                    {/* Logo */}
                     <View className="mb-10 items-center">
                         <Image
                             source={require("../../../assets/images/logo.png")}
-                            className="h-20 w-48"
+                            style={{ width: 255, height: 121 }}
                             resizeMode="contain"
                         />
                     </View>
 
-                    {/* Form */}
                     <View className="gap-4">
                         <View className="gap-1.5">
                             <Text className="text-sm font-medium text-on-primary">
                                 Tên đăng nhập
                             </Text>
-                            <View className="flex-row items-center rounded-xl bg-surface-elevated px-4">
-                                <InputText
-                                    value={username}
-                                    onChangeText={setUsername}
-                                    placeholder="Tên đăng nhập"
-                                    autoCapitalize="none"
-                                />
-                                {username.length > 0 && (
-                                    <Pressable onPress={() => setUsername("")}>
-                                        <View className="h-5 w-5 items-center justify-center rounded-full bg-disabled">
-                                            <X size={12} color="#fff" />
-                                        </View>
-                                    </Pressable>
-                                )}
-                            </View>
+                            <InputText
+                                value={username}
+                                onChangeText={setUsername}
+                                placeholder="Tên đăng nhập"
+                                autoCapitalize="none"
+                                className="flex-1 text"
+                            />
                         </View>
 
                         <View className="gap-1.5">
                             <Text className="text-sm font-medium text-on-primary">
                                 Mật khẩu
                             </Text>
-                            <View className="flex-row items-center rounded-xl bg-surface-elevated px-4">
+                            <View className="relative">
                                 <InputText
                                     value={password}
                                     onChangeText={setPassword}
                                     placeholder="Mật khẩu"
                                     secureTextEntry={!showPassword}
+                                    className="flex-1 pr-10"
                                 />
-                                <Pressable onPress={() => setShowPassword((v) => !v)}>
+                                <Pressable onPress={() => setShowPassword((v) => !v)} className="absolute right-3 top-1/2 -translate-y-1/2">
                                     {showPassword ? (
                                         <EyeOff size={18} color="#64748b" />
                                     ) : (
@@ -100,7 +91,6 @@ export default function Login() {
                         </Pressable>
                     </View>
 
-                    {/* Footer */}
                     <View className="mt-10 items-center gap-4">
                         <Text className="text-sm text-on-primary">
                             Chưa có tài khoản?{" "}
