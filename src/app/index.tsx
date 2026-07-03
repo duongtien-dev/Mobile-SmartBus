@@ -1,6 +1,7 @@
 import { Text, View } from "react-native";
 
 import { Alert, Badge, Button } from "@/components/ui";
+import { router } from "expo-router";
 
 export default function Index() {
     return (
@@ -32,7 +33,7 @@ export default function Index() {
             </View>
 
             <View className="mb-4 gap-3">
-                <Button type="primary" variant="bold">
+                <Button type="primary" variant="bold" onPress={ () => router.push('/dev-demo/page')}>
                     Book a ticket
                 </Button>
                 <Button type="primary" variant="outline">
