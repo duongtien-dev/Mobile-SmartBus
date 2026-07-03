@@ -1,0 +1,140 @@
+@layer base {
+    :root {
+        color-scheme: light;
+
+        /*
+         * 4 màu chủ đạo (brand palette)
+         * primary  #005F8B — navy, header/splash/nền chính
+         * accent   #00A2E8 — xanh sáng, CTA/icon/active
+         * highlight #FFC20E — vàng, badge promo
+         * alert    #E50049 — đỏ hồng, cảnh báo/lỗi
+         */
+        --color-primary: #005f8b;
+        --color-accent: #00a2e8;
+        --color-highlight: #ffc20e;
+        --color-alert: #e50049;
+
+        /* Shades — derived từ 4 màu trên */
+        --color-primary-light: #e6f2f8;
+        --color-primary-dark: #004a6e;
+        --color-primary-muted: #80afca;
+
+        --color-accent-light: #e6f7fd;
+        --color-accent-dark: #0082ba;
+        --color-accent-muted: #80d1f4;
+
+        --color-highlight-light: #fff8e1;
+        --color-highlight-dark: #cca010;
+        --color-highlight-muted: #ffe082;
+
+        --color-alert-light: #fce4ec;
+        --color-alert-dark: #b8003a;
+        --color-alert-muted: #f291b2;
+
+        /* Text trên nền brand — dùng màu trong palette, đảm bảo contrast */
+        --color-on-primary: #ffffff;
+        --color-on-accent: #005f8b;
+        --color-on-highlight: #005f8b;
+        --color-on-alert: #ffffff;
+
+        /* Neutrals — không thuộc brand palette */
+        --color-background: #ffffff;
+        --color-surface: #f5f8fa;
+        --color-surface-elevated: #ffffff;
+        --color-text-primary: #0f172a;
+        --color-text-secondary: #475569;
+        --color-text-muted: #64748b;
+        --color-border: #e2e8f0;
+        --color-border-strong: #cbd5e1;
+        --color-disabled: #94a3b8;
+        --color-disabled-bg: #f1f5f9;
+    }
+
+    @media (prefers-color-scheme: dark) {
+        :root {
+            color-scheme: dark;
+
+            /* 4 màu chủ đạo — giữ nguyên hex */
+            --color-primary: #005f8b;
+            --color-accent: #00a2e8;
+            --color-highlight: #ffc20e;
+            --color-alert: #e50049;
+
+            /* Shades — điều chỉnh cho nền tối */
+            --color-primary-light: #0a2e42;
+            --color-primary-dark: #004a6e;
+            --color-primary-muted: #4a8fad;
+
+            --color-accent-light: #0a2838;
+            --color-accent-dark: #0082ba;
+            --color-accent-muted: #1a5f7a;
+
+            --color-highlight-light: #332800;
+            --color-highlight-dark: #cca010;
+            --color-highlight-muted: #665500;
+
+            --color-alert-light: #3d0818;
+            --color-alert-dark: #b8003a;
+            --color-alert-muted: #7a2040;
+
+            --color-on-primary: #ffffff;
+            --color-on-accent: #ffffff;
+            --color-on-highlight: #005f8b;
+            --color-on-alert: #ffffff;
+
+            --color-background: #0b1220;
+            --color-surface: #141e2e;
+            --color-surface-elevated: #1e293b;
+            --color-text-primary: #f1f5f9;
+            --color-text-secondary: #94a3b8;
+            --color-text-muted: #64748b;
+            --color-border: #1e293b;
+            --color-border-strong: #334155;
+            --color-disabled: #475569;
+            --color-disabled-bg: #1e293b;
+        }
+    }
+}
+
+@layer theme {
+    @theme inline {
+        /* Brand — 4 màu + shades */
+        --color-primary: var(--color-primary);
+        --color-accent: var(--color-accent);
+        --color-highlight: var(--color-highlight);
+        --color-alert: var(--color-alert);
+
+        --color-primary-light: var(--color-primary-light);
+        --color-primary-dark: var(--color-primary-dark);
+        --color-primary-muted: var(--color-primary-muted);
+
+        --color-accent-light: var(--color-accent-light);
+        --color-accent-dark: var(--color-accent-dark);
+        --color-accent-muted: var(--color-accent-muted);
+
+        --color-highlight-light: var(--color-highlight-light);
+        --color-highlight-dark: var(--color-highlight-dark);
+        --color-highlight-muted: var(--color-highlight-muted);
+
+        --color-alert-light: var(--color-alert-light);
+        --color-alert-dark: var(--color-alert-dark);
+        --color-alert-muted: var(--color-alert-muted);
+
+        --color-on-primary: var(--color-on-primary);
+        --color-on-accent: var(--color-on-accent);
+        --color-on-highlight: var(--color-on-highlight);
+        --color-on-alert: var(--color-on-alert);
+
+        /* Neutrals */
+        --color-background: var(--color-background);
+        --color-surface: var(--color-surface);
+        --color-surface-elevated: var(--color-surface-elevated);
+        --color-text-primary: var(--color-text-primary);
+        --color-text-secondary: var(--color-text-secondary);
+        --color-text-muted: var(--color-text-muted);
+        --color-border: var(--color-border);
+        --color-border-strong: var(--color-border-strong);
+        --color-disabled: var(--color-disabled);
+        --color-disabled-bg: var(--color-disabled-bg);
+    }
+}
