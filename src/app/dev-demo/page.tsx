@@ -1,4 +1,4 @@
-import { Switch as RNSwitch, Text, View } from "react-native";
+import { Switch as RNSwitch, ScrollView, Text, View } from "react-native";
 
 import { Button } from "@/components/Button";
 import InputNumber from "@/components/Input/InputNumber";
@@ -14,7 +14,12 @@ export default function DevDemoPage() {
     const [amount, setAmount] = useState<number | undefined>();
 
     return (
-        <View className="flex-1 bg-background px-6 py-6">
+        <ScrollView
+            className="flex-1 bg-background"
+            contentContainerClassName="p-5"
+            keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}
+        >
             <View className="mb-6 rounded-2xl bg-primary px-5 py-4">
                 <Text className="text-lg font-bold text-on-primary">
                     SmartBus
@@ -98,6 +103,6 @@ export default function DevDemoPage() {
                     <RadioGroupItem value="3" />
                 </RadioGroup>
             </View>
-        </View>
+        </ScrollView>
     );
 }
