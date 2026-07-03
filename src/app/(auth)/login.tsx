@@ -31,10 +31,10 @@ export default function Login() {
                 className="flex-1"
             >
                 <View className="flex-1 justify-center px-6">
-                    <View className="mb-10 items-center">
+                    <View className="items-center">
                         <Image
                             source={require("../../../assets/images/logo.png")}
-                            style={{ width: 255, height: 121 }}
+                            style={{ width: 255, height: 290 }}
                             resizeMode="contain"
                         />
                     </View>

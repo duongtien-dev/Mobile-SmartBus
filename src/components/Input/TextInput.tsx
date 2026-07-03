@@ -1,5 +1,6 @@
-import React from 'react';
-import { TextInput, TextInputProps } from 'react-native';
+import React from "react";
+import type { TextInputProps } from "react-native";
+import { TextInput } from "react-native-css/components";
 
 interface InputTextProps extends TextInputProps {
     className?: string;
@@ -7,18 +8,15 @@ interface InputTextProps extends TextInputProps {
 }
 
 const InputText: React.FC<InputTextProps> = ({
-    className = '',
+    className = "",
     disabled = false,
     ...props
 }) => {
     return (
         <TextInput
             editable={!disabled}
-            className={`text-base py-2.5 px-3 rounded-lg text-text-primary
-            placeholder:text-text-muted border border-border focus:border-primary
-            ${disabled ? 'bg-disabled-bg text-disabled border-border opacity-80' : 'bg-background'}
-            ${className}
-        `}
+            underlineColorAndroid="transparent"
+            className={`text-base rounded-lg px-3 py-2.5 text-text-primary placeholder:text-text-muted border border-border focus:border-primary ${disabled ? "border-border bg-disabled-bg text-disabled opacity-80" : "bg-background"} ${className}`}
             {...props}
         />
     );
