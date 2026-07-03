@@ -1,8 +1,9 @@
-import { Text, View } from "react-native";
+import { Switch as RNSwitch, Text, View } from "react-native";
 
 import { Button } from "@/components/Button";
 import InputNumber from "@/components/Input/InputNumber";
 import { Alert, Badge } from "@/components/ui";
+import { Switch } from "@/components/ui/switch";
 import { router } from "expo-router";
 import { useState } from "react";
 
@@ -55,10 +56,10 @@ export default function DevDemoPage() {
                 </Button>
             </View>
 
-            <Alert
+            {/* <Alert
                 message="This route has been cancelled. Refund will be processed within 3–5 business days."
                 title="Trip cancelled"
-            />
+            /> */}
 
             <View className="mt-6 flex-row gap-3">
                 <View className="h-10 flex-1 rounded-lg bg-primary" />
@@ -67,7 +68,7 @@ export default function DevDemoPage() {
                 <View className="h-10 flex-1 rounded-lg bg-alert" />
             </View>
 
-            <View className="mt-6 flex-row gap-3">
+            <View className="mt-6 flex flex-col gap-3">
                 <InputNumber
                     placeholder="Nhập số tiền"
                     value={amount}
@@ -77,6 +78,8 @@ export default function DevDemoPage() {
                     suffix=" VND"
                     className="flex-1"
                 />
+                <RNSwitch value={true} onValueChange={() => {console.log('checked')}} />
+                <Switch checked={true} onCheckedChange={() => {console.log('checked')}}/>
             </View>
         </View>
     );
