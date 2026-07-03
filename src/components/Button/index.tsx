@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { Pressable, Text, type PressableProps } from "react-native";
 
 type ButtonVariant = "outline" | "bold";
-type ButtonType = "primary" | "secondary" | "danger";
+type ButtonType = "primary" | "secondary" | "danger" | "accent";
 type ButtonSize = "md";
 
 type ButtonProps = Omit<PressableProps, "children"> & {
@@ -24,6 +24,8 @@ const classType = {
             "border border-border-strong bg-transparent active:bg-text-secondary disabled:opacity-70",
         danger:
             "border border-alert bg-transparent active:bg-alert disabled:border-alert-muted disabled:opacity-70",
+        accent:
+            "border border-accent bg-transparent active:bg-accent disabled:border-accent-muted disabled:opacity-70",
     },
     bold: {
         primary:
@@ -32,9 +34,12 @@ const classType = {
             "bg-text-secondary active:bg-text-primary disabled:bg-disabled disabled:opacity-70",
         danger:
             "bg-alert active:bg-alert-dark disabled:bg-alert-muted disabled:opacity-70",
+        accent:
+            "bg-accent active:bg-accent-dark disabled:bg-accent-muted disabled:opacity-70",
     },
     size: {
-        md: "px-4 py-2.5",
+        sm: "px-4 py-2.5",
+        md: "px-4 py-3",
     },
 } as const;
 
@@ -46,11 +51,13 @@ const labelClassType = {
             "font-bold text-md text-text-secondary group-active:text-on-primary disabled:text-disabled",
         danger:
             "font-bold text-md text-alert group-active:text-on-alert disabled:text-alert-muted",
+        accent: "font-bold text-md text-on-accent group-active:text-on-accent disabled:text-accent-muted",
     },
     bold: {
         primary: "font-bold text-md text-on-primary",
         secondary: "font-bold text-md text-on-primary",
         danger: "font-bold text-md text-on-alert",
+        accent: "font-bold text-md text-on-primary",
     },
 } as const;
 

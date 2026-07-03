@@ -1,3 +1,4 @@
+import { Button } from "@/components/Button";
 import InputText from "@/components/Input/TextInput";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
@@ -28,7 +29,6 @@ export default function Login() {
         >
             <KeyboardAvoidingView
                 behavior={Platform.OS === "ios" ? "padding" : "height"}
-                className="flex-1"
             >
                 <View className="flex-1 justify-center px-6">
                     <View className="items-center">
@@ -81,14 +81,11 @@ export default function Login() {
                             </Text>
                         </Pressable>
 
-                        <Pressable
+                        <Button type="accent" variant="bold"
                             onPress={() => router.push("/")}
-                            className="h-12 items-center justify-center rounded-xl bg-accent active:opacity-80"
                         >
-                            <Text className="text-base font-semibold text-on-accent">
-                                Đăng nhập
-                            </Text>
-                        </Pressable>
+                            Đăng nhập
+                        </Button>
                     </View>
 
                     <View className="mt-10 items-center gap-4">
