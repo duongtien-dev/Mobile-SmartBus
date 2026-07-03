@@ -1,5 +1,5 @@
 import { Button } from "@/components/Button";
-import InputText from "@/components/Input/TextInput";
+import InputText from "@/components/Input/InputText";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import { Eye, EyeOff } from "lucide-react-native";
