@@ -4,8 +4,8 @@ import { Alert, Badge, Button } from "@/components/ui";
 
 export default function Index() {
     return (
-        <View className="screen px-6 py-10">
-            <View className="header mb-6 rounded-2xl px-5 py-4">
+        <View className="flex-1 bg-background px-6 py-10">
+            <View className="mb-6 rounded-2xl bg-header-bg px-5 py-4">
                 <Text className="text-lg font-bold text-header-text">
                     SmartBus
                 </Text>
@@ -14,7 +14,7 @@ export default function Index() {
                 </Text>
             </View>
 
-            <View className="card mb-4 gap-4">
+            <View className="mb-4 gap-4 rounded-2xl border border-border bg-surface-elevated p-4">
                 <View className="flex-row flex-wrap items-center gap-2">
                     <Badge label="NEW" variant="promo" />
                     <Badge label="HOT" variant="promo" />
