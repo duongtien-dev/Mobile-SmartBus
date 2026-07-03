@@ -1,7 +1,8 @@
 import { Text, View } from "react-native";
 
-import { Alert, Badge, Button } from "@/components/ui";
+import { Alert, Badge } from "@/components/ui";
 import { router } from "expo-router";
+import { Button } from "@/components/Button";
 
 export default function DevDemoPage() {
     return (
