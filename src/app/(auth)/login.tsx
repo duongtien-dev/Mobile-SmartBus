@@ -49,7 +49,7 @@ export default function Login() {
                                 onChangeText={setUsername}
                                 placeholder="Tên đăng nhập"
                                 autoCapitalize="none"
-                                className="flex-1 text"
+                                className="w-full text"
                             />
                         </View>
 
@@ -63,7 +63,7 @@ export default function Login() {
                                     onChangeText={setPassword}
                                     placeholder="Mật khẩu"
                                     secureTextEntry={!showPassword}
-                                    className="flex-1 pr-10"
+                                    className="w-full pr-10"
                                 />
                                 <Pressable onPress={() => setShowPassword((v) => !v)} className="absolute right-3 top-1/2 -translate-y-1/2">
                                     {showPassword ? (
@@ -99,14 +99,14 @@ export default function Login() {
                             </Text>
                         </Text>
 
-                        <Pressable
+                        <Button
                             onPress={() => router.push("/register")}
-                            className="h-12 w-full items-center justify-center rounded-xl bg-surface-elevated active:opacity-80"
+                            className="w-full items-center justify-center rounded-xl bg-surface-elevated active:opacity-80"
                         >
                             <Text className="text-base font-semibold text-text-primary">
                                 Tạo tài khoản
                             </Text>
-                        </Pressable>
+                        </Button>
                     </View>
                 </View>
             </KeyboardAvoidingView>
