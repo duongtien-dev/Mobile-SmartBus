@@ -34,23 +34,23 @@ const classType = {
             "bg-alert active:bg-alert-dark disabled:bg-alert-muted disabled:opacity-70",
     },
     size: {
-        md: "px-4 py-2",
+        md: "px-4 py-2.5",
     },
 } as const;
 
 const labelClassType = {
     outline: {
         primary:
-            "font-bold text-base text-primary group-active:text-on-primary disabled:text-primary-muted",
+            "font-bold text-md text-primary group-active:text-on-primary disabled:text-primary-muted",
         secondary:
-            "font-bold text-base text-text-secondary group-active:text-on-primary disabled:text-disabled",
+            "font-bold text-md text-text-secondary group-active:text-on-primary disabled:text-disabled",
         danger:
-            "font-bold text-base text-alert group-active:text-on-alert disabled:text-alert-muted",
+            "font-bold text-md text-alert group-active:text-on-alert disabled:text-alert-muted",
     },
     bold: {
-        primary: "font-bold text-base text-on-primary",
-        secondary: "font-bold text-base text-on-primary",
-        danger: "font-bold text-base text-on-alert",
+        primary: "font-bold text-md text-on-primary",
+        secondary: "font-bold text-md text-on-primary",
+        danger: "font-bold text-md text-on-alert",
     },
 } as const;
 
