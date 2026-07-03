@@ -1,10 +1,14 @@
 import { Text, View } from "react-native";
 
+import { Button } from "@/components/Button";
+import InputNumber from "@/components/Input/InputNumber";
 import { Alert, Badge } from "@/components/ui";
 import { router } from "expo-router";
-import { Button } from "@/components/Button";
+import { useState } from "react";
 
 export default function DevDemoPage() {
+    const [amount, setAmount] = useState<number | undefined>();
+
     return (
         <View className="flex-1 bg-background px-6 py-10">
             <View className="mb-6 rounded-2xl bg-primary px-5 py-4">
@@ -34,7 +38,7 @@ export default function DevDemoPage() {
             </View>
 
             <View className="mb-4 gap-3">
-                <Button type="primary" variant="bold" onPress={ () => router.push('/dev-demo/page')}>
+                <Button type="primary" variant="bold" onPress={() => router.push('/dev-demo/page')}>
                     Book a ticket
                 </Button>
                 <Button type="primary" variant="outline">
@@ -61,6 +65,18 @@ export default function DevDemoPage() {
                 <View className="h-10 flex-1 rounded-lg bg-accent" />
                 <View className="h-10 flex-1 rounded-lg bg-highlight" />
                 <View className="h-10 flex-1 rounded-lg bg-alert" />
+            </View>
+
+            <View className="mt-6 flex-row gap-3">
+                <InputNumber
+                    placeholder="Nhập số tiền"
+                    value={amount}
+                    onValueChange={(values) => {
+                        setAmount(values.floatValue);
+                    }}
+                    suffix=" VND"
+                    className="flex-1"
+                />
             </View>
         </View>
     );
