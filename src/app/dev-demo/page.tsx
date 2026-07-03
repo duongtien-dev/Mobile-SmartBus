@@ -2,7 +2,8 @@ import { Switch as RNSwitch, Text, View } from "react-native";
 
 import { Button } from "@/components/Button";
 import InputNumber from "@/components/Input/InputNumber";
-import { Alert, Badge } from "@/components/ui";
+import { Badge } from "@/components/ui";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Switch } from "@/components/ui/switch";
 import { router } from "expo-router";
 import { useState } from "react";
@@ -11,7 +12,7 @@ export default function DevDemoPage() {
     const [amount, setAmount] = useState<number | undefined>();
 
     return (
-        <View className="flex-1 bg-background px-6 py-10">
+        <View className="flex-1 bg-background px-6 py-6">
             <View className="mb-6 rounded-2xl bg-primary px-5 py-4">
                 <Text className="text-lg font-bold text-on-primary">
                     SmartBus
@@ -61,7 +62,7 @@ export default function DevDemoPage() {
                 title="Trip cancelled"
             /> */}
 
-            <View className="mt-6 flex-row gap-3">
+            <View className="mt-2 flex-row gap-3">
                 <View className="h-10 flex-1 rounded-lg bg-primary" />
                 <View className="h-10 flex-1 rounded-lg bg-accent" />
                 <View className="h-10 flex-1 rounded-lg bg-highlight" />
@@ -78,8 +79,13 @@ export default function DevDemoPage() {
                     suffix=" VND"
                     className="flex-1"
                 />
-                <RNSwitch value={true} onValueChange={() => {console.log('checked')}} />
-                <Switch checked={true} onCheckedChange={() => {console.log('checked')}}/>
+                <RNSwitch value={true} onValueChange={() => { console.log('checked') }} />
+                <Switch checked={true} onCheckedChange={() => { console.log('checked') }} />
+                <RadioGroup value="1" onValueChange={() => { console.log('checked') }}>
+                    <RadioGroupItem value="1" />
+                    <RadioGroupItem value="2" />
+                    <RadioGroupItem value="3" />
+                </RadioGroup>
             </View>
         </View>
     );
