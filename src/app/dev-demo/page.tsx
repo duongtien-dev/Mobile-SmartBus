@@ -2,6 +2,7 @@ import { Switch as RNSwitch, Text, View } from "react-native";
 
 import { Button } from "@/components/Button";
 import InputNumber from "@/components/Input/InputNumber";
+import InputText from "@/components/Input/InputText";
 import { Badge } from "@/components/ui";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Switch } from "@/components/ui/switch";
@@ -22,7 +23,9 @@ export default function DevDemoPage() {
                 </Text>
             </View>
 
-            <View className="mb-4 gap-4 rounded-2xl border border-border bg-surface-elevated p-4">
+            <InputText placeholder="Nhập tên" className="w-full"/>
+
+            <View className="my-3 gap-4 rounded-2xl border border-border bg-surface-elevated p-4">
                 <View className="flex-row flex-wrap items-center gap-2">
                     <Badge label="NEW" variant="promo" />
                     <Badge label="HOT" variant="promo" />
