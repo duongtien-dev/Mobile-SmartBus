@@ -12,7 +12,7 @@ export function NewsCard({ item, onPress }: NewsCardProps) {
     return (
         <Pressable
             accessibilityRole="button"
-            className="mr-4 w-64 active:opacity-90"
+            className="mr-4 w-40 active:opacity-90"
             onPress={onPress}
         >
             <View className="overflow-hidden rounded-xl border border-border bg-surface-elevated">
