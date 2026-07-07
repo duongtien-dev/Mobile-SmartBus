@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { isValidElement } from "react";
 import { Pressable, Text, type PressableProps } from "react-native";
 
 type ButtonVariant = "outline" | "bold";
@@ -71,6 +72,17 @@ export function Button({
     disabled,
     ...props
 }: ButtonProps) {
+    const labelClassNameResolved = `${labelClassType[variant][type]}${labelClassName ? ` ${labelClassName}` : ""}`;
+
+    const content =
+        typeof children === "string" || typeof children === "number" ? (
+            <Text className={labelClassNameResolved}>{children}</Text>
+        ) : isValidElement(children) ? (
+            children
+        ) : (
+            <Text className={labelClassNameResolved}>{children}</Text>
+        );
+
     return (
         <Pressable
             accessibilityRole="button"
@@ -78,11 +90,7 @@ export function Button({
             disabled={disabled}
             {...props}
         >
-            <Text
-                className={`${labelClassType[variant][type]}${labelClassName ? ` ${labelClassName}` : ""}`}
-            >
-                {children}
-            </Text>
+            {content}
         </Pressable>
     );
 }

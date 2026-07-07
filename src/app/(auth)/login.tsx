@@ -30,7 +30,7 @@ export default function Login() {
             <KeyboardAvoidingView
                 behavior={Platform.OS === "ios" ? "padding" : "height"}
             >
-                <View className="flex-1 justify-center px-6">
+                <View className="flex-1 justify-center px-5">
                     <View className="items-center">
                         <Image
                             source={require("../../../assets/images/logo.png")}
@@ -40,7 +40,7 @@ export default function Login() {
                     </View>
 
                     <View className="gap-4">
-                        <View className="gap-1.5">
+                        <View className="gap-2">
                             <Text className="text-sm font-medium text-on-primary">
                                 Tên đăng nhập
                             </Text>
@@ -53,7 +53,7 @@ export default function Login() {
                             />
                         </View>
 
-                        <View className="gap-1.5">
+                        <View className="gap-2">
                             <Text className="text-sm font-medium text-on-primary">
                                 Mật khẩu
                             </Text>
@@ -100,12 +100,13 @@ export default function Login() {
                         </Text>
 
                         <Button
+                            type="secondary"
+                            variant="outline"
+                            className="w-full rounded-xl bg-white"
+                            labelClassName="font-semibold text-text-primary"
                             onPress={() => router.push("/register")}
-                            className="w-full items-center justify-center rounded-xl bg-surface-elevated active:opacity-80"
                         >
-                            <Text className="text-base font-semibold text-text-primary">
-                                Tạo tài khoản
-                            </Text>
+                            Tạo tài khoản
                         </Button>
                     </View>
                 </View>
