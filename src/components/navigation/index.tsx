@@ -4,7 +4,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { TAB_CONFIG, type TabRouteName } from "@/constants/tabs";
 
-export function CustomTabBar({
+export function NavigationTabs({
     state,
     descriptors,
     navigation,

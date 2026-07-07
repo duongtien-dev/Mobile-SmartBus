@@ -1,6 +1,6 @@
 import { Tabs } from "expo-router";
 
-import { CustomTabBar } from "@/components/navigation/custom-tab-bar";
+import { NavigationTabs } from "@/components/navigation";
 import { TAB_CONFIG, TAB_ROUTES } from "@/constants/tabs";
 
 export default function TabLayout() {
@@ -9,7 +9,7 @@ export default function TabLayout() {
             screenOptions={{
                 headerShown: false,
             }}
-            tabBar={(props) => <CustomTabBar {...props} />}
+            tabBar={(props) => <NavigationTabs {...props} />}
         >
             {TAB_ROUTES.map((name) => (
                 <Tabs.Screen
