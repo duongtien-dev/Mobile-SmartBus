@@ -13,20 +13,23 @@ function Switch({
                 Platform.select({
                     web: 'focus-visible:border-ring focus-visible:ring-ring/50 peer inline-flex outline-none transition-all focus-visible:ring-[3px] disabled:cursor-not-allowed',
                 }),
-                props.checked ? 'bg-primary' : 'bg-input dark:bg-input/80',
+                props.checked
+                    ? 'bg-[#00a2e8]'
+                    : 'bg-input dark:bg-input/80',
                 props.disabled && 'opacity-50',
                 className
             )}
-            {...props}>
+            {...props}
+        >
             <SwitchPrimitives.Thumb
                 className={cn(
-                    'bg-background size-4 rounded-full transition-transform',
+                    'size-4 rounded-full bg-white transition-transform',
                     Platform.select({
                         web: 'pointer-events-none block ring-0',
                     }),
                     props.checked
-                        ? 'dark:bg-primary-foreground translate-x-3.5'
-                        : 'dark:bg-foreground translate-x-0'
+                        ? 'translate-x-3.5'
+                        : 'translate-x-0 dark:bg-foreground'
                 )}
             />
         </SwitchPrimitives.Root>
