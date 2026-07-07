@@ -38,7 +38,7 @@ export default function Register() {
                     <View className="items-center">
                         <Image
                             source={require("../../../assets/images/logo.png")}
-                            style={{ width: 255, height: 121 }}
+                            style={{ width: 255, height: 290 }}
                             resizeMode="contain"
                         />
                     </View>
