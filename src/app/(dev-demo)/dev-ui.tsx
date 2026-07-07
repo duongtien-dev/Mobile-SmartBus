@@ -4,7 +4,7 @@ import { Button } from "@/components/Button";
 import InputNumber from "@/components/Input/InputNumber";
 import InputText from "@/components/Input/InputText";
 import TextArea from "@/components/Input/TextArea";
-import { Badge } from "@/components/ui";
+import { Badge } from "@/components/ui/Badge";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Switch } from "@/components/ui/switch";
 import { router } from "expo-router";
@@ -56,7 +56,7 @@ export default function DevDemoPage() {
             </View>
 
             <View className="mb-4 gap-3">
-                <Button type="primary" variant="bold" onPress={() => router.push('/dev-demo/page')}>
+                <Button type="primary" variant="bold" onPress={() => router.push('/dev-ui')}>
                     Book a ticket
                 </Button>
                 <Button type="primary" variant="outline">

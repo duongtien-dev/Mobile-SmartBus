@@ -1,7 +1,8 @@
 import { Button } from "@/components/Button";
 import InputText from "@/components/Input/InputText";
+import useAuthStore from "@/store/auth.store";
 import { LinearGradient } from "expo-linear-gradient";
-import { router } from "expo-router";
+import { useRouter } from "expo-router";
 import { Eye, EyeOff } from "lucide-react-native";
 import { useState } from "react";
 import {
@@ -16,6 +17,8 @@ import {
 const GRADIENT_COLORS = ["#004a6e", "#0082ba", "#ffe082"] as const;
 
 export default function Login() {
+    const router = useRouter();
+    const { setIsAuthenticated, setUser } = useAuthStore();
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
@@ -30,7 +33,7 @@ export default function Login() {
             <KeyboardAvoidingView
                 behavior={Platform.OS === "ios" ? "padding" : "height"}
             >
-                <View className="flex-1 justify-center px-6">
+                <View className="flex-1 justify-center px-5">
                     <View className="items-center">
                         <Image
                             source={require("../../../assets/images/logo.png")}
@@ -40,7 +43,7 @@ export default function Login() {
                     </View>
 
                     <View className="gap-4">
-                        <View className="gap-1.5">
+                        <View className="gap-2">
                             <Text className="text-sm font-medium text-on-primary">
                                 Tên đăng nhập
                             </Text>
@@ -53,7 +56,7 @@ export default function Login() {
                             />
                         </View>
 
-                        <View className="gap-1.5">
+                        <View className="gap-2">
                             <Text className="text-sm font-medium text-on-primary">
                                 Mật khẩu
                             </Text>
@@ -81,8 +84,19 @@ export default function Login() {
                             </Text>
                         </Pressable>
 
-                        <Button type="accent" variant="bold"
-                            onPress={() => router.push("/")}
+                        <Button
+                            type="accent"
+                            variant="bold"
+                            onPress={() => {
+                                setIsAuthenticated(true);
+                                setUser({
+                                    name: username || "Người dùng",
+                                    email: username || "user@danabus.vn",
+                                    avatar: "",
+                                    token: "demo-token",
+                                });
+                                router.replace("/(tabs)/index");
+                            }}
                         >
                             Đăng nhập
                         </Button>
@@ -100,12 +114,10 @@ export default function Login() {
                         </Text>
 
                         <Button
+                            className="w-full rounded-xl bg-white text-primary font-bold text-md"
                             onPress={() => router.push("/register")}
-                            className="w-full items-center justify-center rounded-xl bg-surface-elevated active:opacity-80"
                         >
-                            <Text className="text-base font-semibold text-text-primary">
-                                Tạo tài khoản
-                            </Text>
+                            Tạo tài khoản
                         </Button>
                     </View>
                 </View>
