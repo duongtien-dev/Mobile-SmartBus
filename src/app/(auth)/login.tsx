@@ -100,10 +100,7 @@ export default function Login() {
                         </Text>
 
                         <Button
-                            type="secondary"
-                            variant="outline"
-                            className="w-full rounded-xl bg-white"
-                            labelClassName="font-semibold text-text-primary"
+                            className="w-full rounded-xl bg-white text-primary font-bold text-md"
                             onPress={() => router.push("/register")}
                         >
                             Tạo tài khoản
