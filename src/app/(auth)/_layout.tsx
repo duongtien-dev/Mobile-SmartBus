@@ -5,7 +5,7 @@ import { Redirect, Stack } from "expo-router";
 export default function AuthLayout() {
     const { isAuthenticated, isLoading } = useAuthStore();
 
-    if (!isLoading) {
+    if (isLoading) {
         return null;
     }
 

@@ -19,13 +19,13 @@ const baseClass = "group flex-row items-center justify-center rounded-lg";
 const classType = {
     outline: {
         primary:
-            "border border-primary bg-transparent active:bg-primary disabled:border-primary-muted disabled:opacity-70 text-on-primary font-bold text-md",
+            "border border-primary bg-transparent active:bg-primary disabled:border-primary-muted disabled:opacity-70 text-primary font-bold text-md",
         secondary:
-            "border border-border-strong bg-transparent active:bg-text-secondary disabled:opacity-70 text-on-primary font-bold text-md",
+            "border border-border-strong bg-transparent active:bg-text-secondary disabled:opacity-70 text-primary font-bold text-md",
         danger:
-            "border border-alert bg-transparent active:bg-alert disabled:border-alert-muted disabled:opacity-70 text-on-primary font-bold text-md",
+            "border border-alert bg-transparent active:bg-alert disabled:border-alert-muted disabled:opacity-70 text-primary font-bold text-md",
         accent:
-            "border border-accent bg-transparent active:bg-accent disabled:border-accent-muted disabled:opacity-70 text-on-primary font-bold text-md",
+            "border border-accent bg-transparent active:bg-accent disabled:border-accent-muted disabled:opacity-70 text-primary font-bold text-md",
     },
     bold: {
         primary:

@@ -1,7 +1,8 @@
 import { Button } from "@/components/Button";
 import InputText from "@/components/Input/InputText";
+import useAuthStore from "@/store/auth.store";
 import { LinearGradient } from "expo-linear-gradient";
-import { router } from "expo-router";
+import { useRouter } from "expo-router";
 import { Eye, EyeOff } from "lucide-react-native";
 import { useState } from "react";
 import {
@@ -16,6 +17,8 @@ import {
 const GRADIENT_COLORS = ["#004a6e", "#0082ba", "#ffe082"] as const;
 
 export default function Login() {
+    const router = useRouter();
+    const { setIsAuthenticated, setUser } = useAuthStore();
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
@@ -81,8 +84,19 @@ export default function Login() {
                             </Text>
                         </Pressable>
 
-                        <Button type="accent" variant="bold"
-                            onPress={() => router.push("/")}
+                        <Button
+                            type="accent"
+                            variant="bold"
+                            onPress={() => {
+                                setIsAuthenticated(true);
+                                setUser({
+                                    name: username || "Người dùng",
+                                    email: username || "user@danabus.vn",
+                                    avatar: "",
+                                    token: "demo-token",
+                                });
+                                router.replace("/(tabs)/index");
+                            }}
                         >
                             Đăng nhập
                         </Button>
