@@ -1,18 +1,13 @@
 import TabContainer from "@/components/TabContainer";
 import { Image } from "expo-image";
-import { Bell, Settings } from "lucide-react-native";
+import { Settings } from "lucide-react-native";
 import { useMemo, useState } from "react";
-import { Pressable, ScrollView, Text, View } from "react-native";
+import { Pressable, ScrollView, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { INotice, NoticeCard } from "./NoticeCard";
 
-type NoticeItem = {
-    id: string;
-    title: string;
-    time: string;
-    date: string;
-};
 
-const NOTIFICATION_ITEMS: NoticeItem[] = [
+const NOTIFICATION_ITEMS: INotice[] = [
     {
         id: "1",
         title: "Sự kiện: Giờ vàng xe buýt",
@@ -45,7 +40,7 @@ const NOTIFICATION_ITEMS: NoticeItem[] = [
     },
 ];
 
-const NEWS_ITEMS: NoticeItem[] = [
+const NEWS_ITEMS: INotice[] = [
     {
         id: "6",
         title: "Tin tức: Điều chỉnh lộ trình một số tuyến",
@@ -65,30 +60,6 @@ const NEWS_ITEMS: NoticeItem[] = [
         date: "29/10/2025",
     },
 ];
-
-function NoticeRow({ item }: { item: NoticeItem }) {
-    return (
-        <Pressable className="flex-row items-start gap-3 border-b border-border px-4 py-3 active:bg-surface">
-            <View className="pt-0.5">
-                <Bell color="#0f172a" size={18} strokeWidth={1.8} />
-            </View>
-
-            <View className="flex-1 gap-1">
-                <Text className="text-sm font-medium leading-5 text-primary">
-                    {item.title}
-                </Text>
-                <View className="flex-row items-center gap-3">
-                    <Text className="text-[11px] text-disabled">{item.time}</Text>
-                    <Text className="text-[11px] text-disabled">{item.date}</Text>
-                </View>
-            </View>
-
-            <Text className="pt-0.5 text-xs font-medium text-accent">
-                Xem chi tiết
-            </Text>
-        </Pressable>
-    );
-}
 
 const listTabs = [
     {
@@ -154,7 +125,7 @@ export default function NotificationsScreen() {
 
                 <View className="mt-2 bg-surface-elevated">
                     {items.map((item) => (
-                        <NoticeRow key={item.id} item={item} />
+                        <NoticeCard key={item.id} item={item} />
                     ))}
                 </View>
             </ScrollView>
