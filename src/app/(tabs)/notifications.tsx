@@ -1,3 +1,4 @@
+import TabContainer from "@/components/TabContainer";
 import { Image } from "expo-image";
 import { Bell, Settings } from "lucide-react-native";
 import { useMemo, useState } from "react";
@@ -100,6 +101,17 @@ export default function NotificationsScreen() {
         [activeTab],
     );
 
+    const listTabs = [
+        {
+            label: "Thông báo",
+            value: "notifications",
+        },
+        {
+            label: "Tin tức",
+            value: "news",
+        },
+    ];
+
     return (
         <View
             className="flex-1 bg-background"
@@ -128,51 +140,16 @@ export default function NotificationsScreen() {
                         />
                     </View>
 
-                    <View className="flex-row bg-surface-elevated">
-                        <Pressable
-                            className="mr-8 items-center pb-3 active:opacity-80"
-                            onPress={() => setActiveTab("notifications")}
-                        >
-                            <Text
-                                className={`text-sm font-semibold ${
-                                    activeTab === "notifications"
-                                        ? "text-primary"
-                                        : "text-text-secondary"
-                                }`}
-                            >
-                                Thông báo
-                            </Text>
-                            <View
-                                className={`mt-2 h-0.5 w-16 rounded-full ${
-                                    activeTab === "notifications"
-                                        ? "bg-primary"
-                                        : "bg-transparent"
-                                }`}
-                            />
-                        </Pressable>
-
-                        <Pressable
-                            className="items-center pb-3 active:opacity-80"
-                            onPress={() => setActiveTab("news")}
-                        >
-                            <Text
-                                className={`text-sm font-semibold ${
-                                    activeTab === "news"
-                                        ? "text-primary"
-                                        : "text-text-secondary"
-                                }`}
-                            >
-                                Tin tức
-                            </Text>
-                            <View
-                                className={`mt-2 h-0.5 w-12 rounded-full ${
-                                    activeTab === "news"
-                                        ? "bg-primary"
-                                        : "bg-transparent"
-                                }`}
-                            />
-                        </Pressable>
-                    </View>
+                    <TabContainer
+                        tabs={listTabs.map((tab) => ({
+                            key: tab.value,
+                            label: tab.label,
+                        }))}
+                        value={activeTab}
+                        onChange={(value) => setActiveTab(value as NoticeTab)}
+                        variant="underline"
+                        tabListClassName="justify-center gap-10"
+                    />
                 </View>
 
                 <View className="mt-2 bg-surface-elevated">
