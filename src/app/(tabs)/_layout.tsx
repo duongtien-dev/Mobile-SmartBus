@@ -6,9 +6,7 @@ import { TAB_CONFIG, TAB_ROUTES } from "@/constants/tabs";
 export default function TabLayout() {
     return (
         <Tabs
-            screenOptions={{
-                headerShown: false,
-            }}
+            screenOptions={{ headerShown: false }}
             tabBar={(props) => <NavigationTabs {...props} />}
         >
             {TAB_ROUTES.map((name) => (
