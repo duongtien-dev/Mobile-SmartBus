@@ -5,8 +5,6 @@ import { useMemo, useState } from "react";
 import { Pressable, ScrollView, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-type NoticeTab = "notifications" | "news";
-
 type NoticeItem = {
     id: string;
     title: string;
@@ -92,25 +90,27 @@ function NoticeRow({ item }: { item: NoticeItem }) {
     );
 }
 
+const listTabs = [
+    {
+        label: "Thông báo",
+        key: "notifications",
+    },
+    {
+        label: "Tin tức",
+        key: "news",
+    },
+];
+
+
 export default function NotificationsScreen() {
     const insets = useSafeAreaInsets();
-    const [activeTab, setActiveTab] = useState<NoticeTab>("notifications");
+    const [activeTab, setActiveTab] = useState<string>("notifications");
 
     const items = useMemo(
         () => (activeTab === "notifications" ? NOTIFICATION_ITEMS : NEWS_ITEMS),
         [activeTab],
     );
 
-    const listTabs = [
-        {
-            label: "Thông báo",
-            value: "notifications",
-        },
-        {
-            label: "Tin tức",
-            value: "news",
-        },
-    ];
 
     return (
         <View
@@ -142,11 +142,11 @@ export default function NotificationsScreen() {
 
                     <TabContainer
                         tabs={listTabs.map((tab) => ({
-                            key: tab.value,
+                            key: tab.key,
                             label: tab.label,
                         }))}
                         value={activeTab}
-                        onChange={(value) => setActiveTab(value as NoticeTab)}
+                        onChange={(value) => setActiveTab(value)}
                         variant="underline"
                         tabListClassName="justify-center gap-10"
                     />
