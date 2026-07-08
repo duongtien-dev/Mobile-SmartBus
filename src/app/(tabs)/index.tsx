@@ -17,14 +17,11 @@ export default function HomeScreen() {
         <View className="flex-1 bg-background" style={{ paddingTop: insets.top }}>
             <ScrollView
                 className="flex-1"
-                contentContainerClassName="p-5"
+                contentContainerClassName="p-5 flex-col gap-3"
                 keyboardShouldPersistTaps="handled"
                 showsVerticalScrollIndicator={false}
             >
                 <View className="flex-row items-center justify-end gap-2">
-                    {/* <Pressable className="h-9 w-9 items-center justify-center rounded-full bg-red-500 active:opacity-80">
-                        <Star color="#ffffff" size={20} />
-                    </Pressable> */}
                     <Pressable
                         accessibilityRole="button"
                         className="h-9 w-9 items-center justify-center rounded-full active:opacity-80"

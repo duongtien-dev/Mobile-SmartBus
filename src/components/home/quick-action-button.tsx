@@ -1,3 +1,4 @@
+import type { QuickAction } from "@/constants/home";
 import {
     Heart,
     MapPin,
@@ -6,8 +7,6 @@ import {
     type LucideIcon,
 } from "lucide-react-native";
 import { Pressable, Text, View } from "react-native";
-
-import type { QuickAction } from "@/constants/home";
 
 const ICONS: Record<QuickAction["icon"], LucideIcon> = {
     search: Search,
