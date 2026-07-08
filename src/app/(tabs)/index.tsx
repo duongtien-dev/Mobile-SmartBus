@@ -17,7 +17,7 @@ export default function HomeScreen() {
         <View className="flex-1 bg-background" style={{ paddingTop: insets.top }}>
             <ScrollView
                 className="flex-1"
-                contentContainerClassName="p-5"
+                contentContainerClassName="p-5 flex-col gap-3"
                 keyboardShouldPersistTaps="handled"
                 showsVerticalScrollIndicator={false}
             >

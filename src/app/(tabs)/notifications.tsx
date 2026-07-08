@@ -107,7 +107,7 @@ export default function NotificationsScreen() {
         >
             <ScrollView
                 className="flex-1"
-                contentContainerClassName="p-5"
+                contentContainerClassName="p-5 flex-col gap-3"
                 showsVerticalScrollIndicator={false}
             >
                 <View className="flex-row items-center justify-end">
