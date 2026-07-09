@@ -9,11 +9,11 @@ import {
     getNoticeById,
 } from "@/constants/notices";
 
-type NoticeDetailScreenProps = {
+type Props = {
     id: string;
 };
 
-export default function NoticeDetailScreen({ id }: NoticeDetailScreenProps) {
+export default function NoticeDetailScreen({ id }: Props) {
     const insets = useSafeAreaInsets();
     const notice = getNoticeById(id);
 
