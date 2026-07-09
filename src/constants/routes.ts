@@ -19,11 +19,7 @@ export const ROUTES = {
     pages: {
         noticeList: "/notice/list",
         paymentAdd: "/payment/add",
-        noticeDetail: (id: string) =>
-            ({
-                pathname: "/notice/[id]",
-                params: { id },
-            }) as const,
+        noticeDetail: (id: string) => `/notice/${id}`,
     },
     auth: {
         login: "/login",

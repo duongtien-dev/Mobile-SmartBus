@@ -3,7 +3,6 @@ import { Newspaper } from "lucide-react-native";
 import { Pressable, Text, View } from "react-native";
 
 import type { INotice } from "@/constants/notices";
-import { ROUTES } from "@/constants/routes";
 
 type NoticeCardProps = {
     item: INotice;
@@ -19,7 +18,7 @@ export function NoticeCard({ item, index = 0 }: NoticeCardProps) {
             className={`flex-row items-start gap-3 px-4 py-3 active:opacity-80 ${
                 isAlt ? "bg-surface" : "bg-background"
             }`}
-            onPress={() => router.push(ROUTES.pages.noticeDetail(item.id))}
+            onPress={() => router.push(`/notice/${item.id}` as any)}
         >
             <View className="pt-0.5">
                 <Newspaper color="#005f8b" size={18} strokeWidth={1.8} />

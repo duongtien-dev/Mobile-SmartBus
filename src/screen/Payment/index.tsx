@@ -1,5 +1,4 @@
 import { Button } from "@/components/Button";
-import { ROUTES } from "@/constants/routes";
 import { router } from "expo-router";
 import { Bell, Settings } from "lucide-react-native";
 import { Pressable, Text, View } from "react-native";
@@ -39,7 +38,7 @@ export default function PaymentScreen() {
                     type="primary"
                     variant="bold"
                     className="min-w-[180px] rounded-lg px-8"
-                    onPress={() => router.push(ROUTES.pages.paymentAdd)}
+                    onPress={() => router.push('/payment/add')}
                 >
                     Thiết lập ngay
                 </Button>
