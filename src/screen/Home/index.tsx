@@ -96,7 +96,10 @@ export default function HomeScreen() {
                                 key={item.id}
                                 item={item}
                                 onPress={() =>
-                                    router.push(`/notice/${item.id}` as any)
+                                    router.push({
+                                        pathname: "/notice/[id]",
+                                        params: { id: item.id },
+                                    })
                                 }
                             />
                         ))}
