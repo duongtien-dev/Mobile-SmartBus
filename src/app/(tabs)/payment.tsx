@@ -1,5 +1,5 @@
 import PaymentScreen from "@/screen/Payment";
 
-export default function TabsPayment() {
+export default function PaymentTab() {
     return <PaymentScreen />;
 }

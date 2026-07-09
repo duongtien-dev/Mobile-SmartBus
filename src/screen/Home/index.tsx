@@ -78,7 +78,7 @@ export default function HomeScreen() {
                         </Text>
                         <Pressable
                             className="active:opacity-80"
-                            onPress={() => router.push("/notifications/list")}
+                            onPress={() => router.push('/notice/list')}
                         >
                             <Text className="text-sm font-medium text-accent">
                                 Xem tất cả
@@ -92,10 +92,16 @@ export default function HomeScreen() {
                         contentContainerClassName="pr-5"
                     >
                         {NEWS_ITEMS.map((item) => (
-                            <NewsCard key={item.id} item={item} onPress={() => router.push({
-                                pathname: "/notifications/[id]",
-                                params: { id: item.id },
-                            })} />
+                            <NewsCard
+                                key={item.id}
+                                item={item}
+                                onPress={() =>
+                                    router.push({
+                                        pathname: "/notice/[id]",
+                                        params: { id: item.id },
+                                    })
+                                }
+                            />
                         ))}
                     </ScrollView>
                 </View>
