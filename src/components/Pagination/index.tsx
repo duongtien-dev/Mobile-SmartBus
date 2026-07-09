@@ -31,11 +31,11 @@ export function Pagination({ page, totalPages, onPageChange }: PaginationProps) 
     const pages = getPageNumbers(page, totalPages);
 
     return (
-        <View className="flex-row items-center justify-center gap-1 bg-accent px-3 py-2">
+        <View className="w-fit flex-row items-center justify-center gap-1 bg-accent">
             <Pressable
                 accessibilityRole="button"
                 accessibilityLabel="Trang trước"
-                className="h-8 w-8 items-center justify-center active:opacity-80 disabled:opacity-40"
+                className="h-5 w-5 items-center justify-center active:opacity-80 disabled:opacity-40"
                 disabled={page <= 1}
                 onPress={() => onPageChange(page - 1)}
             >
@@ -55,13 +55,13 @@ export function Pagination({ page, totalPages, onPageChange }: PaginationProps) 
                         key={item}
                         accessibilityRole="button"
                         accessibilityLabel={`Trang ${item}`}
-                        className={`h-8 min-w-8 items-center justify-center rounded px-2 active:opacity-80 ${
-                            item === page ? "bg-white" : ""
+                        className={`h-6 w-6 items-center justify-center active:opacity-80 ${
+                            item === page ? "bg-primary" : ""
                         }`}
                         onPress={() => onPageChange(item)}
                     >
                         <Text
-                            className={`text-sm font-semibold ${
+                            className={`text-xs font-semibold ${
                                 item === page ? "text-accent" : "text-white"
                             }`}
                         >
@@ -74,7 +74,7 @@ export function Pagination({ page, totalPages, onPageChange }: PaginationProps) 
             <Pressable
                 accessibilityRole="button"
                 accessibilityLabel="Trang sau"
-                className="h-8 w-8 items-center justify-center active:opacity-80 disabled:opacity-40"
+                className="h-6 w-6 items-center justify-center active:opacity-80 disabled:opacity-40"
                 disabled={page >= totalPages}
                 onPress={() => onPageChange(page + 1)}
             >
