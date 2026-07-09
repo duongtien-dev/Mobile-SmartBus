@@ -1,6 +1,6 @@
-import { Pressable, Text, View } from "react-native";
-
 import type { PaymentMethod } from "@/constants/payment";
+import { Image } from "expo-image";
+import { Pressable, Text, View } from "react-native";
 
 type PaymentMethodRowProps = {
     method: PaymentMethod;
@@ -24,15 +24,9 @@ export function PaymentMethodRow({
             onPress={onPress}
         >
             <View
-                className="h-11 w-11 items-center justify-center rounded-full"
-                style={{ backgroundColor: method.badgeBg }}
+                className="h-11 w-11 items-center justify-center rounded-full bg-surface"
             >
-                <Text
-                    className="text-xs font-bold"
-                    style={{ color: method.badgeText }}
-                >
-                    {method.badgeLabel}
-                </Text>
+                <Image source={require("../../../../assets/images/bank.png")} className="h-6 w-6" />
             </View>
             <Text className="flex-1 text-base font-medium text-text-primary">
                 {method.label}
