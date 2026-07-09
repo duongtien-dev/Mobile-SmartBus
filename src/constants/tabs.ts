@@ -1,8 +1,8 @@
 import {
     Bell,
+    CreditCard,
     Home,
     QrCode,
-    Ticket,
     User,
     type LucideIcon,
 } from "lucide-react-native";
@@ -11,7 +11,7 @@ export type TabRouteName =
     | "index"
     | "notifications"
     | "scan"
-    | "tickets"
+    | "payment"
     | "profile";
 
 export type TabConfig = {
@@ -50,9 +50,9 @@ export const TAB_CONFIG: Record<TabRouteName, TabConfig> = {
         screenIconColor: "#ffffff",
         screenIconBgClass: "bg-accent",
     },
-    tickets: {
-        label: "Vé",
-        icon: Ticket,
+    payment: {
+        label: "Thanh toán",
+        icon: CreditCard,
         activeColor: "#00a2e8",
         inactiveColor: "#94a3b8",
         screenIconColor: "#005f8b",

@@ -1,12 +1,13 @@
 import { Button } from "@/components/Button";
-import { NewsCard } from "@/components/home/news-card";
-import { QuickActionButton } from "@/components/home/quick-action-button";
 import InputText from "@/components/Input/InputText";
 import { NEWS_ITEMS, QUICK_ACTIONS } from "@/constants/home";
+import { router, type Href } from "expo-router";
 import { Settings } from "lucide-react-native";
 import { useState } from "react";
 import { Pressable, ScrollView, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { NewsCard } from "./NewCard";
+import { QuickActionButton } from "./QuickAction";
 
 export default function HomeScreen() {
     const insets = useSafeAreaInsets();
@@ -75,7 +76,10 @@ export default function HomeScreen() {
                         <Text className="text-sm font-bold tracking-wide text-primary">
                             KHÁM PHÁ TIN TỨC
                         </Text>
-                        <Pressable className="active:opacity-80">
+                        <Pressable
+                            className="active:opacity-80"
+                            onPress={() => router.push("/news" as Href)}
+                        >
                             <Text className="text-sm font-medium text-accent">
                                 Xem tất cả
                             </Text>
