@@ -37,7 +37,7 @@ function NewsSection({
     }, [allItems, onPageChange, page]);
 
     return (
-        <View>
+        <View className="flex-col gap-4">
             <Text className="px-4 py-4 text-lg font-bold text-primary">
                 {NOTICE_CATEGORY_LABELS[category]}
             </Text>
@@ -49,11 +49,13 @@ function NewsSection({
             </View>
 
             {onPageChange ? (
-                <Pagination
-                    page={page}
-                    totalPages={totalPages}
-                    onPageChange={onPageChange}
-                />
+                <View className="items-center justify-center">
+                    <Pagination
+                        page={page}
+                        totalPages={totalPages}
+                        onPageChange={onPageChange}
+                    />
+                </View>
             ) : null}
         </View>
     );
