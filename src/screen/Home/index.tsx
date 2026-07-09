@@ -79,7 +79,7 @@ export default function HomeScreen() {
                         </Text>
                         <Pressable
                             className="active:opacity-80"
-                            onPress={() => router.push(ROUTES.pages.news)}
+                            onPress={() => router.push(ROUTES.pages.noticeList)}
                         >
                             <Text className="text-sm font-medium text-accent">
                                 Xem tất cả

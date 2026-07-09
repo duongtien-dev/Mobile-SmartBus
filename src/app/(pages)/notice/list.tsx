@@ -1,5 +1,5 @@
 import NoticeListScreen from "@/screen/Notification/NoticeList";
 
-export default function NewsListPage() {
+export default function NoticeListPage() {
     return <NoticeListScreen />;
 }

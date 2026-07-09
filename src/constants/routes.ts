@@ -17,7 +17,7 @@ export const ROUTES = {
         profile: "/profile",
     },
     pages: {
-        news: "/news",
+        noticeList: "/notice/list",
         paymentAdd: "/payment/add",
         noticeDetail: (id: string) =>
             ({
