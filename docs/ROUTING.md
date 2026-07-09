@@ -58,24 +58,6 @@ src/screen/…       → component màn hình thật
 src/constants/routes.ts → path tập trung, tránh hardcode string
 ```
 
-### 4. Đường dẫn dùng trong code
-
-```ts
-import { ROUTES } from "@/constants/routes";
-import { router } from "expo-router";
-
-// Tab
-router.push(ROUTES.tabs.notifications);
-
-// Push màn con
-router.push(ROUTES.pages.news);
-router.push(ROUTES.pages.noticeDetail("6"));
-router.push(ROUTES.pages.paymentAdd);
-
-// Back
-router.back();
-```
-
 ## Luồng điều hướng mẫu
 
 ```
@@ -111,7 +93,6 @@ Khi Trang chủ `push("/notifications/list")`, Expo **chuyển sang tab Thông b
 | Màn push | `(pages)/foo.tsx` hoặc `(pages)/foo/[id].tsx` | `/foo`, `/foo/123` |
 | Auth | `(auth)/foo.tsx` | `/foo` |
 
-Sau khi thêm, cập nhật `src/constants/routes.ts`.
 
 ## Tham chiếu
 

@@ -4,5 +4,5 @@ import { useLocalSearchParams } from "expo-router";
 export default function NoticeDetailPage() {
     const { id } = useLocalSearchParams<{ id: string }>();
 
-    return <NoticeDetailScreen id={id ?? ""} />;
+    return <NoticeDetailScreen id={id} />;
 }
