@@ -1,4 +1,4 @@
-import { router, type Href } from "expo-router";
+import { router } from "expo-router";
 import { Newspaper } from "lucide-react-native";
 import { Pressable, Text, View } from "react-native";
 
@@ -7,14 +7,9 @@ import type { INotice } from "@/constants/notices";
 type NoticeCardProps = {
     item: INotice;
     index?: number;
-    detailPathname?: "/news/[id]" | "/notifications/[id]";
 };
 
-export function NoticeCard({
-    item,
-    index = 0,
-    detailPathname = "/notifications/[id]",
-}: NoticeCardProps) {
+export function NoticeCard({ item, index = 0 }: NoticeCardProps) {
     const isAlt = index % 2 === 0;
 
     return (
@@ -25,9 +20,9 @@ export function NoticeCard({
             }`}
             onPress={() =>
                 router.push({
-                    pathname: detailPathname,
+                    pathname: "/notifications/[id]",
                     params: { id: item.id },
-                } as Href)
+                })
             }
         >
             <View className="pt-0.5">
@@ -50,4 +45,3 @@ export function NoticeCard({
         </Pressable>
     );
 }
-

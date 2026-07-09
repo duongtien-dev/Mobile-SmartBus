@@ -17,14 +17,12 @@ type NewsSectionProps = {
     category: NoticeCategory;
     page?: number;
     onPageChange?: (page: number) => void;
-    detailPathname: "/news/[id]" | "/notifications/[id]";
 };
 
 function NewsSection({
     category,
     page = 1,
     onPageChange,
-    detailPathname,
 }: NewsSectionProps) {
     const allItems = getNewsByCategory(category);
     const totalPages = Math.max(1, Math.ceil(allItems.length / PAGE_SIZE));
@@ -46,12 +44,7 @@ function NewsSection({
 
             <View className="bg-surface-elevated">
                 {items.map((item, index) => (
-                    <NoticeCard
-                        key={item.id}
-                        item={item}
-                        index={index}
-                        detailPathname={detailPathname}
-                    />
+                    <NoticeCard key={item.id} item={item} index={index} />
                 ))}
             </View>
 
@@ -106,13 +99,9 @@ export default function NewsListScreen() {
                     category="danabus"
                     page={danabusPage}
                     onPageChange={setDanabusPage}
-                    detailPathname="/news/[id]"
                 />
 
-                <NewsSection
-                    category="transport"
-                    detailPathname="/news/[id]"
-                />
+                <NewsSection category="transport" />
             </ScrollView>
         </View>
     );
