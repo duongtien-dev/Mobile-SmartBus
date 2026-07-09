@@ -92,7 +92,10 @@ export default function HomeScreen() {
                         contentContainerClassName="pr-5"
                     >
                         {NEWS_ITEMS.map((item) => (
-                            <NewsCard key={item.id} item={item} />
+                            <NewsCard key={item.id} item={item} onPress={() => router.push({
+                                pathname: "/notifications/[id]",
+                                params: { id: item.id },
+                            })} />
                         ))}
                     </ScrollView>
                 </View>

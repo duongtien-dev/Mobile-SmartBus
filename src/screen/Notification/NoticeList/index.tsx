@@ -13,17 +13,17 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const PAGE_SIZE = 5;
 
-type NewsSectionProps = {
+type NoticeSectionProps = {
     category: NoticeCategory;
     page?: number;
     onPageChange?: (page: number) => void;
 };
 
-function NewsSection({
+function NoticeSection({
     category,
     page = 1,
     onPageChange,
-}: NewsSectionProps) {
+}: NoticeSectionProps) {
     const allItems = getNewsByCategory(category);
     const totalPages = Math.max(1, Math.ceil(allItems.length / PAGE_SIZE));
 
@@ -61,7 +61,7 @@ function NewsSection({
     );
 }
 
-export default function NewsListScreen() {
+export default function NoticeListScreen() {
     const insets = useSafeAreaInsets();
     const [danabusPage, setDanabusPage] = useState(1);
 
@@ -97,13 +97,13 @@ export default function NewsListScreen() {
                 contentContainerClassName="pb-8"
                 showsVerticalScrollIndicator={false}
             >
-                <NewsSection
+                <NoticeSection
                     category="danabus"
                     page={danabusPage}
                     onPageChange={setDanabusPage}
                 />
 
-                <NewsSection category="transport" />
+                <NoticeSection category="transport" />
             </ScrollView>
         </View>
     );
