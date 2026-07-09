@@ -1,5 +1,5 @@
 import AddPaymentMethodScreen from "@/screen/Payment/AddMethod";
 
-export default function TabsPaymentAdd() {
+export default function PaymentAddPage() {
     return <AddPaymentMethodScreen />;
 }

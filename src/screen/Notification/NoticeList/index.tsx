@@ -80,9 +80,6 @@ export default function NoticeListScreen() {
                 </Pressable>
 
                 <View className="flex-row items-center gap-3">
-                    <View className="h-8 w-8 items-center justify-center overflow-hidden rounded-full border border-border bg-surface">
-                        <Text className="text-base">🇻🇳</Text>
-                    </View>
                     <Pressable
                         accessibilityRole="button"
                         className="h-9 w-9 items-center justify-center active:opacity-80"

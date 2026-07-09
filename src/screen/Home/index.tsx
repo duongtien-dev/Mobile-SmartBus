@@ -1,6 +1,7 @@
 import { Button } from "@/components/Button";
 import InputText from "@/components/Input/InputText";
 import { NEWS_ITEMS, QUICK_ACTIONS } from "@/constants/home";
+import { ROUTES } from "@/constants/routes";
 import { router } from "expo-router";
 import { Settings } from "lucide-react-native";
 import { useState } from "react";
@@ -78,7 +79,7 @@ export default function HomeScreen() {
                         </Text>
                         <Pressable
                             className="active:opacity-80"
-                            onPress={() => router.push("/notifications/list")}
+                            onPress={() => router.push(ROUTES.pages.news)}
                         >
                             <Text className="text-sm font-medium text-accent">
                                 Xem tất cả
@@ -92,10 +93,13 @@ export default function HomeScreen() {
                         contentContainerClassName="pr-5"
                     >
                         {NEWS_ITEMS.map((item) => (
-                            <NewsCard key={item.id} item={item} onPress={() => router.push({
-                                pathname: "/notifications/[id]",
-                                params: { id: item.id },
-                            })} />
+                            <NewsCard
+                                key={item.id}
+                                item={item}
+                                onPress={() =>
+                                    router.push(ROUTES.pages.noticeDetail(item.id))
+                                }
+                            />
                         ))}
                     </ScrollView>
                 </View>
