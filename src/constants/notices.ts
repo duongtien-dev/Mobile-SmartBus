@@ -90,6 +90,56 @@ export const NEWS_ITEMS: INotice[] = [
             "DanaBus khai trương thêm 5 điểm bán vé tự động tại các trạm trung chuyển lớn, giúp hành khách mua vé nhanh hơn trong giờ cao điểm.",
     },
     {
+        id: "11",
+        title: "Thông báo tạm dừng hoạt động tuyến xe buýt 05",
+        time: "14:00",
+        date: "06/11/2025",
+        type: "news",
+        category: "danabus",
+        content:
+            "Tuyến xe buýt số 05 điều chỉnh giờ xuất bến trong ngày 09/11/2025 do sự kiện giao thông tại khu vực trung tâm.",
+    },
+    {
+        id: "12",
+        title: "Thông báo tạm dừng hoạt động tuyến xe buýt 06",
+        time: "14:00",
+        date: "06/11/2025",
+        type: "news",
+        category: "danabus",
+        content:
+            "Tuyến xe buýt số 06 tạm dừng một số chuyến trong khung giờ bảo trì định kỳ từ 23:00 đến 04:00.",
+    },
+    {
+        id: "13",
+        title: "Thông báo tạm dừng hoạt động tuyến xe buýt 07",
+        time: "14:00",
+        date: "06/11/2025",
+        type: "news",
+        category: "danabus",
+        content:
+            "Tuyến xe buýt số 07 điều chỉnh lộ trình tạm thời, hành khách vui lòng theo dõi thông báo trên ứng dụng DanaBus.",
+    },
+    {
+        id: "14",
+        title: "Thông báo tạm dừng hoạt động tuyến xe buýt 08",
+        time: "14:00",
+        date: "06/11/2025",
+        type: "news",
+        category: "danabus",
+        content:
+            "Tuyến xe buýt số 08 tạm ngừng phục vụ tại một số trạm để phục vụ công tác nâng cấp nhà chờ.",
+    },
+    {
+        id: "15",
+        title: "Thông báo tạm dừng hoạt động tuyến xe buýt 09",
+        time: "14:00",
+        date: "06/11/2025",
+        type: "news",
+        category: "danabus",
+        content:
+            "Tuyến xe buýt số 09 điều chỉnh điểm đầu cuối tạm thời trong thời gian thi công hạ tầng.",
+    },
+    {
         id: "8",
         title: "Khuyến mãi vé tháng cho sinh viên",
         time: "07:30",
@@ -125,6 +175,10 @@ export const ALL_NOTICES: INotice[] = [...NOTIFICATION_ITEMS, ...NEWS_ITEMS];
 
 export function getNoticeById(id: string): INotice | undefined {
     return ALL_NOTICES.find((item) => item.id === id);
+}
+
+export function getNewsByCategory(category: NoticeCategory): INotice[] {
+    return NEWS_ITEMS.filter((item) => item.category === category);
 }
 
 export function getNoticesByCategory(category: NoticeCategory): INotice[] {
