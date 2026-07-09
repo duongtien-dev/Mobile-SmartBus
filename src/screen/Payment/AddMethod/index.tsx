@@ -1,10 +1,9 @@
+import { PAYMENT_METHODS } from "@/constants/payment";
+import { PayMethodItem } from "@/screen/Payment/PayMethodItem";
 import { router } from "expo-router";
 import { ArrowLeft, Bell, Settings } from "lucide-react-native";
 import { Pressable, ScrollView, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-
-import { PAYMENT_METHODS } from "@/constants/payment";
-import { PaymentMethodRow } from "@/screen/Payment/PaymentMethodRow";
 
 export default function AddPaymentMethodScreen() {
     const insets = useSafeAreaInsets();
@@ -48,7 +47,7 @@ export default function AddPaymentMethodScreen() {
                 showsVerticalScrollIndicator={false}
             >
                 {PAYMENT_METHODS.map((method, index) => (
-                    <PaymentMethodRow
+                    <PayMethodItem
                         key={method.id}
                         method={method}
                         index={index}

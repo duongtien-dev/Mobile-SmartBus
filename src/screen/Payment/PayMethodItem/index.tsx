@@ -1,18 +1,19 @@
 import type { PaymentMethod } from "@/constants/payment";
+import { cn } from "@/lib/utils";
 import { Image } from "expo-image";
 import { Pressable, Text, View } from "react-native";
 
-type PaymentMethodRowProps = {
+type PayMethodItemProps = {
     method: PaymentMethod;
     index: number;
     onPress?: () => void;
 };
 
-export function PaymentMethodRow({
+export function PayMethodItem({
     method,
     index,
     onPress,
-}: PaymentMethodRowProps) {
+}: PayMethodItemProps) {
     const isAlt = index % 2 === 0;
 
     return (
@@ -24,7 +25,7 @@ export function PaymentMethodRow({
             onPress={onPress}
         >
             <View
-                className="h-11 w-11 items-center justify-center rounded-full bg-surface"
+                className={cn("h-11 w-11 items-center justify-center rounded-full", isAlt ? "bg-surface-elevated" : "bg-surface")}
             >
                 <Image source={require("../../../../assets/images/bank.png")} className="h-6 w-6" />
             </View>
