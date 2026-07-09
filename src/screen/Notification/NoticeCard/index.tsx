@@ -1,18 +1,32 @@
-import { Bell } from "lucide-react-native";
+import { router } from "expo-router";
+import { Newspaper } from "lucide-react-native";
 import { Pressable, Text, View } from "react-native";
 
-export interface INotice {
-    id: string;
-    title: string;
-    time: string;
-    date: string;
+import type { INotice } from "@/constants/notices";
+
+type NoticeCardProps = {
+    item: INotice;
+    index?: number;
 };
 
-export function NoticeCard({ item }: { item: INotice }) {
+export function NoticeCard({ item, index = 0 }: NoticeCardProps) {
+    const isAlt = index % 2 === 0;
+
     return (
-        <Pressable className="flex-row items-start gap-3 border-b border-border px-4 py-3 active:bg-surface">
+        <Pressable
+            accessibilityRole="button"
+            className={`flex-row items-start gap-3 px-4 py-3 active:opacity-80 ${
+                isAlt ? "bg-surface" : "bg-background"
+            }`}
+            onPress={() =>
+                router.push({
+                    pathname: "/notifications/[id]",
+                    params: { id: item.id },
+                })
+            }
+        >
             <View className="pt-0.5">
-                <Bell color="#0f172a" size={18} strokeWidth={1.8} />
+                <Newspaper color="#005f8b" size={18} strokeWidth={1.8} />
             </View>
 
             <View className="flex-1 gap-1">
@@ -25,9 +39,10 @@ export function NoticeCard({ item }: { item: INotice }) {
                 </View>
             </View>
 
-            <Text className="pt-0.5 text-xs font-medium text-accent">
+            <Text className="pt-0.5 text-xs font-medium text-accent underline">
                 Xem chi tiết
             </Text>
         </Pressable>
     );
 }
+
