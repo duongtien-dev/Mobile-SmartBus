@@ -95,7 +95,7 @@ export default function Login() {
                                     avatar: "",
                                     token: "demo-token",
                                 });
-                                router.replace("/(tabs)/index");
+                                router.push("/");
                             }}
                         >
                             Đăng nhập
