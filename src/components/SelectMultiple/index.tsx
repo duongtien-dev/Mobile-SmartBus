@@ -1,5 +1,5 @@
 import { Check, ChevronDown } from 'lucide-react-native';
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import { Dimensions, Pressable, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
@@ -35,12 +35,10 @@ const SelectMulti = ({
 
     const currentValues = value ?? internalValue;
 
-    const options = useMemo(() =>
-        (React.Children.toArray(children).filter(React.isValidElement) as React.ReactElement<OptionProps>[])
-            .filter(opt => !opt.props.hidden && opt.props.value),
-        [children]);
+    const options = (React.Children.toArray(children).filter(React.isValidElement) as React.ReactElement<OptionProps>[])
+        .filter(opt => !opt.props.hidden && opt.props.value);
 
-    const handleChange = useCallback((val: string) => {
+    const handleChange = (val: string) => {
         if (disabled) return;
         const newValues = currentValues.includes(val)
             ? currentValues.filter((v) => v !== val)
@@ -48,9 +46,9 @@ const SelectMulti = ({
 
         onChange?.(newValues);
         if (value === undefined) setInternalValue(newValues);
-    }, [currentValues, disabled, onChange, value]);
+    };
 
-    const displayText = useMemo(() => {
+    const getDisplayText = () => {
         const labels = options
             .filter((opt) => currentValues.includes(opt.props.value!))
             .map((opt) => opt.props.children);
@@ -58,7 +56,7 @@ const SelectMulti = ({
         if (!labels.length) return placeholder;
         if (labels.length <= 2) return labels.join(', ');
         return `${labels.slice(0, 2).join(', ')} (+${labels.length - 2} mục)`;
-    }, [options, currentValues, placeholder]);
+    };
 
     return (
         <View className={`relative z-50 ${className}`}>
@@ -77,7 +75,7 @@ const SelectMulti = ({
                 className={`w-full min-h-[44px] flex-row justify-between items-center bg-white border border-gray-300 rounded-md py-1.5 px-3 z-50 ${disabled ? 'opacity-60' : ''}`}
             >
                 <Text className="flex-1 text-[14px] text-gray-800" numberOfLines={1}>
-                    {displayText}
+                    {getDisplayText()}
                 </Text>
                 <ChevronDown size={20} color="#6B7280" style={{ transform: [{ rotate: isOpen ? '180deg' : '0deg' }] }} />
             </TouchableOpacity>
