@@ -4,6 +4,7 @@ import { Button } from "@/components/Button";
 import InputNumber from "@/components/Input/InputNumber";
 import InputText from "@/components/Input/InputText";
 import TextArea from "@/components/Input/TextArea";
+import SelectMultiple from "@/components/SelectMultiple";
 import { Badge } from "@/components/ui/Badge";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Switch } from "@/components/ui/switch";
@@ -16,7 +17,7 @@ export default function DevDemoPage() {
     return (
         <ScrollView
             className="flex-1 bg-background"
-            contentContainerClassName="p-5"
+            contentContainerClassName="p-5 flex-col gap-4"
             keyboardShouldPersistTaps="handled"
             showsVerticalScrollIndicator={false}
         >
@@ -103,6 +104,14 @@ export default function DevDemoPage() {
                     <RadioGroupItem value="3" />
                 </RadioGroup>
             </View>
+
+            <SelectMultiple className="rounded-lg">
+                <SelectMultiple.Option value="1">Việt Nam</SelectMultiple.Option>
+                <SelectMultiple.Option value="2">Lào</SelectMultiple.Option>
+                <SelectMultiple.Option value="3">Trung Quốc</SelectMultiple.Option>
+                <SelectMultiple.Option value="4">Hàn Quốc</SelectMultiple.Option>
+                <SelectMultiple.Option value="5">Nhật Bản</SelectMultiple.Option>
+            </SelectMultiple>
         </ScrollView>
     );
 }

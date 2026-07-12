@@ -72,7 +72,7 @@ const SelectMulti = ({
                 activeOpacity={0.7}
                 disabled={disabled}
                 onPress={() => setIsOpen(!isOpen)}
-                className={`w-full min-h-[44px] flex-row justify-between items-center bg-white border border-gray-300 rounded-md py-1.5 px-3 z-50 ${disabled ? 'opacity-60' : ''}`}
+                className={`w-full min-h-[40px] flex-row justify-between items-center bg-white border border-gray-300 rounded-md py-1.5 px-3 z-50 ${disabled ? 'opacity-60' : ''}`}
             >
                 <Text className="flex-1 text-[14px] text-gray-800" numberOfLines={1}>
                     {getDisplayText()}
