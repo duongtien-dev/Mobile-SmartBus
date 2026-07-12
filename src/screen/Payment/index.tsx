@@ -12,7 +12,7 @@ export default function PaymentScreen() {
             className="flex-1 bg-background"
             style={{ paddingTop: insets.top }}
         >
-            <View className="flex-row items-center justify-end gap-3 px-5 pt-2">
+            <View className="flex-row items-center justify-end gap-3">
                 <Pressable
                     accessibilityRole="button"
                     className="h-9 w-9 items-center justify-center active:opacity-80"
