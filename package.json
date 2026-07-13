@@ -12,6 +12,7 @@
     },
     "dependencies": {
         "@expo/vector-icons": "^15.0.3",
+        "@radix-ui/react-select": "^2.3.3",
         "@radix-ui/react-tabs": "^1.1.17",
         "@react-navigation/bottom-tabs": "^7.4.0",
         "@react-navigation/elements": "^2.6.3",

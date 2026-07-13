@@ -113,5 +113,6 @@ const SelectMulti = ({
     );
 };
 
-SelectMulti.Option = ({ children }: OptionProps) => <>{children}</>;
+const Option = ({ children }: OptionProps) => children
+SelectMulti.Option = Option;
 export default SelectMulti;
