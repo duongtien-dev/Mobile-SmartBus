@@ -22,6 +22,14 @@ export default function DevDemoPage() {
             keyboardShouldPersistTaps="handled"
             showsVerticalScrollIndicator={false}
         >
+            <Select>
+                <Select.Option value="1">Việt Nam</Select.Option>
+                <Select.Option value="2">Lào</Select.Option>
+                <Select.Option value="3">Trung Quốc</Select.Option>
+                <Select.Option value="4">Hàn Quốc</Select.Option>
+                <Select.Option value="5">Nhật Bản</Select.Option>
+            </Select>
+
             <View className="mb-6 rounded-2xl bg-primary px-5 py-4">
                 <Text className="text-lg font-bold text-on-primary">
                     SmartBus
@@ -113,14 +121,6 @@ export default function DevDemoPage() {
                 <SelectMultiple.Option value="4">Hàn Quốc</SelectMultiple.Option>
                 <SelectMultiple.Option value="5">Nhật Bản</SelectMultiple.Option>
             </SelectMultiple>
-
-            <Select>
-                <Select.Option value="1">Việt Nam</Select.Option>
-                <Select.Option value="2">Lào</Select.Option>
-                <Select.Option value="3">Trung Quốc</Select.Option>
-                <Select.Option value="4">Hàn Quốc</Select.Option>
-                <Select.Option value="5">Nhật Bản</Select.Option>
-            </Select>
         </ScrollView>
     );
 }
