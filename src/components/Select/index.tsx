@@ -8,12 +8,18 @@ import {
 import { cn } from '@/lib/utils';
 import * as React from 'react';
 
+type SelectOptionType = {
+    value: string;
+    label: string;
+};
+
 type SelectProps = React.ComponentPropsWithoutRef<typeof BaseSelect> & {
     placeholder?: string;
-    children: React.ReactNode;
+    children?: React.ReactNode; // Đổi thành optional vì bạn có thể chỉ truyền options
     className?: string;
     triggerClassName?: string;
     contentClassName?: string;
+    options?: SelectOptionType[]; // Thêm prop options
 };
 
 type SelectOptionProps = React.ComponentPropsWithoutRef<typeof SelectItem>;
@@ -28,6 +34,7 @@ const Select: SelectComponent = ({
     className,
     triggerClassName,
     contentClassName,
+    options = [], // Gán default bằng mảng rỗng
     ...props
 }) => {
     return (
@@ -39,7 +46,14 @@ const Select: SelectComponent = ({
                 />
             </SelectTrigger>
             <SelectContent className={contentClassName}>
-                {children}
+                {/* Ưu tiên render options nếu có truyền vào, ngược lại fallback về children */}
+                {options.length > 0
+                    ? options.map((option) => (
+                        <Select.Option key={option.value} value={option.value}>
+                            {option.label}
+                        </Select.Option>
+                    ))
+                    : children}
             </SelectContent>
         </BaseSelect>
     );
