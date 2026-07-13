@@ -22,6 +22,7 @@ export default function DevDemoPage() {
         { value: '5', label: 'Nhật Bản' },
     ];
     const [selectedOption, setSelectedOption] = useState<string | undefined>(options[0].value);
+    const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
 
     return (
         <ScrollView
@@ -120,13 +121,12 @@ export default function DevDemoPage() {
                 </RadioGroup>
             </View>
 
-            <SelectMultiple className="rounded-lg">
-                <SelectMultiple.Option value="1">Việt Nam</SelectMultiple.Option>
-                <SelectMultiple.Option value="2">Lào</SelectMultiple.Option>
-                <SelectMultiple.Option value="3">Trung Quốc</SelectMultiple.Option>
-                <SelectMultiple.Option value="4">Hàn Quốc</SelectMultiple.Option>
-                <SelectMultiple.Option value="5">Nhật Bản</SelectMultiple.Option>
-            </SelectMultiple>
+            <SelectMultiple
+                className="rounded-lg"
+                options={options} value={selectedOptions}
+                onChange={(value) => setSelectedOptions(value)}
+            />
+
         </ScrollView>
     );
 }
