@@ -4,6 +4,7 @@ import { Button } from "@/components/Button";
 import InputNumber from "@/components/Input/InputNumber";
 import InputText from "@/components/Input/InputText";
 import TextArea from "@/components/Input/TextArea";
+import ModalBlank from "@/components/ModalBlank";
 import { Select } from "@/components/Select";
 import SelectMultiple from "@/components/SelectMultiple";
 import { Alert } from "@/components/ui/Alert";
@@ -24,6 +25,7 @@ export default function DevDemoPage() {
     ];
     const [selectedOption, setSelectedOption] = useState<string | undefined>(options[0].value);
     const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     return (
         <ScrollView
@@ -37,6 +39,10 @@ export default function DevDemoPage() {
                 value={selectedOption}
                 onValueChange={(value) => setSelectedOption(value)}
             />
+
+            <Button onPress={() => setIsModalOpen(true)}>
+                Open Modal
+            </Button>
 
             <View className="mb-6 rounded-2xl bg-primary px-5 py-4">
                 <Text className="text-lg font-bold text-on-primary">
@@ -127,6 +133,18 @@ export default function DevDemoPage() {
                 options={options} value={selectedOptions}
                 onChange={(value) => setSelectedOptions(value)}
             />
+
+            <ModalBlank className="flex-col gap-4" isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)} closeButton={true}
+            >
+                <Text className="text-lg font-bold">Modal</Text>
+                <Text className="text-sm text-text-secondary">
+                    This is a modal
+                </Text>
+                <Button onPress={() => setIsModalOpen(false)}>
+                    Close Modal
+                </Button>
+            </ModalBlank>
 
         </ScrollView>
     );
