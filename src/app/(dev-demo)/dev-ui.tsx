@@ -14,6 +14,14 @@ import { useState } from "react";
 
 export default function DevDemoPage() {
     const [amount, setAmount] = useState<number | undefined>();
+    const options = [
+        { value: '1', label: 'Việt Nam' },
+        { value: '2', label: 'Lào' },
+        { value: '3', label: 'Trung Quốc' },
+        { value: '4', label: 'Hàn Quốc' },
+        { value: '5', label: 'Nhật Bản' },
+    ];
+    const [selectedOption, setSelectedOption] = useState<string | undefined>(options[0].value);
 
     return (
         <ScrollView
@@ -22,13 +30,11 @@ export default function DevDemoPage() {
             keyboardShouldPersistTaps="handled"
             showsVerticalScrollIndicator={false}
         >
-            <Select>
-                <Select.Option value="1">Việt Nam</Select.Option>
-                <Select.Option value="2">Lào</Select.Option>
-                <Select.Option value="3">Trung Quốc</Select.Option>
-                <Select.Option value="4">Hàn Quốc</Select.Option>
-                <Select.Option value="5">Nhật Bản</Select.Option>
-            </Select>
+            <Select
+                options={options}
+                value={selectedOption}
+                onValueChange={(value) => setSelectedOption(value)}
+            />
 
             <View className="mb-6 rounded-2xl bg-primary px-5 py-4">
                 <Text className="text-lg font-bold text-on-primary">
