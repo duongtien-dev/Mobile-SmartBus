@@ -6,6 +6,7 @@ import InputText from "@/components/Input/InputText";
 import TextArea from "@/components/Input/TextArea";
 import { Select } from "@/components/Select";
 import SelectMultiple from "@/components/SelectMultiple";
+import { Alert } from "@/components/ui/Alert";
 import { Badge } from "@/components/ui/Badge";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Switch } from "@/components/ui/switch";
@@ -14,6 +15,15 @@ import { useState } from "react";
 
 export default function DevDemoPage() {
     const [amount, setAmount] = useState<number | undefined>();
+    const options = [
+        { value: '1', label: 'Việt Nam' },
+        { value: '2', label: 'Lào' },
+        { value: '3', label: 'Trung Quốc' },
+        { value: '4', label: 'Hàn Quốc' },
+        { value: '5', label: 'Nhật Bản' },
+    ];
+    const [selectedOption, setSelectedOption] = useState<string | undefined>(options[0].value);
+    const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
 
     return (
         <ScrollView
@@ -22,13 +32,11 @@ export default function DevDemoPage() {
             keyboardShouldPersistTaps="handled"
             showsVerticalScrollIndicator={false}
         >
-            <Select>
-                <Select.Option value="1">Việt Nam</Select.Option>
-                <Select.Option value="2">Lào</Select.Option>
-                <Select.Option value="3">Trung Quốc</Select.Option>
-                <Select.Option value="4">Hàn Quốc</Select.Option>
-                <Select.Option value="5">Nhật Bản</Select.Option>
-            </Select>
+            <Select
+                options={options}
+                value={selectedOption}
+                onValueChange={(value) => setSelectedOption(value)}
+            />
 
             <View className="mb-6 rounded-2xl bg-primary px-5 py-4">
                 <Text className="text-lg font-bold text-on-primary">
@@ -83,10 +91,10 @@ export default function DevDemoPage() {
                 </Button>
             </View>
 
-            {/* <Alert
-                message="This route has been cancelled. Refund will be processed within 3–5 business days."
+            <Alert
                 title="Trip cancelled"
-            /> */}
+                message="This route has been cancelled. Refund will be processed within 3–5 business days."
+            />
 
             <View className="mt-2 flex-row gap-3">
                 <View className="h-10 flex-1 rounded-lg bg-primary" />
@@ -114,13 +122,12 @@ export default function DevDemoPage() {
                 </RadioGroup>
             </View>
 
-            <SelectMultiple className="rounded-lg">
-                <SelectMultiple.Option value="1">Việt Nam</SelectMultiple.Option>
-                <SelectMultiple.Option value="2">Lào</SelectMultiple.Option>
-                <SelectMultiple.Option value="3">Trung Quốc</SelectMultiple.Option>
-                <SelectMultiple.Option value="4">Hàn Quốc</SelectMultiple.Option>
-                <SelectMultiple.Option value="5">Nhật Bản</SelectMultiple.Option>
-            </SelectMultiple>
+            <SelectMultiple
+                className="rounded-lg"
+                options={options} value={selectedOptions}
+                onChange={(value) => setSelectedOptions(value)}
+            />
+
         </ScrollView>
     );
 }
