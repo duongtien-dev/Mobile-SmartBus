@@ -6,6 +6,7 @@ import InputText from "@/components/Input/InputText";
 import TextArea from "@/components/Input/TextArea";
 import { Select } from "@/components/Select";
 import SelectMultiple from "@/components/SelectMultiple";
+import { Alert } from "@/components/ui/Alert";
 import { Badge } from "@/components/ui/Badge";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Switch } from "@/components/ui/switch";
@@ -90,10 +91,10 @@ export default function DevDemoPage() {
                 </Button>
             </View>
 
-            {/* <Alert
-                message="This route has been cancelled. Refund will be processed within 3–5 business days."
+            <Alert
                 title="Trip cancelled"
-            /> */}
+                message="This route has been cancelled. Refund will be processed within 3–5 business days."
+            />
 
             <View className="mt-2 flex-row gap-3">
                 <View className="h-10 flex-1 rounded-lg bg-primary" />
