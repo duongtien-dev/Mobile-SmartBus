@@ -1,11 +1,10 @@
 import { Button } from "@/components/Button";
+import { PageHeader } from "@/components/PageHeader";
 import { router } from "expo-router";
-import { ArrowLeft, Bell, Settings } from "lucide-react-native";
 import { useState } from "react";
 import {
     KeyboardAvoidingView,
     Platform,
-    Pressable,
     ScrollView,
     Text,
     View,
@@ -41,40 +40,10 @@ export default function CardFormScreen() {
 
     return (
         <View
-            className="flex-1 bg-background flex-col gap-5"
+            className="flex-1 flex-col gap-5 bg-background"
             style={{ paddingTop: insets.top }}
         >
-            <View className="flex-row items-center justify-between px-4 pt-2">
-                <Pressable
-                    accessibilityRole="button"
-                    className="h-10 w-10 items-center justify-center active:opacity-80"
-                    onPress={() => router.back()}
-                >
-                    <ArrowLeft color="#005f8b" size={24} />
-                </Pressable>
-
-                <Text
-                    className="flex-1 px-2 text-center text-base font-bold text-primary"
-                    numberOfLines={1}
-                >
-                    Thêm phương thức thanh toán
-                </Text>
-
-                <View className="flex-row items-center gap-2">
-                    <Pressable
-                        accessibilityRole="button"
-                        className="h-9 w-9 items-center justify-center active:opacity-80"
-                    >
-                        <Bell color="#005f8b" size={22} />
-                    </Pressable>
-                    <Pressable
-                        accessibilityRole="button"
-                        className="h-9 w-9 items-center justify-center active:opacity-80"
-                    >
-                        <Settings color="#005f8b" size={22} />
-                    </Pressable>
-                </View>
-            </View>
+            <PageHeader title="Thêm phương thức thanh toán" />
 
             <KeyboardAvoidingView
                 className="flex-1"
@@ -93,31 +62,44 @@ export default function CardFormScreen() {
                     <View className="gap-4">
                         <InputCardNumber
                             value={formData.cardNumber}
-                            onChangeText={(value) => handleChange("cardNumber", value)}
+                            onChangeText={(value) =>
+                                handleChange("cardNumber", value)
+                            }
                         />
 
                         <View className="flex-row gap-3">
                             <InputTimeExpiry
                                 value={formData.expiry}
-                                onChangeText={(value) => handleChange("expiry", value)}
+                                onChangeText={(value) =>
+                                    handleChange("expiry", value)
+                                }
                             />
                             <InputCSC
                                 value={formData.csc}
-                                onChangeText={(value) => handleChange("csc", value)}
+                                onChangeText={(value) =>
+                                    handleChange("csc", value)
+                                }
                             />
                         </View>
 
                         <InputCardName
                             value={formData.cardName}
-                            onChangeText={(value) => handleChange("cardName", value)}
+                            onChangeText={(value) =>
+                                handleChange("cardName", value)
+                            }
                         />
                         <InputEmail
                             value={formData.email}
-                            onChangeText={(value) => handleChange("email", value)}
+                            onChangeText={(value) =>
+                                handleChange("email", value)
+                            }
                         />
                     </View>
 
-                    <Button type="primary" variant="bold" className="w-full rounded-lg"
+                    <Button
+                        type="primary"
+                        variant="bold"
+                        className="w-full rounded-lg"
                         onPress={() => {
                             // Hook up PaymentService later
                             router.back();

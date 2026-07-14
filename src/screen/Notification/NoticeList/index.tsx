@@ -1,3 +1,4 @@
+import { PageHeader } from "@/components/PageHeader";
 import { Pagination } from "@/components/Pagination";
 import {
     NOTICE_CATEGORY_LABELS,
@@ -5,10 +6,8 @@ import {
     getNewsByCategory,
 } from "@/constants/notices";
 import { NoticeCard } from "@/screen/Notification/NoticeCard";
-import { router } from "expo-router";
-import { ArrowLeft, Settings } from "lucide-react-native";
 import { useMemo, useState } from "react";
-import { Pressable, ScrollView, Text, View } from "react-native";
+import { ScrollView, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const PAGE_SIZE = 5;
@@ -70,24 +69,7 @@ export default function NoticeListScreen() {
             className="flex-1 bg-background"
             style={{ paddingTop: insets.top }}
         >
-            <View className="flex-row items-center justify-between px-4 pt-2">
-                <Pressable
-                    accessibilityRole="button"
-                    className="h-10 w-10 items-center justify-center active:opacity-80"
-                    onPress={() => router.back()}
-                >
-                    <ArrowLeft color="#005f8b" size={24} />
-                </Pressable>
-
-                <View className="flex-row items-center gap-3">
-                    <Pressable
-                        accessibilityRole="button"
-                        className="h-9 w-9 items-center justify-center active:opacity-80"
-                    >
-                        <Settings color="#005f8b" size={24} />
-                    </Pressable>
-                </View>
-            </View>
+            <PageHeader showBell={false} />
 
             <ScrollView
                 className="flex-1"
