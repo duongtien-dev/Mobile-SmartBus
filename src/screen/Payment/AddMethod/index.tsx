@@ -1,6 +1,6 @@
 import { PAYMENT_METHODS } from "@/constants/payment";
 import { PayMethodItem } from "@/screen/Payment/PayMethodItem";
-import { router } from "expo-router";
+import { router, type Href } from "expo-router";
 import { ArrowLeft, Bell, Settings } from "lucide-react-native";
 import { Pressable, ScrollView, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -51,9 +51,7 @@ export default function AddPaymentMethodScreen() {
                         key={method.id}
                         method={method}
                         index={index}
-                        onPress={() => {
-                            // Hook up PaymentService later
-                        }}
+                        onPress={() => router.push("/payment/visa" as Href)}
                     />
                 ))}
             </ScrollView>
