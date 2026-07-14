@@ -57,7 +57,7 @@ export default function CardFormScreen() {
 
     return (
         <View
-            className="flex-1 bg-background"
+            className="flex-1 bg-background flex-col gap-5"
             style={{ paddingTop: insets.top }}
         >
             <View className="flex-row items-center justify-between px-4 pt-2">
@@ -98,11 +98,11 @@ export default function CardFormScreen() {
             >
                 <ScrollView
                     className="flex-1"
-                    contentContainerClassName="px-5 pb-10 pt-6"
+                    contentContainerClassName="flex-col gap-5 px-5"
                     keyboardShouldPersistTaps="handled"
                     showsVerticalScrollIndicator={false}
                 >
-                    <Text className="mb-6 text-center text-base font-bold text-primary">
+                    <Text className="text-center text-base font-bold text-primary">
                         Thẻ tín dụng / Ghi nợ
                     </Text>
 
@@ -168,10 +168,7 @@ export default function CardFormScreen() {
                         </Field>
                     </View>
 
-                    <Button
-                        type="primary"
-                        variant="bold"
-                        className="mt-8 w-full rounded-lg"
+                    <Button type="primary" variant="bold" className="w-full rounded-lg"
                         onPress={() => {
                             // Hook up PaymentService later
                             router.back();
