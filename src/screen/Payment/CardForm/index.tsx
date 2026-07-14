@@ -33,16 +33,32 @@ function Field({ label, required = true, children }: FieldProps) {
     );
 }
 
-const fieldClassName =
-    "w-full rounded-lg border-0 bg-surface px-4 py-3.5 shadow-sm";
+type Form = {
+    cardNumber: string;
+    expiry: string;
+    csc: string;
+    cardName: string;
+    email: string;
+};
 
 export default function CardFormScreen() {
     const insets = useSafeAreaInsets();
-    const [cardNumber, setCardNumber] = useState("");
-    const [expiry, setExpiry] = useState("");
-    const [csc, setCsc] = useState("");
-    const [cardName, setCardName] = useState("");
-    const [email, setEmail] = useState("");
+    // const [cardNumber, setCardNumber] = useState("");
+    // const [expiry, setExpiry] = useState("");
+    // const [csc, setCsc] = useState("");
+    // const [cardName, setCardName] = useState("");
+    // const [email, setEmail] = useState("");
+    const [formData, setFormData] = useState<Form>({
+        cardNumber: "",
+        expiry: "",
+        csc: "",
+        cardName: "",
+        email: "",
+    });
+
+    const handleChange = (key: keyof Form, value: string) => {
+        setFormData((prev) => ({ ...prev, [key]: value }));
+    };
 
     return (
         <View
@@ -98,12 +114,12 @@ export default function CardFormScreen() {
                     <View className="gap-4">
                         <Field label="Số thẻ">
                             <InputText
-                                className={fieldClassName}
+                                className={"w-full rounded-lg border-0 bg-surface px-4 h-12 shadow-sm"}
                                 keyboardType="number-pad"
                                 maxLength={19}
                                 placeholder=""
-                                value={cardNumber}
-                                onChangeText={setCardNumber}
+                                value={formData.cardNumber}
+                                onChangeText={(value) => handleChange("cardNumber", value)}
                             />
                         </Field>
 
@@ -111,25 +127,25 @@ export default function CardFormScreen() {
                             <View className="flex-1">
                                 <Field label="Tháng/Năm hết hạn">
                                     <InputText
-                                        className={fieldClassName}
+                                        className={"w-full rounded-lg border-0 bg-surface px-4 h-12 shadow-sm"}
                                         keyboardType="number-pad"
                                         maxLength={5}
                                         placeholder="MM/YY"
-                                        value={expiry}
-                                        onChangeText={setExpiry}
+                                        value={formData.expiry}
+                                        onChangeText={(value) => handleChange("expiry", value)}
                                     />
                                 </Field>
                             </View>
                             <View className="w-28">
                                 <Field label="CSC">
                                     <InputText
-                                        className={fieldClassName}
+                                        className={"w-full rounded-lg border-0 bg-surface px-4 h-12 shadow-sm"}
                                         keyboardType="number-pad"
                                         maxLength={4}
-                                        placeholder=""
+                                        placeholder=" 07/27"
                                         secureTextEntry
-                                        value={csc}
-                                        onChangeText={setCsc}
+                                        value={formData.csc}
+                                        onChangeText={(value) => handleChange("csc", value)}
                                     />
                                 </Field>
                             </View>
@@ -138,21 +154,21 @@ export default function CardFormScreen() {
                         <Field label="Tên in trên thẻ (không dấu)">
                             <InputText
                                 autoCapitalize="characters"
-                                className={fieldClassName}
+                                className={"w-full rounded-lg border-0 bg-surface px-4 h-12 shadow-sm"}
                                 placeholder=""
-                                value={cardName}
-                                onChangeText={setCardName}
+                                value={formData.cardName}
+                                onChangeText={(value) => handleChange("cardName", value)}
                             />
                         </Field>
 
                         <Field label="Email">
                             <InputText
                                 autoCapitalize="none"
-                                className={fieldClassName}
+                                className={"w-full rounded-lg border-0 bg-surface px-4 h-12 shadow-sm"}
                                 keyboardType="email-address"
                                 placeholder=""
-                                value={email}
-                                onChangeText={setEmail}
+                                value={formData.email}
+                                onChangeText={(value) => handleChange("email", value)}
                             />
                         </Field>
                     </View>
