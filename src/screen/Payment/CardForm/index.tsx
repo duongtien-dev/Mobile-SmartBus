@@ -43,11 +43,6 @@ type Form = {
 
 export default function CardFormScreen() {
     const insets = useSafeAreaInsets();
-    // const [cardNumber, setCardNumber] = useState("");
-    // const [expiry, setExpiry] = useState("");
-    // const [csc, setCsc] = useState("");
-    // const [cardName, setCardName] = useState("");
-    // const [email, setEmail] = useState("");
     const [formData, setFormData] = useState<Form>({
         cardNumber: "",
         expiry: "",
