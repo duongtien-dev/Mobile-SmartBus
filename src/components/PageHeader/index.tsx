@@ -17,8 +17,6 @@ type PageHeaderProps = {
 
 export function PageHeader({
     showBack = true,
-    showBell = true,
-    showSettings = true,
     onBack,
     onBellPress,
     onSettingsPress,
@@ -42,29 +40,22 @@ export function PageHeader({
             )}
 
             <View className="flex-row items-center gap-2">
-                {showBell ? (
-                    <Pressable
-                        accessibilityRole="button"
-                        accessibilityLabel="Thông báo"
-                        className="h-9 w-9 items-center justify-center active:opacity-80"
-                        onPress={onBellPress}
-                    >
-                        <Bell color={ICON_COLOR} size={22} />
-                    </Pressable>
-                ) : null}
-                {showSettings ? (
-                    <Pressable
-                        accessibilityRole="button"
-                        accessibilityLabel="Cài đặt"
-                        className="h-9 w-9 items-center justify-center active:opacity-80"
-                        onPress={onSettingsPress}
-                    >
-                        <Settings color={ICON_COLOR} size={22} />
-                    </Pressable>
-                ) : null}
-                {!showBell && !showSettings ? (
-                    <View className="h-9 w-9" />
-                ) : null}
+                <Pressable
+                    accessibilityRole="button"
+                    accessibilityLabel="Thông báo"
+                    className="h-9 w-9 items-center justify-center active:opacity-80"
+                    onPress={onBellPress}
+                >
+                    <Bell color={ICON_COLOR} size={22} />
+                </Pressable>
+                <Pressable
+                    accessibilityRole="button"
+                    accessibilityLabel="Cài đặt"
+                    className="h-9 w-9 items-center justify-center active:opacity-80"
+                    onPress={onSettingsPress}
+                >
+                    <Settings color={ICON_COLOR} size={22} />
+                </Pressable>
             </View>
         </View>
     );
