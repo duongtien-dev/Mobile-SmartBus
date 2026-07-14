@@ -2,11 +2,9 @@ import React from "react";
 import type { TextInputProps } from "react-native";
 import { TextInput } from "react-native-css/components";
 
-interface TextAreaProps extends TextInputProps {
-    className?: string;
-}
+interface TextAreaProps extends TextInputProps {}
 
-const TextArea: React.FC<TextAreaProps> = ({ className = "", ...props }) => {
+const TextArea: React.FC<TextAreaProps> = ({ className, ...props }) => {
     return (
         <TextInput
             multiline

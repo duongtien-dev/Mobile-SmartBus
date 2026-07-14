@@ -3,12 +3,11 @@ import type { TextInputProps } from "react-native";
 import { TextInput } from "react-native-css/components";
 
 interface InputTextProps extends TextInputProps {
-    className?: string;
     disabled?: boolean;
 }
 
 const InputText: React.FC<InputTextProps> = ({
-    className = "",
+    className,
     disabled = false,
     ...props
 }) => {
