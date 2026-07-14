@@ -9,7 +9,7 @@ interface Props extends ViewProps {
 
 export default function InputCardNumber({ value, onChangeText, className, ...props }: Props) {
     return (
-        <View className={cn("gap-1.5", className)} {...props}>
+        <View className={cn("gap-2", className)} {...props}>
             <Text>Số thẻ <Text className="text-alert">*</Text></Text>
             <InputText
                 className={"w-full rounded-lg border-0 bg-surface px-4 h-12 shadow-sm"}

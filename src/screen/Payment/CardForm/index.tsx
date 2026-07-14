@@ -12,6 +12,9 @@ import {
     View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import InputCardNumber from "./Element/InputCardNumber";
+import InputTimeExpiry from "./Element/InputTimeExpiry";
+import InputCSC from "./Element/InputCSC";
 
 type FieldProps = {
     label: string;
@@ -107,43 +110,20 @@ export default function CardFormScreen() {
                     </Text>
 
                     <View className="gap-4">
-                        <Field label="Số thẻ">
-                            <InputText
-                                className={"w-full rounded-lg border-0 bg-surface px-4 h-12 shadow-sm"}
-                                keyboardType="number-pad"
-                                maxLength={19}
-                                placeholder=""
-                                value={formData.cardNumber}
-                                onChangeText={(value) => handleChange("cardNumber", value)}
-                            />
-                        </Field>
+                        <InputCardNumber
+                            value={formData.cardNumber}
+                            onChangeText={(value) => handleChange("cardNumber", value)}
+                        />
 
                         <View className="flex-row gap-3">
-                            <View className="flex-1">
-                                <Field label="Tháng/Năm hết hạn">
-                                    <InputText
-                                        className={"w-full rounded-lg border-0 bg-surface px-4 h-12 shadow-sm"}
-                                        keyboardType="number-pad"
-                                        maxLength={5}
-                                        placeholder="MM/YY"
-                                        value={formData.expiry}
-                                        onChangeText={(value) => handleChange("expiry", value)}
-                                    />
-                                </Field>
-                            </View>
-                            <View className="w-28">
-                                <Field label="CSC">
-                                    <InputText
-                                        className={"w-full rounded-lg border-0 bg-surface px-4 h-12 shadow-sm"}
-                                        keyboardType="number-pad"
-                                        maxLength={4}
-                                        placeholder=" 07/27"
-                                        secureTextEntry
-                                        value={formData.csc}
-                                        onChangeText={(value) => handleChange("csc", value)}
-                                    />
-                                </Field>
-                            </View>
+                            <InputTimeExpiry
+                                value={formData.expiry}
+                                onChangeText={(value) => handleChange("expiry", value)}
+                            />
+                            <InputCSC
+                                value={formData.csc}
+                                onChangeText={(value) => handleChange("csc", value)}
+                            />
                         </View>
 
                         <Field label="Tên in trên thẻ (không dấu)">
