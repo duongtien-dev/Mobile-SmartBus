@@ -69,7 +69,7 @@ export default function NoticeListScreen() {
             className="flex-1 bg-background"
             style={{ paddingTop: insets.top }}
         >
-            <PageHeader showBell={false} />
+            <PageHeader />
 
             <ScrollView
                 className="flex-1"

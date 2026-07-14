@@ -43,7 +43,7 @@ export default function CardFormScreen() {
             className="flex-1 flex-col gap-5 bg-background"
             style={{ paddingTop: insets.top }}
         >
-            <PageHeader title="Thêm phương thức thanh toán" />
+            <PageHeader />
 
             <KeyboardAvoidingView
                 className="flex-1"
