@@ -12,9 +12,10 @@ import {
     View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import InputCSC from "./Element/InputCSC";
+import InputCardName from "./Element/InputCardName";
 import InputCardNumber from "./Element/InputCardNumber";
 import InputTimeExpiry from "./Element/InputTimeExpiry";
-import InputCSC from "./Element/InputCSC";
 
 type FieldProps = {
     label: string;
@@ -126,15 +127,10 @@ export default function CardFormScreen() {
                             />
                         </View>
 
-                        <Field label="Tên in trên thẻ (không dấu)">
-                            <InputText
-                                autoCapitalize="characters"
-                                className={"w-full rounded-lg border-0 bg-surface px-4 h-12 shadow-sm"}
-                                placeholder=""
-                                value={formData.cardName}
-                                onChangeText={(value) => handleChange("cardName", value)}
-                            />
-                        </Field>
+                        <InputCardName
+                            value={formData.cardName}
+                            onChangeText={(value) => handleChange("cardName", value)}
+                        />
 
                         <Field label="Email">
                             <InputText
