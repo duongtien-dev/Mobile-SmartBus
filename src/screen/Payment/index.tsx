@@ -1,7 +1,7 @@
 import { Button } from "@/components/Button";
+import { PageHeader } from "@/components/PageHeader";
 import { router } from "expo-router";
-import { Bell, Settings } from "lucide-react-native";
-import { Pressable, Text, View } from "react-native";
+import { Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function PaymentScreen() {
@@ -12,20 +12,7 @@ export default function PaymentScreen() {
             className="flex-1 bg-background"
             style={{ paddingTop: insets.top }}
         >
-            <View className="flex-row items-center justify-end gap-3">
-                <Pressable
-                    accessibilityRole="button"
-                    className="h-9 w-9 items-center justify-center active:opacity-80"
-                >
-                    <Bell color="#005f8b" size={24} />
-                </Pressable>
-                <Pressable
-                    accessibilityRole="button"
-                    className="h-9 w-9 items-center justify-center active:opacity-80"
-                >
-                    <Settings color="#005f8b" size={24} />
-                </Pressable>
-            </View>
+            <PageHeader showBack={false} />
 
             <View className="mt-4 items-center bg-surface px-4 py-4">
                 <Text className="text-center text-base font-bold text-primary">
@@ -38,7 +25,7 @@ export default function PaymentScreen() {
                     type="primary"
                     variant="bold"
                     className="min-w-[180px] rounded-lg px-8"
-                    onPress={() => router.push('/payment/add')}
+                    onPress={() => router.push("/payment/add")}
                 >
                     Thiết lập ngay
                 </Button>

@@ -24,7 +24,8 @@ src/app/
     ├── notice/
     │   └── [id].tsx         → /notice/:id    (Chi tiết thông báo/tin)
     └── payment/
-        └── add.tsx          → /payment/add   (Thêm phương thức thanh toán)
+        ├── add.tsx          → /payment/add   (Chọn phương thức)
+        └── card.tsx         → /payment/card  (Form thẻ tín dụng / ghi nợ)
 ```
 
 Route group `(tabs)`, `(pages)`, `(auth)` **không xuất hiện trong URL** — chỉ để tổ chức code.

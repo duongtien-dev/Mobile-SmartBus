@@ -1,8 +1,8 @@
+import { PageHeader } from "@/components/PageHeader";
 import { PAYMENT_METHODS } from "@/constants/payment";
 import { PayMethodItem } from "@/screen/Payment/PayMethodItem";
-import { router } from "expo-router";
-import { ArrowLeft, Bell, Settings } from "lucide-react-native";
-import { Pressable, ScrollView, Text, View } from "react-native";
+import { router, type Href } from "expo-router";
+import { ScrollView, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function AddPaymentMethodScreen() {
@@ -13,30 +13,7 @@ export default function AddPaymentMethodScreen() {
             className="flex-1 bg-background"
             style={{ paddingTop: insets.top }}
         >
-            <View className="flex-row items-center justify-between px-4 pt-2">
-                <Pressable
-                    accessibilityRole="button"
-                    className="h-10 w-10 items-center justify-center active:opacity-80"
-                    onPress={() => router.back()}
-                >
-                    <ArrowLeft color="#005f8b" size={24} />
-                </Pressable>
-
-                <View className="flex-row items-center gap-3">
-                    <Pressable
-                        accessibilityRole="button"
-                        className="h-9 w-9 items-center justify-center active:opacity-80"
-                    >
-                        <Bell color="#005f8b" size={24} />
-                    </Pressable>
-                    <Pressable
-                        accessibilityRole="button"
-                        className="h-9 w-9 items-center justify-center active:opacity-80"
-                    >
-                        <Settings color="#005f8b" size={24} />
-                    </Pressable>
-                </View>
-            </View>
+            <PageHeader />
 
             <Text className="mt-4 px-5 text-center text-lg font-bold text-primary">
                 Thêm phương thức thanh toán
@@ -51,9 +28,7 @@ export default function AddPaymentMethodScreen() {
                         key={method.id}
                         method={method}
                         index={index}
-                        onPress={() => {
-                            // Hook up PaymentService later
-                        }}
+                        onPress={() => router.push("/payment/visa" as Href)}
                     />
                 ))}
             </ScrollView>

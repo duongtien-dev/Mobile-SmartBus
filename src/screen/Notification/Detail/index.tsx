@@ -1,9 +1,9 @@
 import { Image } from "expo-image";
 import { router } from "expo-router";
-import { ArrowLeft, Bell, Settings } from "lucide-react-native";
 import { Pressable, ScrollView, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { PageHeader } from "@/components/PageHeader";
 import {
     NOTICE_TYPE_LABELS,
     getNoticeById,
@@ -43,30 +43,7 @@ export default function NoticeDetailScreen({ id }: Props) {
             className="flex-1 bg-background"
             style={{ paddingTop: insets.top }}
         >
-            <View className="flex-row items-center justify-between px-4 pt-2">
-                <Pressable
-                    accessibilityRole="button"
-                    className="h-10 w-10 items-center justify-center active:opacity-80"
-                    onPress={() => router.back()}
-                >
-                    <ArrowLeft color="#005f8b" size={24} />
-                </Pressable>
-
-                <View className="flex-row items-center gap-3">
-                    <Pressable
-                        accessibilityRole="button"
-                        className="h-9 w-9 items-center justify-center active:opacity-80"
-                    >
-                        <Bell color="#005f8b" size={24} />
-                    </Pressable>
-                    <Pressable
-                        accessibilityRole="button"
-                        className="h-9 w-9 items-center justify-center active:opacity-80"
-                    >
-                        <Settings color="#005f8b" size={24} />
-                    </Pressable>
-                </View>
-            </View>
+            <PageHeader />
 
             <ScrollView
                 className="flex-1"
