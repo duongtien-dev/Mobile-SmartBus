@@ -7,13 +7,14 @@ interface Props extends ViewProps {
     onChangeText: (value: string) => void;
 }
 
-export default function InputCardName({ value, onChangeText, className, ...props }: Props) {
+export default function InputEmail({ value, onChangeText, className, ...props }: Props) {
     return (
         <View className={cn("gap-2", className)} {...props}>
-            <Text>Tên in trên thẻ (không dấu) <Text className="text-alert">*</Text></Text>
+            <Text>Email <Text className="text-alert">*</Text></Text>
             <InputText
-                autoCapitalize="characters"
+                autoCapitalize="none"
                 className={"w-full rounded-lg border-0 bg-surface px-4 h-12 shadow-sm"}
+                keyboardType="email-address"
                 placeholder=""
                 value={value}
                 onChangeText={onChangeText}

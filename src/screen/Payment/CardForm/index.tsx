@@ -1,8 +1,7 @@
 import { Button } from "@/components/Button";
-import InputText from "@/components/Input/InputText";
 import { router } from "expo-router";
 import { ArrowLeft, Bell, Settings } from "lucide-react-native";
-import { useState, type ReactNode } from "react";
+import { useState } from "react";
 import {
     KeyboardAvoidingView,
     Platform,
@@ -15,27 +14,8 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import InputCSC from "./Element/InputCSC";
 import InputCardName from "./Element/InputCardName";
 import InputCardNumber from "./Element/InputCardNumber";
+import InputEmail from "./Element/InputEmail";
 import InputTimeExpiry from "./Element/InputTimeExpiry";
-
-type FieldProps = {
-    label: string;
-    required?: boolean;
-    children: ReactNode;
-};
-
-function Field({ label, required = true, children }: FieldProps) {
-    return (
-        <View className="gap-1.5">
-            <Text className="text-sm font-semibold text-primary">
-                {label}
-                {required ? (
-                    <Text className="text-alert"> *</Text>
-                ) : null}
-            </Text>
-            {children}
-        </View>
-    );
-}
 
 type Form = {
     cardNumber: string;
@@ -131,17 +111,10 @@ export default function CardFormScreen() {
                             value={formData.cardName}
                             onChangeText={(value) => handleChange("cardName", value)}
                         />
-
-                        <Field label="Email">
-                            <InputText
-                                autoCapitalize="none"
-                                className={"w-full rounded-lg border-0 bg-surface px-4 h-12 shadow-sm"}
-                                keyboardType="email-address"
-                                placeholder=""
-                                value={formData.email}
-                                onChangeText={(value) => handleChange("email", value)}
-                            />
-                        </Field>
+                        <InputEmail
+                            value={formData.email}
+                            onChangeText={(value) => handleChange("email", value)}
+                        />
                     </View>
 
                     <Button type="primary" variant="bold" className="w-full rounded-lg"
