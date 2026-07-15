@@ -14,8 +14,6 @@ import {
     View,
 } from "react-native";
 
-const GRADIENT_COLORS = ["#004a6e", "#0082ba", "#ffe082"] as const;
-
 export default function Login() {
     const router = useRouter();
     const { setIsAuthenticated, setUser } = useAuthStore();
@@ -25,7 +23,7 @@ export default function Login() {
 
     return (
         <LinearGradient
-            colors={GRADIENT_COLORS}
+            colors={["#004a6e", "#0082ba", "#ffe082"]}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
             className="flex-1"
