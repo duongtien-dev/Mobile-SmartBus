@@ -10,7 +10,7 @@ export default function HelpScreen() {
 
     return (
         <View className="flex-1 bg-background">
-            <PageHeader title="Trợ giúp" isIconBack />
+            <PageHeader title="Trợ giúp" isIconBack isIconRight />
 
             <ScrollView
                 className="flex-1"
