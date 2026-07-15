@@ -1,51 +1,65 @@
 import { cn } from "@/lib/utils";
 import { router } from "expo-router";
-import { ArrowLeft, Bell, Settings } from "lucide-react-native";
-import { Pressable, View, ViewProps } from "react-native";
+import { ArrowLeft } from "lucide-react-native";
+import { Pressable, Text, View, type ViewProps } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-interface Props extends ViewProps {
+type PageHeaderProps = ViewProps & {
+    title: string;
     showBack?: boolean;
+    onBack?: () => void;
+    rightAction?: React.ReactNode;
 };
 
-export function PageHeader({ showBack = true,className, ...props }: Props) {
+export function PageHeader({
+    title,
+    showBack = true,
+    onBack,
+    rightAction,
+    className,
+    style,
+    ...props
+}: PageHeaderProps) {
     const insets = useSafeAreaInsets();
+
     return (
         <View
-            className={cn("flex-row items-center justify-between px-5", className)}
-            style={{ paddingTop: insets.top }}
+            className={cn("flex-row items-center px-5", className)}
+            style={[
+                {
+                    paddingTop: insets.top + 12,
+                    paddingBottom: 12,
+                    height: insets.top + 12 + 48,
+                },
+                style,
+            ]}
             {...props}
         >
-            {showBack ? (
-                <Pressable
-                    accessibilityRole="button"
-                    accessibilityLabel="Quay lại"
-                    className="h-10 w-10 items-center justify-center active:opacity-80"
-                    onPress={() => router.back()}
-                >
-                    <ArrowLeft color={"#005f8b"} size={24} />
-                </Pressable>
-            ) : (
-                <View className="h-10 w-10" />
-            )}
+            <View className="w-10 flex-row items-center justify-start">
+                {showBack ? (
+                    <Pressable
+                        accessibilityRole="button"
+                        accessibilityLabel="Quay lại"
+                        className="h-10 w-10 items-center justify-center active:opacity-80"
+                        onPress={onBack ?? (() => router.back())}
+                        hitSlop={8}
+                    >
+                        <ArrowLeft color="#005f8b" size={24} />
+                    </Pressable>
+                ) : null}
+            </View>
 
-            <View className="flex-row items-center gap-2">
-                <Pressable
-                    accessibilityRole="button"
-                    accessibilityLabel="Thông báo"
-                    className="h-9 w-9 items-center justify-center active:opacity-80"
-                    onPress={() => router.push("/notifications")}
+            <View className="flex-1 items-center justify-center px-2">
+                <Text
+                    className="text-xl font-bold text-primary"
+                    numberOfLines={1}
                 >
-                    <Bell color={"#005f8b"} size={22} />
-                </Pressable>
-                <Pressable
-                    accessibilityRole="button"
-                    accessibilityLabel="Cài đặt"
-                    className="h-9 w-9 items-center justify-center active:opacity-80"
-                    onPress={() => router.push("/profile")}
-                >
-                    <Settings color={"#005f8b"} size={22} />
-                </Pressable>
+                    {title}
+                </Text>
+            </View>
+
+            <View className="w-10 flex-row items-center justify-end">
+                {rightAction}
             </View>
         </View>
     );
