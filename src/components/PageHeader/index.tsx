@@ -8,77 +8,85 @@ type PageHeaderProps = ViewProps & {
     title?: string;
     isIconBack?: boolean;
     isIconRight?: boolean;
-    onPressGlobal?: () => void;
-    onPressSettings?: () => void;
 };
 
 export function PageHeader({
     title,
     isIconBack = false,
+    isIconRight = false,
     className,
     style,
-    isIconRight = false,
-    onPressGlobal,
-    onPressSettings,
     ...props
 }: PageHeaderProps) {
     const insets = useSafeAreaInsets();
 
     return (
         <View
-            className={cn("flex-row items-center px-5", className)}
+            className={cn("relative px-5", className)}
             style={[
                 {
                     paddingTop: insets.top + 12,
                     paddingBottom: 12,
-                    height: insets.top + 12 + 48,
+                    minHeight: insets.top + 12 + 48,
                 },
                 style,
             ]}
             {...props}
         >
-            <View className={cn("flex-row items-center justify-start")}>
-                {isIconBack ? (
-                    <Pressable
-                        accessibilityRole="button"
-                        accessibilityLabel="Quay lại"
-                        className="h-10 w-10 items-center justify-center active:opacity-80"
-                        onPress={() => router.back()}
-                        hitSlop={8}
+            {/* Title always centered to full header width */}
+            {title ? (
+                <View
+                    pointerEvents="none"
+                    className="absolute inset-x-5 items-center justify-center"
+                    style={{
+                        top: insets.top + 12,
+                        bottom: 12,
+                    }}
+                >
+                    <Text
+                        className="px-12 text-center text-xl font-bold text-primary"
+                        numberOfLines={1}
                     >
-                        <ArrowLeft color="#005f8b" size={24} />
-                    </Pressable>
-                ) : null}
-            </View>
+                        {title}
+                    </Text>
+                </View>
+            ) : null}
 
-            <View className="flex-1 items-center justify-center px-2">
-                <Text className="text-xl font-bold text-primary" numberOfLines={1}>
-                    {title}
-                </Text>
-            </View>
-
-            <View className={cn("flex-row items-center justify-end gap-1")}>
-                {isIconRight ? (
-                    <>
+            <View className="z-10 h-10 flex-row items-center justify-between">
+                <View className="min-w-10 flex-row items-center justify-start">
+                    {isIconBack ? (
                         <Pressable
                             accessibilityRole="button"
-                            accessibilityLabel="Ngôn ngữ"
-                            className="h-9 w-9 items-center justify-center rounded-full active:opacity-80"
-                            onPress={onPressGlobal}
+                            accessibilityLabel="Quay lại"
+                            className="h-10 w-10 items-center justify-center active:opacity-80"
+                            onPress={() => router.back()}
+                            hitSlop={8}
                         >
-                            <Globe color="#00a2e8" size={22} />
+                            <ArrowLeft color="#005f8b" size={24} />
                         </Pressable>
+                    ) : null}
+                </View>
 
-                        <Pressable
-                            accessibilityRole="button"
-                            accessibilityLabel="Cài đặt"
-                            className="h-9 w-9 items-center justify-center rounded-full active:opacity-80"
-                            onPress={onPressSettings}
-                        >
-                            <SettingsIcon color="#00a2e8" size={24} />
-                        </Pressable>
-                    </>
-                ) : null}
+                <View className="min-w-10 flex-row items-center justify-end gap-1">
+                    {isIconRight ? (
+                        <>
+                            <Pressable
+                                accessibilityRole="button"
+                                accessibilityLabel="Ngôn ngữ"
+                                className="h-9 w-9 items-center justify-center rounded-full active:opacity-80"
+                            >
+                                <Globe color="#00a2e8" size={22} />
+                            </Pressable>
+                            <Pressable
+                                accessibilityRole="button"
+                                accessibilityLabel="Cài đặt"
+                                className="h-9 w-9 items-center justify-center rounded-full active:opacity-80"
+                            >
+                                <SettingsIcon color="#00a2e8" size={24} />
+                            </Pressable>
+                        </>
+                    ) : null}
+                </View>
             </View>
         </View>
     );

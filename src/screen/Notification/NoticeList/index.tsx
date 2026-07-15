@@ -64,7 +64,7 @@ export default function NoticeListScreen() {
 
     return (
         <View className="flex-1 bg-background">
-            <PageHeader title="Tin tức" />
+            <PageHeader title="Tin tức" isIconBack={true} />
 
             <ScrollView
                 className="flex-1"
