@@ -8,7 +8,6 @@ import {
 import { NoticeCard } from "@/screen/Notification/NoticeCard";
 import { useMemo, useState } from "react";
 import { ScrollView, Text, View } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const PAGE_SIZE = 5;
 
@@ -61,15 +60,11 @@ function NoticeSection({
 }
 
 export default function NoticeListScreen() {
-    const insets = useSafeAreaInsets();
     const [danabusPage, setDanabusPage] = useState(1);
 
     return (
-        <View
-            className="flex-1 bg-background"
-            style={{ paddingTop: insets.top }}
-        >
-            <PageHeader />
+        <View className="flex-1 bg-background">
+            <PageHeader title="Tin tức" isIconBack={true} />
 
             <ScrollView
                 className="flex-1"

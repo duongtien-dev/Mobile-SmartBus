@@ -1,36 +1,26 @@
 import { Button } from "@/components/Button";
 import InputText from "@/components/Input/InputText";
+import { PageHeader } from "@/components/PageHeader";
 import { NEWS_ITEMS, QUICK_ACTIONS } from "@/constants/home";
 import { router } from "expo-router";
-import { Settings } from "lucide-react-native";
 import { useState } from "react";
 import { Pressable, ScrollView, Text, View } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { NewsCard } from "./NewCard";
 import { QuickActionButton } from "./QuickAction";
 
 export default function HomeScreen() {
-    const insets = useSafeAreaInsets();
     const [origin, setOrigin] = useState("");
     const [destination, setDestination] = useState("");
 
     return (
-        <View className="flex-1 bg-background" style={{ paddingTop: insets.top }}>
+        <View className="flex-1 bg-background">
+            <PageHeader isIconRight={true} />
             <ScrollView
                 className="flex-1"
-                contentContainerClassName="p-5 flex-col gap-3"
+                contentContainerClassName="px-5 flex-col gap-3"
                 keyboardShouldPersistTaps="handled"
                 showsVerticalScrollIndicator={false}
             >
-                <View className="flex-row items-center justify-end gap-2">
-                    <Pressable
-                        accessibilityRole="button"
-                        className="h-9 w-9 items-center justify-center rounded-full active:opacity-80"
-                    >
-                        <Settings color="#00a2e8" size={30} />
-                    </Pressable>
-                </View>
-
                 <View className="gap-4">
                     <View className="gap-1.5">
                         <Text className="text-sm font-semibold text-text-primary">

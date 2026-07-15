@@ -39,11 +39,8 @@ export default function NoticeDetailScreen({ id }: Props) {
     }
 
     return (
-        <View
-            className="flex-1 bg-background"
-            style={{ paddingTop: insets.top }}
-        >
-            <PageHeader />
+        <View className="flex-1 bg-background">
+            <PageHeader title="Chi tiết" isIconRight={true} />
 
             <ScrollView
                 className="flex-1"

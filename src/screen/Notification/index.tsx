@@ -1,13 +1,12 @@
+import { PageHeader } from "@/components/PageHeader";
 import TabContainer from "@/components/TabContainer";
 import {
     NEWS_ITEMS,
     NOTIFICATION_ITEMS,
 } from "@/constants/notices";
 import { Image } from "expo-image";
-import { Settings } from "lucide-react-native";
 import { useMemo, useState } from "react";
-import { Pressable, ScrollView, View } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { ScrollView, View } from "react-native";
 import { NoticeCard } from "./NoticeCard";
 
 const listTabs = [
@@ -22,7 +21,6 @@ const listTabs = [
 ];
 
 export default function NotificationsScreen() {
-    const insets = useSafeAreaInsets();
     const [activeTab, setActiveTab] = useState<string>("notifications");
 
     const items = useMemo(
@@ -31,24 +29,14 @@ export default function NotificationsScreen() {
     );
 
     return (
-        <View
-            className="flex-1 bg-background"
-            style={{ paddingTop: insets.top }}
-        >
+        <View className="flex-1 bg-background">
+            <PageHeader title="Thông báo" showBack={false} />
+
             <ScrollView
                 className="flex-1"
-                contentContainerClassName="p-5 flex-col gap-3"
+                contentContainerClassName="px-5 flex-col gap-3"
                 showsVerticalScrollIndicator={false}
             >
-                <View className="flex-row items-center justify-end">
-                    <Pressable
-                        accessibilityRole="button"
-                        className="h-9 w-9 items-center justify-center rounded-full active:opacity-80"
-                    >
-                        <Settings color="#00a2e8" size={30} />
-                    </Pressable>
-                </View>
-
                 <View className="flex-col gap-5 overflow-hidden bg-surface-elevated">
                     <View className="relative h-48 overflow-hidden rounded-lg">
                         <Image
@@ -70,7 +58,7 @@ export default function NotificationsScreen() {
                     />
                 </View>
 
-                <View className="mt-2 bg-surface-elevated">
+                <View className="bg-surface-elevated">
                     {items.map((item, index) => (
                         <NoticeCard key={item.id} item={item} index={index} />
                     ))}

@@ -2,17 +2,12 @@ import { Button } from "@/components/Button";
 import { PageHeader } from "@/components/PageHeader";
 import { router } from "expo-router";
 import { Text, View } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function PaymentScreen() {
-    const insets = useSafeAreaInsets();
 
     return (
-        <View
-            className="flex-1 bg-background"
-            style={{ paddingTop: insets.top }}
-        >
-            <PageHeader showBack={false} />
+        <View className="flex-1 bg-background">
+            <PageHeader title="Thanh toán" isIconRight={false} />
 
             <View className="mt-4 items-center bg-surface px-4 py-4">
                 <Text className="text-center text-base font-bold text-primary">

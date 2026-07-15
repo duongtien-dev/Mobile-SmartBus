@@ -125,6 +125,7 @@ export const PROFILE_MENU_SECTIONS: ProfileMenuSection[] = [
                 label: "Trung tâm trợ giúp",
                 description: "Câu hỏi thường gặp, liên hệ",
                 icon: HelpCircle,
+                href: "/help",
             },
             {
                 id: "terms",

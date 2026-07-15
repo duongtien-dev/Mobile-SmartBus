@@ -9,7 +9,6 @@ import {
     Text,
     View,
 } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import InputCSC from "./Element/InputCSC";
 import InputCardName from "./Element/InputCardName";
 import InputCardNumber from "./Element/InputCardNumber";
@@ -25,7 +24,6 @@ type Form = {
 };
 
 export default function CardFormScreen() {
-    const insets = useSafeAreaInsets();
     const [formData, setFormData] = useState<Form>({
         cardNumber: "",
         expiry: "",
@@ -39,11 +37,8 @@ export default function CardFormScreen() {
     };
 
     return (
-        <View
-            className="flex-1 flex-col gap-5 bg-background"
-            style={{ paddingTop: insets.top }}
-        >
-            <PageHeader />
+        <View className="flex-1 flex-col gap-5 bg-background">
+            <PageHeader title="Thêm phương thức thanh toán" />
 
             <KeyboardAvoidingView
                 className="flex-1"
