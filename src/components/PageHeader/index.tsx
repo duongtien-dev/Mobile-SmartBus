@@ -2,15 +2,18 @@ import { cn } from "@/lib/utils";
 import { router } from "expo-router";
 import { ArrowLeft, Bell, Settings } from "lucide-react-native";
 import { Pressable, View, ViewProps } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 interface Props extends ViewProps {
     showBack?: boolean;
 };
 
 export function PageHeader({ showBack = true,className, ...props }: Props) {
+    const insets = useSafeAreaInsets();
     return (
         <View
-            className={cn("flex-row items-center justify-between px-4 pt-2", className)}
+            className={cn("flex-row items-center justify-between px-5", className)}
+            style={{ paddingTop: insets.top }}
             {...props}
         >
             {showBack ? (
