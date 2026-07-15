@@ -8,6 +8,7 @@ type ProfileMenuItemProps = {
     description?: string;
     icon: LucideIcon;
     index?: number;
+    destructive?: boolean;
     onPress?: () => void;
 };
 
@@ -16,9 +17,13 @@ export function ProfileMenuItem({
     description,
     icon: Icon,
     index = 0,
+    destructive = false,
     onPress,
 }: ProfileMenuItemProps) {
     const isAlt = index % 2 === 0;
+    const iconBg = destructive ? "bg-alert-light" : "bg-primary-light";
+    const iconColor = destructive ? "#e50049" : "#005f8b";
+    const labelColor = destructive ? "text-alert" : "text-text-primary";
 
     return (
         <Pressable
@@ -29,12 +34,17 @@ export function ProfileMenuItem({
             )}
             onPress={onPress}
         >
-            <View className="h-10 w-10 items-center justify-center rounded-full bg-primary-light">
-                <Icon color="#005f8b" size={20} strokeWidth={2} />
+            <View
+                className={cn(
+                    "h-10 w-10 items-center justify-center rounded-full",
+                    iconBg,
+                )}
+            >
+                <Icon color={iconColor} size={20} strokeWidth={2} />
             </View>
 
             <View className="flex-1 gap-0.5">
-                <Text className="text-base font-medium text-text-primary">
+                <Text className={cn("text-base font-medium", labelColor)}>
                     {label}
                 </Text>
                 {description ? (
