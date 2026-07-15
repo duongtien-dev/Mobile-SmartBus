@@ -58,7 +58,7 @@ export default function NotificationsScreen() {
                     />
                 </View>
 
-                <View className="mt-2 bg-surface-elevated">
+                <View className="bg-surface-elevated">
                     {items.map((item, index) => (
                         <NoticeCard key={item.id} item={item} index={index} />
                     ))}

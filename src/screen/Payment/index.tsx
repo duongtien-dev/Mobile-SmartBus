@@ -7,7 +7,7 @@ export default function PaymentScreen() {
 
     return (
         <View className="flex-1 bg-background">
-            <PageHeader title="Thanh toán" showBack={false} />
+            <PageHeader title="Thanh toán" isIconRight={false} />
 
             <View className="mt-4 items-center bg-surface px-4 py-4">
                 <Text className="text-center text-base font-bold text-primary">
