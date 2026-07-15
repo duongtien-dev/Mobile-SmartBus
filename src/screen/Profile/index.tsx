@@ -50,6 +50,7 @@ export default function ProfileScreen() {
             case "payment":
             case "notifications":
             case "nearby":
+            case "help":
                 if (item.href) {
                     router.push(item.href as Href);
                 }
@@ -73,7 +74,7 @@ export default function ProfileScreen() {
             className="flex-1 bg-background"
             style={{ paddingTop: insets.top }}
         >
-            <PageHeader title="Tài khoản" showBack={false} />
+            <PageHeader title="Tài khoản" isIconBack={false} />
             <ScrollView
                 className="flex-1"
                 contentContainerClassName="gap-5 px-5 pb-10"

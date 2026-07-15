@@ -20,12 +20,13 @@ src/app/
 │   └── profile.tsx          → /profile
 └── (pages)/                 # Màn push lên trên tab (router.push / router.back)
     ├── _layout.tsx          # Stack
-    ├── news.tsx             → /news          (Danh sách tin tức)
+    ├── help.tsx             → /help          (Trung tâm trợ giúp / FAQ)
     ├── notice/
-    │   └── [id].tsx         → /notice/:id    (Chi tiết thông báo/tin)
+    │   ├── list.tsx         → /notice/list
+    │   └── [id].tsx         → /notice/:id
     └── payment/
-        ├── add.tsx          → /payment/add   (Chọn phương thức)
-        └── card.tsx         → /payment/card  (Form thẻ tín dụng / ghi nợ)
+        ├── add.tsx          → /payment/add
+        └── visa.tsx         → /payment/visa
 ```
 
 Route group `(tabs)`, `(pages)`, `(auth)` **không xuất hiện trong URL** — chỉ để tổ chức code.
