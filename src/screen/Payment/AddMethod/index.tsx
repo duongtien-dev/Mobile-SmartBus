@@ -18,7 +18,7 @@ export default function AddPaymentMethodScreen() {
                         key={method.id}
                         method={method}
                         index={index}
-                        onPress={() => router.push("/payment/card" as Href)}
+                        onPress={() => router.push("/payment/visa" as Href)}
                     />
                 ))}
             </ScrollView>

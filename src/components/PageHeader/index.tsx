@@ -37,7 +37,7 @@ export function PageHeader({
             ]}
             {...props}
         >
-            <View className={cn("flex-row items-center justify-start w-20")}>
+            <View className={cn("flex-row items-center justify-start")}>
                 {isIconBack ? (
                     <Pressable
                         accessibilityRole="button"
@@ -57,7 +57,7 @@ export function PageHeader({
                 </Text>
             </View>
 
-            <View className={cn("flex-row items-center justify-end gap-1 w-20")}>
+            <View className={cn("flex-row items-center justify-end gap-1")}>
                 {isIconRight ? (
                     <>
                         <Pressable
