@@ -1,4 +1,5 @@
 import { PageHeader } from "@/components/PageHeader";
+import useFetch from "@/hooks/useFetch";
 import type { IPost } from "@/models/post";
 import { postService } from "@/services/PostService";
 import { Image } from "expo-image";
@@ -15,37 +16,18 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 type Props = {
-    id?: string | string[];
+    id: string;
 };
 
 export default function NoticeDetailScreen({ id }: Props) {
     const insets = useSafeAreaInsets();
-    const postId = Array.isArray(id) ? id[0] : id;
-    const [post, setPost] = useState<IPost | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
 
-    useEffect(() => {
-        if (!postId) {
-            setPost(null);
-            setIsLoading(false);
-            return;
-        }
-
-        const fetchPostDetail = async () => {
-            setIsLoading(true);
-
-            try {
-                const response = await postService.getPostDetail({ id: postId });
-                setPost(response.data ?? null);
-            } catch {
-                setPost(null);
-            } finally {
-                setIsLoading(false);
-            }
-        };
-
-        fetchPostDetail();
-    }, [postId]);
+    const { data: post, isLoading } = useFetch<IPost>({
+        fetchFn: async () => {
+            const response = await postService.getPostDetail({ id });
+            return response.data as IPost;
+        },
+    });
 
     if (isLoading) {
         return (
@@ -83,7 +65,7 @@ export default function NoticeDetailScreen({ id }: Props) {
 
     return (
         <View className="flex-1 bg-background">
-            <PageHeader title="Chi tiết" isIconRight={true} />
+            <PageHeader title="Chi tiết" isIconBack />
 
             <ScrollView
                 className="flex-1"
