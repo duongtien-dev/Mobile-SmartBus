@@ -1,6 +1,7 @@
-import type { ITrip, ITripDetail, ITripLocation } from "@/models/trip";
+import type { ITrip, ITripDetail } from "@/models/trip";
 import { TripDetailPanel } from "@/screen/Trip/Search/TripDetail";
 import { tripService } from "@/services/TripService";
+import useTripBookingStore from "@/store/tripBooking.store";
 import { router } from "expo-router";
 import { Bus, ChevronRight, Footprints, Plus } from "lucide-react-native";
 import { Fragment, useState } from "react";
@@ -24,22 +25,22 @@ function formatDuration(minutes: number) {
 
 type TripResultItemProps = {
     trip: ITrip;
-    origin: ITripLocation;
-    destination: ITripLocation;
-    originName: string;
-    destinationName: string;
 };
 
-export function TripResultItem({
-    trip,
-    origin,
-    destination,
-    originName,
-    destinationName,
-}: TripResultItemProps) {
+export function TripResultItem({ trip }: TripResultItemProps) {
+    const searchContext = useTripBookingStore((state) => state.searchContext);
+    const setSelectedTrip = useTripBookingStore(
+        (state) => state.setSelectedTrip,
+    );
+
     const [expanded, setExpanded] = useState(false);
     const [detail, setDetail] = useState<ITripDetail | null>(null);
     const [isLoadingDetail, setIsLoadingDetail] = useState(false);
+
+    const origin = searchContext?.origin;
+    const destination = searchContext?.destination;
+    const originName = searchContext?.originName ?? "";
+    const destinationName = searchContext?.destinationName ?? "";
 
     const canShowDetail =
         trip.type === "direct" &&
@@ -53,7 +54,7 @@ export function TripResultItem({
             return;
         }
 
-        if (!canShowDetail) {
+        if (!canShowDetail || !origin || !destination) {
             Toast.show({
                 type: "error",
                 text1: "Chưa hỗ trợ xem chi tiết lộ trình này",
@@ -93,19 +94,13 @@ export function TripResultItem({
     const busSegment = trip.segments.find((segment) => segment.type === "bus");
 
     const handleBuyTicket = () => {
-        router.push({
-            pathname: "/trips/tickets",
-            params: {
-                originName,
-                destinationName,
-                originLat: String(origin.lat),
-                originLng: String(origin.lng),
-                destinationLat: String(destination.lat),
-                destinationLng: String(destination.lng),
-                pickupStopName: busSegment?.pickupStopName ?? "",
-                routeCode: busSegment?.code ?? trip.meta?.code ?? "",
-            },
-        } as never);
+        setSelectedTrip(
+            trip,
+            busSegment?.pickupStopName ?? "",
+            busSegment?.code ?? trip.meta?.code ?? "",
+        );
+
+        router.push("/trips/tickets" as never);
     };
 
     return (

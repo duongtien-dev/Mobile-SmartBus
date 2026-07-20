@@ -1,12 +1,14 @@
 import { Select } from "@/components/Select";
 import { PageHeader } from "@/components/PageHeader";
-import { MONTHLY_TICKET_PRICE } from "@/constants/ticket";
 import { FormField } from "@/screen/Trip/Ticket/shared/FormField";
 import { FormFooter } from "@/screen/Trip/Ticket/shared/FormFooter";
 import { FormSection } from "@/screen/Trip/Ticket/shared/FormSection";
 import { ReadonlyField } from "@/screen/Trip/Ticket/shared/ReadonlyField";
-import { router, useLocalSearchParams } from "expo-router";
-import { useMemo, useState } from "react";
+import useTripBookingStore, {
+    computeMonthlyTicketPrice,
+} from "@/store/tripBooking.store";
+import { router } from "expo-router";
+import { useMemo } from "react";
 import {
     KeyboardAvoidingView,
     Platform,
@@ -22,18 +24,17 @@ const TICKET_COUNT_OPTIONS = [
 ];
 
 export default function MonthlyTicketScreen() {
-    const params = useLocalSearchParams<{
-        originName?: string;
-        destinationName?: string;
-        ticketType?: string;
-    }>();
+    const searchContext = useTripBookingStore((state) => state.searchContext);
+    const ticketType = useTripBookingStore((state) => state.ticketType);
+    const monthlyForm = useTripBookingStore((state) => state.monthlyForm);
+    const updateMonthlyForm = useTripBookingStore(
+        (state) => state.updateMonthlyForm,
+    );
+    const setTotalPrice = useTripBookingStore((state) => state.setTotalPrice);
 
-    const [usageMonth, setUsageMonth] = useState("");
-    const [ticketCount, setTicketCount] = useState("");
-
-    const originName = params.originName ?? "Điểm đi";
-    const destinationName = params.destinationName ?? "Điểm đến";
-    const isMultiRoute = params.ticketType === "monthly-multi";
+    const originName = searchContext?.originName ?? "Điểm đi";
+    const destinationName = searchContext?.destinationName ?? "Điểm đến";
+    const isMultiRoute = ticketType === "monthly-multi";
 
     const pageTitle = useMemo(
         () =>
@@ -41,22 +42,19 @@ export default function MonthlyTicketScreen() {
         [isMultiRoute],
     );
 
-    const totalPrice = useMemo(() => {
-        const count = Number(ticketCount) || 1;
-        return MONTHLY_TICKET_PRICE * count;
-    }, [ticketCount]);
+    const { usageMonth, ticketCount } = monthlyForm;
+
+    const totalPrice = useMemo(
+        () => computeMonthlyTicketPrice(ticketCount),
+        [ticketCount],
+    );
 
     const canSubmit =
         usageMonth.trim().length > 0 && ticketCount.length > 0;
 
     const handleSubmit = () => {
-        router.push({
-            pathname: "/trips/tickets/payment",
-            params: {
-                ticketLabel: pageTitle,
-                price: String(totalPrice),
-            },
-        });
+        setTotalPrice(totalPrice);
+        router.push("/trips/tickets/payment" as never);
     };
 
     return (
@@ -91,7 +89,9 @@ export default function MonthlyTicketScreen() {
                             label="Tháng sử dụng"
                             value={usageMonth}
                             placeholder="Chọn tháng sử dụng"
-                            onChangeText={setUsageMonth}
+                            onChangeText={(value) =>
+                                updateMonthlyForm({ usageMonth: value })
+                            }
                         />
 
                         <View className="flex-row gap-3">
@@ -109,7 +109,9 @@ export default function MonthlyTicketScreen() {
                                 </Text>
                                 <Select
                                     value={ticketCount}
-                                    onValueChange={setTicketCount}
+                                    onValueChange={(value) =>
+                                        updateMonthlyForm({ ticketCount: value })
+                                    }
                                     placeholder="Chọn"
                                     options={TICKET_COUNT_OPTIONS}
                                     triggerClassName="h-12 rounded-xl border-0 bg-surface px-4 shadow-sm"

@@ -2,7 +2,7 @@ import { PageHeader } from "@/components/PageHeader";
 import type { ITrip } from "@/models/trip";
 import { TripResultItem } from "@/screen/Trip/Search/TripResultItem";
 import { tripService } from "@/services/TripService";
-import { useLocalSearchParams } from "expo-router";
+import useTripBookingStore from "@/store/tripBooking.store";
 import { useEffect, useState } from "react";
 import {
     ActivityIndicator,
@@ -12,36 +12,29 @@ import {
 } from "react-native";
 
 export default function TripSearchScreen() {
-    const params = useLocalSearchParams<{
-        originName?: string;
-        originLat?: string;
-        originLng?: string;
-        destinationName?: string;
-        destinationLat?: string;
-        destinationLng?: string;
-    }>();
-
+    const searchContext = useTripBookingStore((state) => state.searchContext);
     const [trips, setTrips] = useState<ITrip[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
-    const originName = params.originName ?? "";
-    const destinationName = params.destinationName ?? "";
-    const originLat = Number(params.originLat);
-    const originLng = Number(params.originLng);
-    const destinationLat = Number(params.destinationLat);
-    const destinationLng = Number(params.destinationLng);
+    const originName = searchContext?.originName ?? "";
+    const destinationName = searchContext?.destinationName ?? "";
+    const origin = searchContext?.origin;
+    const destination = searchContext?.destination;
 
     useEffect(() => {
+        if (!origin || !destination) {
+            setTrips([]);
+            setIsLoading(false);
+            return;
+        }
+
         const fetchTrips = async () => {
             setIsLoading(true);
 
             try {
                 const response = await tripService.searchTrips({
-                    origin: { lat: originLat, lng: originLng },
-                    destination: {
-                        lat: destinationLat,
-                        lng: destinationLng,
-                    },
+                    origin,
+                    destination,
                 });
 
                 setTrips((response.data ?? []) as ITrip[]);
@@ -53,12 +46,7 @@ export default function TripSearchScreen() {
         };
 
         fetchTrips();
-    }, [
-        originLat,
-        originLng,
-        destinationLat,
-        destinationLng,
-    ]);
+    }, [origin, destination]);
 
     return (
         <View className="flex-1 bg-background">
@@ -107,16 +95,6 @@ export default function TripSearchScreen() {
                             <TripResultItem
                                 key={`${trip.type}-${trip.totalDuration}-${index}`}
                                 trip={trip}
-                                origin={{
-                                    lat: originLat,
-                                    lng: originLng,
-                                }}
-                                destination={{
-                                    lat: destinationLat,
-                                    lng: destinationLng,
-                                }}
-                                originName={originName}
-                                destinationName={destinationName}
                             />
                         ))
                     ) : (

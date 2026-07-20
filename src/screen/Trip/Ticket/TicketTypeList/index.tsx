@@ -1,37 +1,23 @@
-import { PageHeader } from "@/components/PageHeader";
+import type { TicketTypeId } from "@/constants/ticket";
 import { TICKET_TYPE_OPTIONS } from "@/constants/ticket";
+import { PageHeader } from "@/components/PageHeader";
 import { TicketTypeCard } from "@/screen/Trip/Ticket/TicketTypeCard";
-import { router, useLocalSearchParams } from "expo-router";
+import useTripBookingStore from "@/store/tripBooking.store";
+import { router } from "expo-router";
 import { ScrollView, Text, View } from "react-native";
 
 export default function TicketTypeListScreen() {
-    const params = useLocalSearchParams<{
-        originName?: string;
-        destinationName?: string;
-        originLat?: string;
-        originLng?: string;
-        destinationLat?: string;
-        destinationLng?: string;
-        pickupStopName?: string;
-        routeCode?: string;
-    }>();
+    const setTicketType = useTripBookingStore((state) => state.setTicketType);
 
-    const handleSelectTicket = (ticketId: string) => {
+    const handleSelectTicket = (ticketId: TicketTypeId) => {
+        setTicketType(ticketId);
+
         if (ticketId === "single") {
-            router.push({
-                pathname: "/trips/tickets/single",
-                params,
-            });
+            router.push("/trips/tickets/single" as never);
             return;
         }
 
-        router.push({
-            pathname: "/trips/tickets/monthly",
-            params: {
-                ...params,
-                ticketType: ticketId,
-            },
-        });
+        router.push("/trips/tickets/monthly" as never);
     };
 
     return (

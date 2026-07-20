@@ -5,6 +5,7 @@ import usePaginationList from "@/hooks/usePaginationList";
 import type { IPost } from "@/models/post";
 import type { ISuggestLocation } from "@/models/suggestLocation";
 import { postService } from "@/services/PostService";
+import useTripBookingStore from "@/store/tripBooking.store";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import {
@@ -22,6 +23,9 @@ import { SuggestLocationInput } from "./SuggestLocationInput";
 const NEWS_LIMIT = 10;
 
 export default function HomeScreen() {
+    const setSearchContext = useTripBookingStore(
+        (state) => state.setSearchContext,
+    );
     const [origin, setOrigin] = useState("");
     const [destination, setDestination] = useState("");
     const [originLocation, setOriginLocation] =
@@ -54,17 +58,20 @@ export default function HomeScreen() {
             return;
         }
 
-        router.push({
-            pathname: "/trips/search",
-            params: {
-                originName: origin,
-                originLat: String(originLocation.lat),
-                originLng: String(originLocation.lng),
-                destinationName: destination,
-                destinationLat: String(destinationLocation.lat),
-                destinationLng: String(destinationLocation.lng),
+        setSearchContext({
+            originName: origin,
+            destinationName: destination,
+            origin: {
+                lat: originLocation.lat,
+                lng: originLocation.lng,
+            },
+            destination: {
+                lat: destinationLocation.lat,
+                lng: destinationLocation.lng,
             },
         });
+
+        router.push("/trips/search" as never);
     };
 
     return (

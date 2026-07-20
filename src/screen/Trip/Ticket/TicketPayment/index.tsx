@@ -1,52 +1,102 @@
+import { PageHeader } from "@/components/PageHeader";
 import type { IPaymentMethod } from "@/models/paymentMethod";
 import { FormFooter } from "@/screen/Trip/Ticket/shared/FormFooter";
-import { PageHeader } from "@/components/PageHeader";
+import { FormSection } from "@/screen/Trip/Ticket/shared/FormSection";
 import { paymentService } from "@/services/PaymentService";
-import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
-import { useCallback, useState } from "react";
-import { ActivityIndicator, Pressable, ScrollView, Text, View } from "react-native";
-import Toast from "react-native-toast-message";
-import { Image } from "expo-image";
+import useTripBookingStore from "@/store/tripBooking.store";
 import { cn } from "@/lib/utils";
+import { Image } from "expo-image";
+import { router, useFocusEffect } from "expo-router";
+import { Plus } from "lucide-react-native";
+import { useCallback, useState } from "react";
+import {
+    ActivityIndicator,
+    Pressable,
+    ScrollView,
+    Text,
+    View,
+} from "react-native";
+import Toast from "react-native-toast-message";
 
 const PROVIDER_LABELS: Record<IPaymentMethod["provider"], string> = {
     momo: "MoMo",
     zalopay: "ZaloPay",
     shopeepay: "ShopeePay",
     visa: "Thẻ quốc tế",
-    napas: "Ngân hàng nội địa",
+    napas: "Thẻ ATM",
 };
 
-function getPaymentLabel(method: IPaymentMethod) {
-    const base = PROVIDER_LABELS[method.provider] ?? method.provider;
+function getPaymentTitle(method: IPaymentMethod) {
+    return PROVIDER_LABELS[method.provider] ?? method.provider;
+}
 
+function getPaymentSubtitle(method: IPaymentMethod) {
     if (method.cardNumber) {
-        return `${base} •••• ${method.cardNumber.slice(-4)}`;
+        return `******${method.cardNumber.slice(-4)}`;
     }
 
     if (method.accountNumber) {
-        return `${base} •••• ${method.accountNumber.slice(-4)}`;
+        return `************${method.accountNumber.slice(-4)}`;
     }
 
     if (method.phoneNumber) {
-        return `${base} - ${method.phoneNumber}`;
+        return method.phoneNumber;
     }
 
-    return base;
+    return "";
+}
+
+interface InfoRowProps {
+    label: string;
+    value: string;
+}
+
+function InfoRow({
+    label,
+    value,
+}: InfoRowProps) {
+    return (
+        <View className="flex-row items-center gap-4">
+            <Text className="w-24 text-sm text-text-muted">
+                {label}
+            </Text>
+
+            <Text
+                numberOfLines={1}
+                ellipsizeMode="tail"
+                className="flex-1 text-right text-sm font-medium text-text-primary"
+            >
+                {value}
+            </Text>
+        </View>
+    );
 }
 
 export default function TicketPaymentScreen() {
-    const params = useLocalSearchParams<{
-        ticketLabel?: string;
-        price?: string;
-    }>();
-
-    const ticketLabel = params.ticketLabel ?? "Vé";
-    const priceNumber = Number(params.price ?? 0);
+    const searchContext = useTripBookingStore((state) => state.searchContext);
+    const pickupStopName = useTripBookingStore(
+        (state) => state.pickupStopName,
+    );
+    const routeCode = useTripBookingStore((state) => state.routeCode);
+    const ticketType = useTripBookingStore((state) => state.ticketType);
+    const singleForm = useTripBookingStore((state) => state.singleForm);
+    const monthlyForm = useTripBookingStore((state) => state.monthlyForm);
+    const totalPrice = useTripBookingStore((state) => state.totalPrice);
+    const selectedPaymentMethodId = useTripBookingStore(
+        (state) => state.selectedPaymentMethodId,
+    );
+    const setSelectedPaymentMethodId = useTripBookingStore(
+        (state) => state.setSelectedPaymentMethodId,
+    );
+    const getTicketLabel = useTripBookingStore(
+        (state) => state.getTicketLabel,
+    );
 
     const [paymentMethods, setPaymentMethods] = useState<IPaymentMethod[]>([]);
-    const [selectedMethodId, setSelectedMethodId] = useState<string>("");
     const [isLoading, setIsLoading] = useState(true);
+
+    const ticketLabel = getTicketLabel();
+    const isSingleTicket = ticketType === "single";
 
     const fetchPaymentMethods = useCallback(async () => {
         setIsLoading(true);
@@ -70,7 +120,7 @@ export default function TicketPaymentScreen() {
     const hasPaymentMethods = paymentMethods.length > 0;
 
     const handlePay = () => {
-        if (!selectedMethodId) {
+        if (!selectedPaymentMethodId) {
             Toast.show({
                 type: "error",
                 text1: "Vui lòng chọn phương thức thanh toán",
@@ -78,109 +128,183 @@ export default function TicketPaymentScreen() {
             return;
         }
 
-        // UI demo only: thanh toán thật sẽ tích hợp sau.
         Toast.show({
             type: "success",
             text1: "Thanh toán (demo)",
-            text2: `${ticketLabel} • ${priceNumber.toLocaleString("vi-VN")} đồng`,
+            text2: `${ticketLabel} • ${totalPrice.toLocaleString("vi-VN")} đồng`,
         });
     };
 
     return (
         <View className="flex-1 bg-background">
-            <PageHeader title="Chọn phương thức thanh toán" isIconBack={true} />
+            <PageHeader title="Thanh toán" isIconBack={true} />
 
             {isLoading ? (
                 <View className="mt-10 items-center">
                     <ActivityIndicator color="#005f8b" />
                 </View>
-            ) : hasPaymentMethods ? (
+            ) : (
                 <>
                     <ScrollView
-                        className="mt-4 flex-1"
+                        className="flex-1"
+                        contentContainerClassName="gap-6 px-5 pb-6 pt-2"
                         showsVerticalScrollIndicator={false}
-                        contentContainerClassName="pb-10"
                     >
-                        {paymentMethods.map((method, index) => {
-                            const isAlt = index % 2 === 0;
-                            const isSelected = selectedMethodId === method._id;
+                        <FormSection title="Chọn phương thức thanh toán">
+                            {hasPaymentMethods ? (
+                                <View className="gap-2">
+                                    {paymentMethods.map((method, index) => {
+                                        const isSelected =
+                                            selectedPaymentMethodId ===
+                                            method._id;
 
-                            return (
-                                <Pressable
-                                    key={method._id}
-                                    accessibilityRole="button"
-                                    onPress={() => setSelectedMethodId(method._id)}
-                                    className={`flex-row items-center gap-4 px-5 py-4 active:opacity-80 ${
-                                        isAlt ? "bg-surface" : "bg-background"
-                                    }`}
-                                >
-                                    <View
-                                        className={cn(
-                                            "h-11 w-11 items-center justify-center rounded-full bg-surface-elevated",
-                                        )}
-                                    >
-                                        <Image
-                                            source={require("../../../../../assets/images/bank.png")}
-                                            className="h-6 w-6"
-                                        />
-                                    </View>
+                                        return (
+                                            <Pressable
+                                                key={method._id}
+                                                accessibilityRole="button"
+                                                onPress={() =>
+                                                    setSelectedPaymentMethodId(
+                                                        method._id,
+                                                    )
+                                                }
+                                                className={`flex-row items-center gap-4 rounded-xl px-4 py-4 active:opacity-80 ${
+                                                    index % 2 === 0
+                                                        ? "bg-surface"
+                                                        : "bg-background"
+                                                }`}
+                                            >
+                                                <View className="h-11 w-11 items-center justify-center rounded-full bg-surface-elevated">
+                                                    <Image
+                                                        source={require("../../../../../assets/images/bank.png")}
+                                                        className="h-6 w-6"
+                                                    />
+                                                </View>
 
-                                    <View className="flex-1">
-                                        <Text className="text-base font-medium text-text-primary">
-                                            {getPaymentLabel(method)}
-                                        </Text>
-                                    </View>
+                                                <View className="flex-1">
+                                                    <Text className="text-base font-medium text-text-primary">
+                                                        {getPaymentTitle(method)}
+                                                    </Text>
+                                                    <Text className="text-sm text-text-muted">
+                                                        {getPaymentSubtitle(
+                                                            method,
+                                                        )}
+                                                    </Text>
+                                                </View>
 
-                                    <View
-                                        className={cn(
-                                            "h-5 w-5 items-center justify-center rounded-full border-2",
-                                            isSelected
-                                                ? "border-primary bg-primary"
-                                                : "border-border bg-background",
-                                        )}
-                                    >
-                                        {isSelected ? (
-                                            <Text className="text-[10px] font-bold text-on-primary">
-                                                ✓
-                                            </Text>
-                                        ) : null}
-                                    </View>
-                                </Pressable>
-                            );
-                        })}
+                                                <View
+                                                    className={cn(
+                                                        "h-5 w-5 items-center justify-center rounded-full border-2",
+                                                        isSelected
+                                                            ? "border-primary bg-primary"
+                                                            : "border-border bg-background",
+                                                    )}
+                                                >
+                                                    {isSelected ? (
+                                                        <Text className="text-[10px] font-bold text-on-primary">
+                                                            ✓
+                                                        </Text>
+                                                    ) : null}
+                                                </View>
+                                            </Pressable>
+                                        );
+                                    })}
+                                </View>
+                            ) : (
+                                <Text className="text-sm text-text-muted">
+                                    Bạn chưa có phương thức thanh toán.
+                                </Text>
+                            )}
+
+                            <Pressable
+                                className="mt-2 flex-row items-center gap-2 active:opacity-80"
+                                onPress={() => router.push("/payment/add")}
+                            >
+                                <Plus color="#005f8b" size={18} />
+                                <Text className="text-sm font-medium text-accent">
+                                    Thêm phương thức thanh toán khác
+                                </Text>
+                            </Pressable>
+                        </FormSection>
+
+
+                            <FormSection title="Thông tin hành khách">
+                                <InfoRow
+                                    label="Họ và tên"
+                                    value={singleForm.fullName}
+                                />
+                                <InfoRow
+                                    label="Số điện thoại"
+                                    value={singleForm.phoneNumber}
+                                />
+                                <InfoRow
+                                    label="Đối tượng ưu tiên"
+                                    value="Không"
+                                />
+                            </FormSection>
+
+
+                        <FormSection title="Thông tin lượt đi">
+                            {routeCode ? (
+                                <InfoRow
+                                    label="Tuyến xe"
+                                    value={`${routeCode}: ${searchContext?.originName ?? ""} - ${searchContext?.destinationName ?? ""}`}
+                                />
+                            ) : null}
+
+                            {isSingleTicket ? (
+                                <>
+                                    <InfoRow
+                                        label="Thời gian"
+                                        value={`${singleForm.departureTime} ${singleForm.departureDate}`}
+                                    />
+                                    <InfoRow
+                                        label="Số lượng ghế"
+                                        value={`${(singleForm.seatCount || "0").padStart(2, "0")} ghế`}
+                                    />
+                                    <InfoRow
+                                        label="Điểm lên"
+                                        value={pickupStopName}
+                                    />
+                                    <InfoRow
+                                        label="Điểm xuống"
+                                        value={
+                                            searchContext?.destinationName ?? ""
+                                        }
+                                    />
+                                </>
+                            ) : (
+                                <>
+                                    <InfoRow
+                                        label="Tháng sử dụng"
+                                        value={monthlyForm.usageMonth}
+                                    />
+                                    <InfoRow
+                                        label="Số lượng vé"
+                                        value={`${(monthlyForm.ticketCount || "0").padStart(2, "0")} vé`}
+                                    />
+                                    <InfoRow
+                                        label="Điểm lên"
+                                        value="Không giới hạn"
+                                    />
+                                    <InfoRow
+                                        label="Điểm xuống"
+                                        value={
+                                            searchContext?.destinationName ?? ""
+                                        }
+                                    />
+                                </>
+                            )}
+                        </FormSection>
                     </ScrollView>
 
                     <FormFooter
-                        price={priceNumber}
+                        price={totalPrice}
                         buttonLabel="Thanh toán"
-                        disabled={!selectedMethodId}
+                        disabled={!selectedPaymentMethodId}
                         onPress={handlePay}
                     />
-                </>
-            ) : (
-                <>
-                    <View className="mt-4 flex-1 items-center bg-surface px-6 py-8">
-                        <Text className="text-center text-base font-bold text-primary">
-                            Bạn chưa có phương thức thanh toán!
-                        </Text>
-                        <Text className="mt-2 text-center text-sm text-text-muted">
-                            Hãy thêm phương thức thanh toán để tiếp tục.
-                        </Text>
-                    </View>
-
-                    <View className="items-center px-8 py-10">
-                        <Pressable
-                            className="h-12 w-full items-center justify-center rounded-lg bg-primary active:opacity-90"
-                            onPress={() => router.push("/payment/add")}
-                        >
-                            <Text className="text-base font-bold text-on-primary">
-                                Thiết lập ngay
-                            </Text>
-                        </Pressable>
-                    </View>
                 </>
             )}
         </View>
     );
 }
-

@@ -1,12 +1,13 @@
 import { Select } from "@/components/Select";
 import { PageHeader } from "@/components/PageHeader";
-import { SINGLE_TICKET_PRICE } from "@/constants/ticket";
 import { FormField } from "@/screen/Trip/Ticket/shared/FormField";
 import { FormFooter } from "@/screen/Trip/Ticket/shared/FormFooter";
 import { FormSection } from "@/screen/Trip/Ticket/shared/FormSection";
 import { ReadonlyField } from "@/screen/Trip/Ticket/shared/ReadonlyField";
-import { router, useLocalSearchParams } from "expo-router";
-import { useState } from "react";
+import useTripBookingStore, {
+    computeSingleTicketPrice,
+} from "@/store/tripBooking.store";
+import { router } from "expo-router";
 import {
     KeyboardAvoidingView,
     Platform,
@@ -32,24 +33,30 @@ const SEAT_OPTIONS = [
 ];
 
 export default function SingleTicketScreen() {
-    const params = useLocalSearchParams<{
-        originName?: string;
-        destinationName?: string;
-        pickupStopName?: string;
-        routeCode?: string;
-    }>();
+    const searchContext = useTripBookingStore((state) => state.searchContext);
+    const pickupStopName = useTripBookingStore(
+        (state) => state.pickupStopName,
+    );
+    const singleForm = useTripBookingStore((state) => state.singleForm);
+    const updateSingleForm = useTripBookingStore(
+        (state) => state.updateSingleForm,
+    );
+    const setTotalPrice = useTripBookingStore((state) => state.setTotalPrice);
 
-    const [departureDate, setDepartureDate] = useState("");
-    const [departureTime, setDepartureTime] = useState("");
-    const [seatCount, setSeatCount] = useState("");
-    const [fullName, setFullName] = useState("");
-    const [phoneNumber, setPhoneNumber] = useState("");
-    const [acceptedTerms, setAcceptedTerms] = useState(false);
+    const originName = searchContext?.originName ?? "Điểm đi";
+    const destinationName = searchContext?.destinationName ?? "Điểm đến";
+    const displayPickupStop = pickupStopName || "34 Ngũ Hành Sơn";
 
-    const originName = params.originName ?? "Điểm đi";
-    const destinationName = params.destinationName ?? "Điểm đến";
-    const pickupStopName =
-        params.pickupStopName ?? "34 Ngũ Hành Sơn";
+    const {
+        departureDate,
+        departureTime,
+        seatCount,
+        fullName,
+        phoneNumber,
+        acceptedTerms,
+    } = singleForm;
+
+    const totalPrice = computeSingleTicketPrice();
 
     const canSubmit =
         departureDate.trim().length > 0 &&
@@ -60,13 +67,8 @@ export default function SingleTicketScreen() {
         acceptedTerms;
 
     const handleSubmit = () => {
-        router.push({
-            pathname: "/trips/tickets/payment",
-            params: {
-                ticketLabel: "Vé lượt",
-                price: String(SINGLE_TICKET_PRICE),
-            },
-        });
+        setTotalPrice(totalPrice);
+        router.push("/trips/tickets/payment" as never);
     };
 
     return (
@@ -94,14 +96,16 @@ export default function SingleTicketScreen() {
                     <FormSection title="Thông tin lượt đi">
                         <ReadonlyField
                             label="Trạm đón (Trạm lên xe)"
-                            value={pickupStopName}
+                            value={displayPickupStop}
                         />
 
                         <FormField
                             label="Ngày đi"
                             value={departureDate}
                             placeholder="Chọn ngày đi"
-                            onChangeText={setDepartureDate}
+                            onChangeText={(value) =>
+                                updateSingleForm({ departureDate: value })
+                            }
                         />
 
                         <View className="flex-row gap-3">
@@ -111,7 +115,11 @@ export default function SingleTicketScreen() {
                                 </Text>
                                 <Select
                                     value={departureTime}
-                                    onValueChange={setDepartureTime}
+                                    onValueChange={(value) =>
+                                        updateSingleForm({
+                                            departureTime: value,
+                                        })
+                                    }
                                     placeholder="Chọn giờ"
                                     options={TIME_OPTIONS}
                                     triggerClassName="h-12 rounded-xl border-0 bg-surface px-4 shadow-sm"
@@ -125,7 +133,9 @@ export default function SingleTicketScreen() {
                                 </Text>
                                 <Select
                                     value={seatCount}
-                                    onValueChange={setSeatCount}
+                                    onValueChange={(value) =>
+                                        updateSingleForm({ seatCount: value })
+                                    }
                                     placeholder="Chọn"
                                     options={SEAT_OPTIONS}
                                     triggerClassName="h-12 rounded-xl border-0 bg-surface px-4 shadow-sm"
@@ -138,13 +148,17 @@ export default function SingleTicketScreen() {
                         <FormField
                             label="Họ và tên"
                             value={fullName}
-                            onChangeText={setFullName}
+                            onChangeText={(value) =>
+                                updateSingleForm({ fullName: value })
+                            }
                             placeholder="Nhập họ và tên"
                         />
                         <FormField
                             label="Số điện thoại"
                             value={phoneNumber}
-                            onChangeText={setPhoneNumber}
+                            onChangeText={(value) =>
+                                updateSingleForm({ phoneNumber: value })
+                            }
                             placeholder="Nhập số điện thoại"
                             keyboardType="phone-pad"
                         />
@@ -161,7 +175,11 @@ export default function SingleTicketScreen() {
 
                         <Pressable
                             className="mt-2 flex-row items-start gap-3 active:opacity-80"
-                            onPress={() => setAcceptedTerms((prev) => !prev)}
+                            onPress={() =>
+                                updateSingleForm({
+                                    acceptedTerms: !acceptedTerms,
+                                })
+                            }
                         >
                             <View
                                 className={`mt-0.5 h-5 w-5 items-center justify-center rounded border-2 ${
@@ -185,7 +203,7 @@ export default function SingleTicketScreen() {
                 </ScrollView>
 
                 <FormFooter
-                    price={SINGLE_TICKET_PRICE}
+                    price={totalPrice}
                     disabled={!canSubmit}
                     onPress={handleSubmit}
                 />
