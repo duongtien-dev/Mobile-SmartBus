@@ -1,5 +1,5 @@
 export { authService } from './AuthService';
-export { default as PostService } from './PostService';
+export { postService } from './PostService';
 export { default as UploadService } from './UploadService';
 export { default as StripService } from './StripService';
 export { default as RouteService } from './RouteService';

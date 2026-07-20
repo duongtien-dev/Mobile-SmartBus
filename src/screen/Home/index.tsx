@@ -1,16 +1,43 @@
 import { Button } from "@/components/Button";
 import InputText from "@/components/Input/InputText";
 import { PageHeader } from "@/components/PageHeader";
-import { NEWS_ITEMS, QUICK_ACTIONS } from "@/constants/home";
+import { QUICK_ACTIONS } from "@/constants/home";
+import usePaginationList from "@/hooks/usePaginationList";
+import type { IPost } from "@/models/post";
+import { postService } from "@/services/PostService";
 import { router } from "expo-router";
-import { useState } from "react";
-import { Pressable, ScrollView, Text, View } from "react-native";
+import { useEffect, useState } from "react";
+import {
+    ActivityIndicator,
+    Pressable,
+    ScrollView,
+    Text,
+    View,
+} from "react-native";
 import { NewsCard } from "./NewCard";
 import { QuickActionButton } from "./QuickAction";
+
+const NEWS_LIMIT = 10;
 
 export default function HomeScreen() {
     const [origin, setOrigin] = useState("");
     const [destination, setDestination] = useState("");
+    const {
+        list: posts,
+        loadFirstPage,
+        isSkeletonLoading,
+    } = usePaginationList<IPost>({
+        fetchFn: async (payload) => {
+            const response = await postService.listPosts(payload);
+            return response.data ?? [];
+        },
+        limit: NEWS_LIMIT,
+        params: {},
+    });
+
+    useEffect(() => {
+        loadFirstPage();
+    }, []);
 
     return (
         <View className="flex-1 bg-background">
@@ -68,7 +95,7 @@ export default function HomeScreen() {
                         </Text>
                         <Pressable
                             className="active:opacity-80"
-                            onPress={() => router.push('/notice/list')}
+                            onPress={() => router.push("/notice/list")}
                         >
                             <Text className="text-sm font-medium text-accent">
                                 Xem tất cả
@@ -76,24 +103,37 @@ export default function HomeScreen() {
                         </Pressable>
                     </View>
 
-                    <ScrollView
-                        horizontal
-                        showsHorizontalScrollIndicator={false}
-                        contentContainerClassName="pr-5"
-                    >
-                        {NEWS_ITEMS.map((item) => (
-                            <NewsCard
-                                key={item.id}
-                                item={item}
-                                onPress={() =>
-                                    router.push({
-                                        pathname: "/notice/[id]",
-                                        params: { id: item.id },
-                                    })
-                                }
-                            />
-                        ))}
-                    </ScrollView>
+                    {isSkeletonLoading ? (
+                        <View className="h-40 items-center justify-center">
+                            <ActivityIndicator color="#005f8b" />
+                        </View>
+                    ) : (
+                        <ScrollView
+                            horizontal
+                            nestedScrollEnabled
+                            showsHorizontalScrollIndicator={false}
+                            contentContainerClassName="pr-5"
+                        >
+                            {posts.length > 0 ? (
+                                posts.map((item) => (
+                                    <NewsCard
+                                        key={item._id}
+                                        item={item}
+                                        onPress={() =>
+                                            router.push({
+                                                pathname: "/notice/[id]",
+                                                params: { id: item._id },
+                                            })
+                                        }
+                                    />
+                                ))
+                            ) : (
+                                <Text className="text-sm text-text-muted">
+                                    Chưa có tin tức
+                                </Text>
+                            )}
+                        </ScrollView>
+                    )}
                 </View>
             </ScrollView>
         </View>
