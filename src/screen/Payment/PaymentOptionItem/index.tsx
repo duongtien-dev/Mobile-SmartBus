@@ -1,10 +1,10 @@
-import type { PaymentMethod } from "@/constants/payment";
+import type { PaymentMethodOption } from "@/constants/payment";
 import { cn } from "@/lib/utils";
 import { Image } from "expo-image";
 import { Pressable, Text, View } from "react-native";
 
 type PaymentOptionItemProps = {
-    method: PaymentMethod;
+    method: PaymentMethodOption;
     index: number;
     onPress?: () => void;
 };

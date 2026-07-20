@@ -51,6 +51,15 @@ export default function PaymentScreen() {
                             key={method._id}
                             method={method}
                             index={index}
+                            onPress={() =>
+                                router.push({
+                                    pathname:
+                                        method.provider === "visa"
+                                            ? "/payment/visa"
+                                            : "/payment/bank",
+                                    params: { id: method._id },
+                                })
+                            }
                         />
                     ))}
                 </ScrollView>

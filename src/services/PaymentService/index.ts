@@ -20,6 +20,10 @@ class PaymentService extends BaseService {
     getMyPaymentMethods(body: object = {}) {
         return this.post('/my-payment-methods', body);
     }
+
+    getPaymentMethodById(body: object) {
+        return this.post('/detail', body);
+    }
 }
 
 export const paymentService = new PaymentService();
