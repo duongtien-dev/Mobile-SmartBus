@@ -1,16 +1,14 @@
-export type PaginationMeta = {
-    page: number;
-    limit: number;
-    total: number;
-    totalPages: number;
+export type ValidationError = {
+    type?: string;
+    value?: unknown;
+    msg?: string;
+    path?: string;
+    location?: string;
 };
 
 export interface ApiResponse<DataType = any> {
-    statusCode: number;
-    message: string;
-    data: DataType;
-    option_data?: {
-        pagination?: PaginationMeta;
-        [key: string]: unknown;
-    };
+    success: boolean;
+    data?: DataType;
+    message?: string;
+    errors?: ValidationError[];
 }

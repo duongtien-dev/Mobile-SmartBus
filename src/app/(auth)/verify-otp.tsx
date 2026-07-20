@@ -1,7 +1,10 @@
 import { Button } from "@/components/Button";
+import AuthService from "@/services/AuthService";
 import { LinearGradient } from "expo-linear-gradient";
+import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import {
+    ActivityIndicator,
     KeyboardAvoidingView,
     Platform,
     Text,
@@ -9,9 +12,11 @@ import {
     View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import Toast from "react-native-toast-message";
 
 const OTP_LENGTH = 6;
-const COUNTDOWN_SECONDS = 120;
+const COUNTDOWN_SECONDS = 60;
+const authService = new AuthService();
 
 function formatTime(seconds: number) {
     const minutes = Math.floor(seconds / 60);
@@ -20,8 +25,10 @@ function formatTime(seconds: number) {
 }
 
 export default function VerifyOtp() {
+    const { email } = useLocalSearchParams<{ email?: string }>();
     const [otp, setOtp] = useState("");
     const [remainingSeconds, setRemainingSeconds] = useState(COUNTDOWN_SECONDS);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     useEffect(() => {
         if (remainingSeconds <= 0) {
@@ -34,6 +41,34 @@ export default function VerifyOtp() {
 
         return () => clearInterval(timer);
     }, [remainingSeconds]);
+
+    const handleVerifyOtp = async () => {
+        if (isSubmitting || otp.length < OTP_LENGTH) {
+            return;
+        }
+
+        setIsSubmitting(true);
+
+        try {
+            await authService.verifyRegisterOtp({ otp });
+
+            Toast.show({
+                type: "success",
+                text1: "Đăng ký thành công",
+                text2: "Tài khoản của bạn đã được tạo. Vui lòng đăng nhập.",
+            });
+
+            router.replace("/login");
+        } catch (error) {
+            Toast.show({
+                type: "error",
+                text1: "Xác thực thất bại",
+                text2: 'Mã OTP không hợp lệ',
+            });
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
 
     return (
         <View className="flex-1 bg-background">
@@ -73,6 +108,7 @@ export default function VerifyOtp() {
                             </Text>
                             <Text className="text-center text-base text-primary">
                                 Nhập mã OTP đã được gửi đến email của bạn
+                                {email ? `\n${email}` : ""}
                             </Text>
                         </View>
 
@@ -80,12 +116,17 @@ export default function VerifyOtp() {
                             <TextInput
                                 value={otp}
                                 onChangeText={(text) =>
-                                    setOtp(text.replace(/\D/g, "").slice(0, OTP_LENGTH))
+                                    setOtp(
+                                        text
+                                            .replace(/\D/g, "")
+                                            .slice(0, OTP_LENGTH),
+                                    )
                                 }
                                 placeholder=""
                                 keyboardType="number-pad"
                                 maxLength={OTP_LENGTH}
                                 textAlign="center"
+                                editable={!isSubmitting}
                                 className="w-full border-b border-text-primary pb-2 text-2xl tracking-[12px] text-text-primary"
                                 underlineColorAndroid="transparent"
                             />
@@ -100,9 +141,18 @@ export default function VerifyOtp() {
                                 type="primary"
                                 variant="bold"
                                 className="w-full rounded-xl"
-                                disabled={otp.length < OTP_LENGTH}
+                                disabled={
+                                    otp.length < OTP_LENGTH ||
+                                    isSubmitting ||
+                                    remainingSeconds <= 0
+                                }
+                                onPress={handleVerifyOtp}
                             >
-                                Xác thực
+                                {isSubmitting ? (
+                                    <ActivityIndicator color="#ffffff" />
+                                ) : (
+                                    "Xác thực"
+                                )}
                             </Button>
                         </View>
                     </View>
