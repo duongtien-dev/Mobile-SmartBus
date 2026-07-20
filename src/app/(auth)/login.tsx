@@ -1,11 +1,13 @@
 import { Button } from "@/components/Button";
 import InputText from "@/components/Input/InputText";
+import { authService } from "@/services/AuthService";
 import useAuthStore from "@/store/auth.store";
 import { LinearGradient } from "expo-linear-gradient";
-import { useRouter } from "expo-router";
+import { router } from "expo-router";
 import { Eye, EyeOff } from "lucide-react-native";
 import { useState } from "react";
 import {
+    ActivityIndicator,
     Image,
     KeyboardAvoidingView,
     Platform,
@@ -13,13 +15,52 @@ import {
     Text,
     View,
 } from "react-native";
+import Toast from "react-native-toast-message";
 
 export default function Login() {
-    const router = useRouter();
     const { setIsAuthenticated, setUser } = useAuthStore();
-    const [username, setUsername] = useState("");
+    const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
+    const handleLogin = async () => {
+        if (isSubmitting) {
+            return;
+        }
+
+        setIsSubmitting(true);
+
+        try {
+            const response = await authService.login({ email, password });
+            const { user, token } = response.data ?? {};
+
+            setUser({
+                name: user?.full_name ?? "",
+                email: user?.email ?? email,
+                avatar: "",
+                token: token ?? "",
+            });
+            setIsAuthenticated(true);
+
+            Toast.show({
+                type: "success",
+                text1: "Đăng nhập thành công",
+            });
+
+            router.replace("/");
+        } catch {
+            Toast.show({
+                type: "error",
+                text1: "Đăng nhập thất bại",
+                text2: "Email hoặc mật khẩu không đúng",
+            });
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+    const isFormValid = email.trim() && password.trim();
 
     return (
         <LinearGradient
@@ -43,13 +84,14 @@ export default function Login() {
                     <View className="gap-4">
                         <View className="gap-2">
                             <Text className="text-sm font-medium text-on-primary">
-                                Tên đăng nhập
+                                Email
                             </Text>
                             <InputText
-                                value={username}
-                                onChangeText={setUsername}
-                                placeholder="Tên đăng nhập"
+                                value={email}
+                                onChangeText={setEmail}
+                                placeholder="Email"
                                 autoCapitalize="none"
+                                keyboardType="email-address"
                                 className="w-full text"
                             />
                         </View>
@@ -66,7 +108,10 @@ export default function Login() {
                                     secureTextEntry={!showPassword}
                                     className="w-full pr-10"
                                 />
-                                <Pressable onPress={() => setShowPassword((v) => !v)} className="absolute right-3 top-1/2 -translate-y-1/2">
+                                <Pressable
+                                    onPress={() => setShowPassword((v) => !v)}
+                                    className="absolute right-3 top-1/2 -translate-y-1/2"
+                                >
                                     {showPassword ? (
                                         <EyeOff size={18} color="#64748b" />
                                     ) : (
@@ -85,18 +130,14 @@ export default function Login() {
                         <Button
                             type="accent"
                             variant="bold"
-                            onPress={() => {
-                                setIsAuthenticated(true);
-                                setUser({
-                                    name: username || "Người dùng",
-                                    email: username || "user@danabus.vn",
-                                    avatar: "",
-                                    token: "demo-token",
-                                });
-                                router.push("/");
-                            }}
+                            disabled={!isFormValid || isSubmitting}
+                            onPress={handleLogin}
                         >
-                            Đăng nhập
+                            {isSubmitting ? (
+                                <ActivityIndicator color="#ffffff" />
+                            ) : (
+                                "Đăng nhập"
+                            )}
                         </Button>
                     </View>
 
