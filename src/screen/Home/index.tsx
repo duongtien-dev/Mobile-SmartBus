@@ -3,6 +3,7 @@ import { PageHeader } from "@/components/PageHeader";
 import { QUICK_ACTIONS } from "@/constants/home";
 import usePaginationList from "@/hooks/usePaginationList";
 import type { IPost } from "@/models/post";
+import type { ISuggestLocation } from "@/models/suggestLocation";
 import { postService } from "@/services/PostService";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
@@ -13,6 +14,7 @@ import {
     Text,
     View,
 } from "react-native";
+import Toast from "react-native-toast-message";
 import { NewsCard } from "./NewCard";
 import { QuickActionButton } from "./QuickAction";
 import { SuggestLocationInput } from "./SuggestLocationInput";
@@ -22,6 +24,10 @@ const NEWS_LIMIT = 10;
 export default function HomeScreen() {
     const [origin, setOrigin] = useState("");
     const [destination, setDestination] = useState("");
+    const [originLocation, setOriginLocation] =
+        useState<ISuggestLocation | null>(null);
+    const [destinationLocation, setDestinationLocation] =
+        useState<ISuggestLocation | null>(null);
     const {
         list: posts,
         loadFirstPage,
@@ -39,6 +45,28 @@ export default function HomeScreen() {
         loadFirstPage();
     }, []);
 
+    const handleSearch = () => {
+        if (!originLocation || !destinationLocation) {
+            Toast.show({
+                type: "error",
+                text1: "Vui lòng chọn địa điểm từ gợi ý",
+            });
+            return;
+        }
+
+        router.push({
+            pathname: "/trips/search",
+            params: {
+                originName: origin,
+                originLat: String(originLocation.lat),
+                originLng: String(originLocation.lng),
+                destinationName: destination,
+                destinationLat: String(destinationLocation.lat),
+                destinationLng: String(destinationLocation.lng),
+            },
+        });
+    };
+
     return (
         <View className="flex-1 bg-background">
             <PageHeader isIconRight={true} />
@@ -49,7 +77,11 @@ export default function HomeScreen() {
                         label="Điểm đi"
                         placeholder="Địa chỉ hiện tại"
                         value={origin}
-                        onChangeText={setOrigin}
+                        onChangeText={(text) => {
+                            setOrigin(text);
+                            setOriginLocation(null);
+                        }}
+                        onSelect={setOriginLocation}
                         zIndex={30}
                     />
 
@@ -57,7 +89,11 @@ export default function HomeScreen() {
                         label="Điểm đến"
                         placeholder="Điểm đến"
                         value={destination}
-                        onChangeText={setDestination}
+                        onChangeText={(text) => {
+                            setDestination(text);
+                            setDestinationLocation(null);
+                        }}
+                        onSelect={setDestinationLocation}
                         zIndex={20}
                     />
 
@@ -65,6 +101,7 @@ export default function HomeScreen() {
                         type="accent"
                         variant="bold"
                         className="w-full rounded-xl"
+                        onPress={handleSearch}
                     >
                         Tìm
                     </Button>
