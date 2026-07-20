@@ -5,7 +5,7 @@ import { FormField } from "@/screen/Trip/Ticket/shared/FormField";
 import { FormFooter } from "@/screen/Trip/Ticket/shared/FormFooter";
 import { FormSection } from "@/screen/Trip/Ticket/shared/FormSection";
 import { ReadonlyField } from "@/screen/Trip/Ticket/shared/ReadonlyField";
-import { useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { useMemo, useState } from "react";
 import {
     KeyboardAvoidingView,
@@ -14,7 +14,6 @@ import {
     Text,
     View,
 } from "react-native";
-import Toast from "react-native-toast-message";
 
 const TICKET_COUNT_OPTIONS = [
     { value: "1", label: "1" },
@@ -51,10 +50,12 @@ export default function MonthlyTicketScreen() {
         usageMonth.trim().length > 0 && ticketCount.length > 0;
 
     const handleSubmit = () => {
-        Toast.show({
-            type: "success",
-            text1: "Đặt vé thành công",
-            text2: "Chức năng thanh toán sẽ được cập nhật sau",
+        router.push({
+            pathname: "/trips/tickets/payment",
+            params: {
+                ticketLabel: pageTitle,
+                price: String(totalPrice),
+            },
         });
     };
 

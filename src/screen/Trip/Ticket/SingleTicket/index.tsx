@@ -5,7 +5,7 @@ import { FormField } from "@/screen/Trip/Ticket/shared/FormField";
 import { FormFooter } from "@/screen/Trip/Ticket/shared/FormFooter";
 import { FormSection } from "@/screen/Trip/Ticket/shared/FormSection";
 import { ReadonlyField } from "@/screen/Trip/Ticket/shared/ReadonlyField";
-import { useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import {
     KeyboardAvoidingView,
@@ -15,7 +15,6 @@ import {
     Text,
     View,
 } from "react-native";
-import Toast from "react-native-toast-message";
 
 const TIME_OPTIONS = [
     { value: "06:00", label: "06:00" },
@@ -61,10 +60,12 @@ export default function SingleTicketScreen() {
         acceptedTerms;
 
     const handleSubmit = () => {
-        Toast.show({
-            type: "success",
-            text1: "Đặt vé thành công",
-            text2: "Chức năng thanh toán sẽ được cập nhật sau",
+        router.push({
+            pathname: "/trips/tickets/payment",
+            params: {
+                ticketLabel: "Vé lượt",
+                price: String(SINGLE_TICKET_PRICE),
+            },
         });
     };
 
