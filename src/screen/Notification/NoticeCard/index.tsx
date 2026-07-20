@@ -1,11 +1,11 @@
+import type { IPost } from "@/models/post";
 import { router } from "expo-router";
 import { Newspaper } from "lucide-react-native";
+import moment from "moment";
 import { Pressable, Text, View } from "react-native";
 
-import type { INotice } from "@/constants/notices";
-
 type NoticeCardProps = {
-    item: INotice;
+    item: IPost;
     index?: number;
 };
 
@@ -18,10 +18,12 @@ export function NoticeCard({ item, index = 0 }: NoticeCardProps) {
             className={`flex-row items-start gap-3 px-4 py-3 active:opacity-80 ${
                 isAlt ? "bg-surface" : "bg-background"
             }`}
-            onPress={() => router.push({
-                pathname: "/notice/[id]",
-                params: { id: item.id },
-            })}
+            onPress={() =>
+                router.push({
+                    pathname: "/notice/[id]",
+                    params: { id: item._id },
+                })
+            }
         >
             <View className="pt-0.5">
                 <Newspaper color="#005f8b" size={18} strokeWidth={1.8} />
@@ -32,8 +34,12 @@ export function NoticeCard({ item, index = 0 }: NoticeCardProps) {
                     {item.title}
                 </Text>
                 <View className="flex-row items-center gap-3">
-                    <Text className="text-[11px] text-disabled">{item.time}</Text>
-                    <Text className="text-[11px] text-disabled">{item.date}</Text>
+                    <Text className="text-[11px] text-disabled">
+                        {moment(item.createdAt).format("HH:mm")}
+                    </Text>
+                    <Text className="text-[11px] text-disabled">
+                        {moment(item.createdAt).format("DD/MM/YYYY")}
+                    </Text>
                 </View>
             </View>
 

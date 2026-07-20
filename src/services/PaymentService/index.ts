@@ -17,9 +17,13 @@ class PaymentService extends BaseService {
         return this.post('/delete', body);
     }
 
-    getPayment(body: object) {
+    getMyPaymentMethods(body: object = {}) {
         return this.post('/my-payment-methods', body);
+    }
+
+    getPaymentMethodById(body: object) {
+        return this.post('/detail', body);
     }
 }
 
-export default PaymentService;
+export const paymentService = new PaymentService();

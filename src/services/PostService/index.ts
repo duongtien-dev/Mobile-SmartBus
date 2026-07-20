@@ -2,19 +2,19 @@ import BaseService from '@/services/BaseService';
 
 class PostService extends BaseService {
     constructor() {
-        super('/post');
+        super('/posts');
     }
 
     createPost(body: object) {
         return this.post('/create', body);
     }
 
-    getPosts(body: object) {
-        return this.post('/list', body);
+    listPosts(body: object) {
+        return this.post('/listPosts', body);
     }
 
-    getPostById(body: object) {
-        return this.post('/getById', body);
+    getPostDetail(body: object) {
+        return this.post('/detail', body);
     }
 
     updatePost(body: object) {
@@ -24,7 +24,6 @@ class PostService extends BaseService {
     deletePost(body: object) {
         return this.post('/delete', body);
     }
-
 }
 
-export default PostService;
+export const postService = new PostService();

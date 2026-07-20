@@ -1,23 +1,64 @@
+import { PageHeader } from "@/components/PageHeader";
+import type { IPost } from "@/models/post";
+import { postService } from "@/services/PostService";
 import { Image } from "expo-image";
 import { router } from "expo-router";
-import { Pressable, ScrollView, Text, View } from "react-native";
+import moment from "moment";
+import { useEffect, useState } from "react";
+import {
+    ActivityIndicator,
+    Pressable,
+    ScrollView,
+    Text,
+    View,
+} from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { PageHeader } from "@/components/PageHeader";
-import {
-    NOTICE_TYPE_LABELS,
-    getNoticeById,
-} from "@/constants/notices";
-
 type Props = {
-    id: string;
+    id?: string | string[];
 };
 
 export default function NoticeDetailScreen({ id }: Props) {
     const insets = useSafeAreaInsets();
-    const notice = getNoticeById(id);
+    const postId = Array.isArray(id) ? id[0] : id;
+    const [post, setPost] = useState<IPost | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
 
-    if (!notice) {
+    useEffect(() => {
+        if (!postId) {
+            setPost(null);
+            setIsLoading(false);
+            return;
+        }
+
+        const fetchPostDetail = async () => {
+            setIsLoading(true);
+
+            try {
+                const response = await postService.getPostDetail({ id: postId });
+                setPost(response.data ?? null);
+            } catch {
+                setPost(null);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchPostDetail();
+    }, [postId]);
+
+    if (isLoading) {
+        return (
+            <View
+                className="flex-1 items-center justify-center bg-background"
+                style={{ paddingTop: insets.top }}
+            >
+                <ActivityIndicator color="#005f8b" />
+            </View>
+        );
+    }
+
+    if (!post) {
         return (
             <View
                 className="flex-1 items-center justify-center bg-background px-6"
@@ -38,6 +79,8 @@ export default function NoticeDetailScreen({ id }: Props) {
         );
     }
 
+    const image = post.images?.[0];
+
     return (
         <View className="flex-1 bg-background">
             <PageHeader title="Chi tiết" isIconRight={true} />
@@ -47,33 +90,39 @@ export default function NoticeDetailScreen({ id }: Props) {
                 contentContainerClassName="px-5 pb-8 pt-4"
                 showsVerticalScrollIndicator={false}
             >
-                <View className="self-start rounded-full bg-accent-light px-3 py-1">
-                    <Text className="text-xs font-semibold text-primary">
-                        {NOTICE_TYPE_LABELS[notice.type]}
-                    </Text>
-                </View>
+                {post.category ? (
+                    <View className="self-start rounded-full bg-accent-light px-3 py-1">
+                        <Text className="text-xs font-semibold text-primary">
+                            {post.category}
+                        </Text>
+                    </View>
+                ) : null}
 
                 <Text className="mt-4 text-xl font-bold leading-7 text-primary">
-                    {notice.title}
+                    {post.title}
                 </Text>
 
                 <View className="mt-3 flex-row items-center gap-3">
-                    <Text className="text-sm text-text-muted">{notice.time}</Text>
-                    <Text className="text-sm text-text-muted">{notice.date}</Text>
+                    <Text className="text-sm text-text-muted">
+                        {moment(post.createdAt).format("HH:mm")}
+                    </Text>
+                    <Text className="text-sm text-text-muted">
+                        {moment(post.createdAt).format("DD/MM/YYYY")}
+                    </Text>
                 </View>
 
-                {notice.image ? (
+                {image ? (
                     <View className="mt-5 overflow-hidden rounded-xl">
                         <Image
                             className="h-48 w-full"
                             contentFit="cover"
-                            source={notice.image}
+                            source={image}
                         />
                     </View>
                 ) : null}
 
                 <Text className="mt-5 text-base leading-7 text-text-primary">
-                    {notice.content}
+                    {post.content || post.summary}
                 </Text>
             </ScrollView>
         </View>

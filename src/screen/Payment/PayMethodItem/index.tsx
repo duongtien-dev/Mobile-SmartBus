@@ -1,10 +1,36 @@
-import type { PaymentMethod } from "@/constants/payment";
+import type { IPaymentMethod } from "@/models/paymentMethod";
 import { cn } from "@/lib/utils";
 import { Image } from "expo-image";
 import { Pressable, Text, View } from "react-native";
 
+const PROVIDER_LABELS: Record<IPaymentMethod["provider"], string> = {
+    momo: "MoMo",
+    zalopay: "Zalopay",
+    shopeepay: "ShopeePay",
+    visa: "Thẻ quốc tế",
+    napas: "Ngân hàng nội địa",
+};
+
+function getPaymentLabel(method: IPaymentMethod) {
+    const base = PROVIDER_LABELS[method.provider] ?? method.provider;
+
+    if (method.cardNumber) {
+        return `${base} •••• ${method.cardNumber.slice(-4)}`;
+    }
+
+    if (method.accountNumber) {
+        return `${base} •••• ${method.accountNumber.slice(-4)}`;
+    }
+
+    if (method.phoneNumber) {
+        return `${base} - ${method.phoneNumber}`;
+    }
+
+    return base;
+}
+
 type PayMethodItemProps = {
-    method: PaymentMethod;
+    method: IPaymentMethod;
     index: number;
     onPress?: () => void;
 };
@@ -25,12 +51,18 @@ export function PayMethodItem({
             onPress={onPress}
         >
             <View
-                className={cn("h-11 w-11 items-center justify-center rounded-full", isAlt ? "bg-surface-elevated" : "bg-surface")}
+                className={cn(
+                    "h-11 w-11 items-center justify-center rounded-full",
+                    isAlt ? "bg-surface-elevated" : "bg-surface",
+                )}
             >
-                <Image source={require("../../../../assets/images/bank.png")} className="h-6 w-6" />
+                <Image
+                    source={require("../../../../assets/images/bank.png")}
+                    className="h-6 w-6"
+                />
             </View>
             <Text className="flex-1 text-base font-medium text-text-primary">
-                {method.label}
+                {getPaymentLabel(method)}
             </Text>
         </Pressable>
     );

@@ -1,42 +1,55 @@
 import { PageHeader } from "@/components/PageHeader";
 import TabContainer from "@/components/TabContainer";
-import {
-    NEWS_ITEMS,
-    NOTIFICATION_ITEMS,
-} from "@/constants/notices";
+import usePaginationList from "@/hooks/usePaginationList";
+import type { IPost } from "@/models/post";
+import { postService } from "@/services/PostService";
 import { Image } from "expo-image";
-import { useMemo, useState } from "react";
-import { ScrollView, View } from "react-native";
+import { useEffect, useState } from "react";
+import { ActivityIndicator, FlatList, Text, View } from "react-native";
 import { NoticeCard } from "./NoticeCard";
+
+const PAGE_SIZE = 10;
 
 const listTabs = [
     {
-        label: "Thông báo",
-        key: "notifications",
+        label: "Mới nhất",
+        key: "newest",
     },
     {
-        label: "Tin tức",
-        key: "news",
+        label: "Cũ nhất",
+        key: "oldest",
     },
-];
+] as const;
+
+type PostSort = (typeof listTabs)[number]["key"];
 
 export default function NotificationsScreen() {
-    const [activeTab, setActiveTab] = useState<string>("notifications");
+    const [activeTab, setActiveTab] = useState<PostSort>("newest");
 
-    const items = useMemo(
-        () => (activeTab === "notifications" ? NOTIFICATION_ITEMS : NEWS_ITEMS),
-        [activeTab],
-    );
+    const {
+        list: posts,
+        loadFirstPage,
+        loadMore,
+        isSkeletonLoading,
+        isLoadingMore,
+    } = usePaginationList<IPost, { sort: PostSort }>({
+        fetchFn: async (payload) => {
+            const response = await postService.listPosts(payload);
+            return response.data ?? [];
+        },
+        limit: PAGE_SIZE,
+        params: { sort: activeTab },
+    });
+
+    useEffect(() => {
+        loadFirstPage();
+    }, [activeTab]);
 
     return (
         <View className="flex-1 bg-background">
-            <PageHeader title="Thông báo" showBack={false} />
+            <PageHeader title="Thông báo" isIconBack={false} />
 
-            <ScrollView
-                className="flex-1"
-                contentContainerClassName="px-5 flex-col gap-3"
-                showsVerticalScrollIndicator={false}
-            >
+            <View className="px-5">
                 <View className="flex-col gap-5 overflow-hidden bg-surface-elevated">
                     <View className="relative h-48 overflow-hidden rounded-lg">
                         <Image
@@ -52,18 +65,43 @@ export default function NotificationsScreen() {
                             label: tab.label,
                         }))}
                         value={activeTab}
-                        onChange={(value) => setActiveTab(value)}
+                        onChange={(value) => setActiveTab(value as PostSort)}
                         variant="underline"
                         tabListClassName="justify-center gap-10"
                     />
                 </View>
+            </View>
 
-                <View className="bg-surface-elevated">
-                    {items.map((item, index) => (
-                        <NoticeCard key={item.id} item={item} index={index} />
-                    ))}
-                </View>
-            </ScrollView>
+            <FlatList
+                className="mt-3 flex-1"
+                data={posts}
+                keyExtractor={(item) => item._id}
+                renderItem={({ item, index }) => (
+                    <NoticeCard item={item} index={index} />
+                )}
+                onEndReached={loadMore}
+                onEndReachedThreshold={0.5}
+                showsVerticalScrollIndicator={false}
+                contentContainerClassName="px-5 pb-8"
+                ListEmptyComponent={
+                    isSkeletonLoading ? (
+                        <View className="items-center bg-surface-elevated py-10">
+                            <ActivityIndicator color="#005f8b" />
+                        </View>
+                    ) : (
+                        <Text className="bg-surface-elevated py-10 text-center text-sm text-text-muted">
+                            Chưa có tin tức
+                        </Text>
+                    )
+                }
+                ListFooterComponent={
+                    isLoadingMore ? (
+                        <View className="items-center py-4">
+                            <ActivityIndicator color="#005f8b" />
+                        </View>
+                    ) : null
+                }
+            />
         </View>
     );
 }

@@ -1,7 +1,7 @@
 import { PageHeader } from "@/components/PageHeader";
-import { PAYMENT_METHODS } from "@/constants/payment";
-import { PayMethodItem } from "@/screen/Payment/PayMethodItem";
-import { router, type Href } from "expo-router";
+import { PAYMENT_METHOD_OPTIONS } from "@/constants/payment";
+import { PaymentOptionItem } from "@/screen/Payment/PaymentOptionItem";
+import { router } from "expo-router";
 import { ScrollView, View } from "react-native";
 
 export default function AddPaymentMethodScreen() {
@@ -13,12 +13,12 @@ export default function AddPaymentMethodScreen() {
                 className="mt-2 flex-1"
                 showsVerticalScrollIndicator={false}
             >
-                {PAYMENT_METHODS.map((method, index) => (
-                    <PayMethodItem
+                {PAYMENT_METHOD_OPTIONS.map((method, index) => (
+                    <PaymentOptionItem
                         key={method.id}
                         method={method}
                         index={index}
-                        onPress={() => router.push("/payment/visa" as Href)}
+                        onPress={() => router.push(method.route)}
                     />
                 ))}
             </ScrollView>

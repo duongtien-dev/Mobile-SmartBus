@@ -1,14 +1,18 @@
+import type { IPost } from "@/models/post";
 import { Image } from "expo-image";
+import moment from "moment";
 import { Pressable, Text, View } from "react-native";
 
-import type { NewsItem } from "@/constants/home";
+const DEFAULT_NEWS_IMAGE = require("../../../../assets/images/news.png");
 
 type NewsCardProps = {
-    item: NewsItem;
+    item: IPost;
     onPress?: () => void;
 };
 
 export function NewsCard({ item, onPress }: NewsCardProps) {
+    const image = item.images?.[0] ?? DEFAULT_NEWS_IMAGE;
+
     return (
         <Pressable
             accessibilityRole="button"
@@ -19,7 +23,7 @@ export function NewsCard({ item, onPress }: NewsCardProps) {
                 <Image
                     className="h-28 w-full"
                     contentFit="cover"
-                    source={item.image}
+                    source={image}
                 />
                 <View className="gap-1 p-3">
                     <Text
@@ -28,7 +32,9 @@ export function NewsCard({ item, onPress }: NewsCardProps) {
                     >
                         {item.title}
                     </Text>
-                    <Text className="text-xs text-text-muted">{item.date}</Text>
+                    <Text className="text-xs text-text-muted">
+                        {moment(item.createdAt).format("DD/MM/YYYY")}
+                    </Text>
                 </View>
             </View>
         </Pressable>

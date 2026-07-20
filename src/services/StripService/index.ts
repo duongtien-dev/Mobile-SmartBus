@@ -4,7 +4,8 @@ class StripService extends BaseService {
     constructor() {
         super('');
     }
-    suggestionLocation(body: object) {
+
+    suggestLocations(body: object) {
         return this.post('/suggest-locations', body);
     }
 
@@ -15,7 +16,6 @@ class StripService extends BaseService {
     stripDetail(body: object) {
         return this.post('/strips/detail', body);
     }
-
 }
 
-export default StripService;
+export const stripService = new StripService();
