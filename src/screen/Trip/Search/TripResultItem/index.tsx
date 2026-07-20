@@ -1,6 +1,7 @@
 import type { ITrip, ITripDetail, ITripLocation } from "@/models/trip";
 import { TripDetailPanel } from "@/screen/Trip/Search/TripDetail";
 import { tripService } from "@/services/TripService";
+import { router } from "expo-router";
 import { Bus, ChevronRight, Footprints, Plus } from "lucide-react-native";
 import { Fragment, useState } from "react";
 import { ActivityIndicator, Pressable, Text, View } from "react-native";
@@ -89,6 +90,24 @@ export function TripResultItem({
         }
     };
 
+    const busSegment = trip.segments.find((segment) => segment.type === "bus");
+
+    const handleBuyTicket = () => {
+        router.push({
+            pathname: "/trips/tickets",
+            params: {
+                originName,
+                destinationName,
+                originLat: String(origin.lat),
+                originLng: String(origin.lng),
+                destinationLat: String(destination.lat),
+                destinationLng: String(destination.lng),
+                pickupStopName: busSegment?.pickupStopName ?? "",
+                routeCode: busSegment?.code ?? trip.meta?.code ?? "",
+            },
+        } as never);
+    };
+
     return (
         <View className="border-b border-border py-4">
             <View className="flex-row items-start justify-between gap-4">
@@ -96,7 +115,10 @@ export function TripResultItem({
                     {formatDuration(trip.totalDuration)}
                 </Text>
 
-                <Pressable className="items-center active:opacity-80">
+                <Pressable
+                    className="items-center active:opacity-80"
+                    onPress={handleBuyTicket}
+                >
                     <View className="h-10 w-10 items-center justify-center rounded border border-primary">
                         <Plus color="#005f8b" size={18} />
                     </View>
