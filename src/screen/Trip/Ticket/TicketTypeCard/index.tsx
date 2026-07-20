@@ -10,33 +10,41 @@ type TicketTypeCardProps = {
 export function TicketTypeCard({ option, onPress }: TicketTypeCardProps) {
     return (
         <Pressable
-            className="flex-row items-center gap-4 rounded-xl bg-surface px-4 py-4 shadow-sm active:opacity-80"
+            className="flex-row items-center gap-4 rounded-2xl border border-primary/10 bg-white px-4 py-4 shadow-sm active:opacity-80"
             onPress={onPress}
         >
-            <Ticket color="#1f2937" size={28} strokeWidth={1.5} />
+            <View className="h-14 w-14 items-center justify-center rounded-2xl bg-primary/10">
+                <Ticket color="#005f8b" size={30} strokeWidth={1.8} />
+            </View>
 
-            <View className="flex-1 gap-1.5">
-                <Text className="text-base font-bold text-primary">
+            <View className="flex-1 gap-2">
+                <View className="self-start rounded-full bg-primary/10 px-2.5 py-1">
+                    <Text className="text-[11px] font-bold uppercase tracking-wide text-primary">
+                        Vé xe buýt
+                    </Text>
+                </View>
+
+                <Text className="text-lg font-bold text-primary">
                     {option.title}
                 </Text>
 
                 <View className="flex-row items-center gap-1.5">
-                    <Clock color="#6b7280" size={14} />
-                    <Text className="text-xs text-text-muted">
+                    <Clock color="#64748b" size={15} />
+                    <Text className="text-sm text-text-muted">
                         {option.validity}
                     </Text>
                 </View>
 
-                <View className="flex-row items-center gap-1.5">
-                    <DollarSign color="#6b7280" size={14} />
-                    <Text className="text-xs text-text-muted">
+                <View className="mt-1 flex-row items-center gap-1.5">
+                    <DollarSign size={16} />
+                    <Text className="text-base font-semibold text-text-primary">
                         {option.priceLabel}
                     </Text>
                 </View>
             </View>
 
-            <View className="h-8 w-8 items-center justify-center rounded-full bg-surface-elevated">
-                <ChevronRight color="#9ca3af" size={18} />
+            <View className="h-10 w-10 items-center justify-center rounded-full bg-primary/10">
+                <ChevronRight color="#005f8b" size={20} />
             </View>
         </Pressable>
     );
