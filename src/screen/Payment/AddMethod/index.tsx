@@ -1,6 +1,6 @@
 import { PageHeader } from "@/components/PageHeader";
 import { PAYMENT_METHODS } from "@/constants/payment";
-import { PayMethodItem } from "@/screen/Payment/PayMethodItem";
+import { PaymentOptionItem } from "@/screen/Payment/PaymentOptionItem";
 import { router, type Href } from "expo-router";
 import { ScrollView, View } from "react-native";
 
@@ -14,7 +14,7 @@ export default function AddPaymentMethodScreen() {
                 showsVerticalScrollIndicator={false}
             >
                 {PAYMENT_METHODS.map((method, index) => (
-                    <PayMethodItem
+                    <PaymentOptionItem
                         key={method.id}
                         method={method}
                         index={index}
