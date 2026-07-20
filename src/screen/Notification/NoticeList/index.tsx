@@ -1,84 +1,64 @@
 import { PageHeader } from "@/components/PageHeader";
-import { Pagination } from "@/components/Pagination";
-import {
-    NOTICE_CATEGORY_LABELS,
-    type NoticeCategory,
-    getNewsByCategory,
-} from "@/constants/notices";
+import usePaginationList from "@/hooks/usePaginationList";
+import type { IPost } from "@/models/post";
 import { NoticeCard } from "@/screen/Notification/NoticeCard";
-import { useMemo, useState } from "react";
-import { ScrollView, Text, View } from "react-native";
-
-const PAGE_SIZE = 5;
-
-type NoticeSectionProps = {
-    category: NoticeCategory;
-    page?: number;
-    onPageChange?: (page: number) => void;
-};
-
-function NoticeSection({
-    category,
-    page = 1,
-    onPageChange,
-}: NoticeSectionProps) {
-    const allItems = getNewsByCategory(category);
-    const totalPages = Math.max(1, Math.ceil(allItems.length / PAGE_SIZE));
-
-    const items = useMemo(() => {
-        if (!onPageChange) {
-            return allItems;
-        }
-
-        const start = (page - 1) * PAGE_SIZE;
-        return allItems.slice(start, start + PAGE_SIZE);
-    }, [allItems, onPageChange, page]);
-
-    return (
-        <View className="flex-col gap-4">
-            <Text className="px-4 py-4 text-lg font-bold text-primary">
-                {NOTICE_CATEGORY_LABELS[category]}
-            </Text>
-
-            <View className="bg-surface-elevated">
-                {items.map((item, index) => (
-                    <NoticeCard key={item.id} item={item} index={index} />
-                ))}
-            </View>
-
-            {onPageChange ? (
-                <View className="items-center justify-center">
-                    <Pagination
-                        page={page}
-                        totalPages={totalPages}
-                        onPageChange={onPageChange}
-                    />
-                </View>
-            ) : null}
-        </View>
-    );
-}
+import { postService } from "@/services/PostService";
+import { useEffect } from "react";
+import { ActivityIndicator, FlatList, Text, View } from "react-native";
 
 export default function NoticeListScreen() {
-    const [danabusPage, setDanabusPage] = useState(1);
+    const {
+        list: posts,
+        loadFirstPage,
+        loadMore,
+        isSkeletonLoading,
+        isLoadingMore,
+    } = usePaginationList<IPost>({
+        fetchFn: async (payload) => {
+            const response = await postService.listPosts(payload);
+            return response.data ?? [];
+        },
+        limit: 18,
+        params: {},
+    });
+
+    useEffect(() => {
+        loadFirstPage();
+    }, []);
 
     return (
         <View className="flex-1 bg-background">
             <PageHeader title="Tin tức" isIconBack={true} />
 
-            <ScrollView
-                className="flex-1"
-                contentContainerClassName="pb-8"
+            <FlatList
+                data={posts}
+                keyExtractor={(item) => item._id}
+                renderItem={({ item, index }) => (
+                    <NoticeCard item={item} index={index} />
+                )}
+                onEndReached={loadMore}
+                onEndReachedThreshold={0.5}
                 showsVerticalScrollIndicator={false}
-            >
-                <NoticeSection
-                    category="danabus"
-                    page={danabusPage}
-                    onPageChange={setDanabusPage}
-                />
-
-                <NoticeSection category="transport" />
-            </ScrollView>
+                contentContainerClassName="pb-8"
+                ListEmptyComponent={
+                    isSkeletonLoading ? (
+                        <View className="items-center py-10">
+                            <ActivityIndicator color="#005f8b" />
+                        </View>
+                    ) : (
+                        <Text className="px-4 py-10 text-center text-sm text-text-muted">
+                            Chưa có tin tức
+                        </Text>
+                    )
+                }
+                ListFooterComponent={
+                    isLoadingMore ? (
+                        <View className="items-center py-4">
+                            <ActivityIndicator color="#005f8b" />
+                        </View>
+                    ) : null
+                }
+            />
         </View>
     );
 }
