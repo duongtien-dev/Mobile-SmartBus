@@ -1,5 +1,4 @@
 import { Button } from "@/components/Button";
-import InputText from "@/components/Input/InputText";
 import { PageHeader } from "@/components/PageHeader";
 import { QUICK_ACTIONS } from "@/constants/home";
 import usePaginationList from "@/hooks/usePaginationList";
@@ -16,6 +15,7 @@ import {
 } from "react-native";
 import { NewsCard } from "./NewCard";
 import { QuickActionButton } from "./QuickAction";
+import { SuggestLocationInput } from "./SuggestLocationInput";
 
 const NEWS_LIMIT = 10;
 
@@ -42,36 +42,24 @@ export default function HomeScreen() {
     return (
         <View className="flex-1 bg-background">
             <PageHeader isIconRight={true} />
-            <ScrollView
-                className="flex-1"
-                contentContainerClassName="px-5 flex-col gap-3"
-                keyboardShouldPersistTaps="handled"
-                showsVerticalScrollIndicator={false}
-            >
-                <View className="gap-4">
-                    <View className="gap-1.5">
-                        <Text className="text-sm font-semibold text-text-primary">
-                            Điểm đi
-                        </Text>
-                        <InputText
-                            placeholder="Địa chỉ hiện tại"
-                            value={origin}
-                            onChangeText={setOrigin}
-                            className="w-full"
-                        />
-                    </View>
 
-                    <View className="gap-1.5">
-                        <Text className="text-sm font-semibold text-text-primary">
-                            Điểm đến
-                        </Text>
-                        <InputText
-                            placeholder="Điểm đến"
-                            value={destination}
-                            onChangeText={setDestination}
-                            className="w-full"
-                        />
-                    </View>
+            <View className="z-50 px-5">
+                <View className="gap-4">
+                    <SuggestLocationInput
+                        label="Điểm đi"
+                        placeholder="Địa chỉ hiện tại"
+                        value={origin}
+                        onChangeText={setOrigin}
+                        zIndex={30}
+                    />
+
+                    <SuggestLocationInput
+                        label="Điểm đến"
+                        placeholder="Điểm đến"
+                        value={destination}
+                        onChangeText={setDestination}
+                        zIndex={20}
+                    />
 
                     <Button
                         type="accent"
@@ -81,8 +69,15 @@ export default function HomeScreen() {
                         Tìm
                     </Button>
                 </View>
+            </View>
 
-                <View className="mt-6 flex-row">
+            <ScrollView
+                className="flex-1"
+                contentContainerClassName="px-5 flex-col gap-3 pb-8 pt-3"
+                keyboardShouldPersistTaps="handled"
+                showsVerticalScrollIndicator={false}
+            >
+                <View className="mt-3 flex-row">
                     {QUICK_ACTIONS.map((action) => (
                         <QuickActionButton key={action.id} action={action} />
                     ))}
