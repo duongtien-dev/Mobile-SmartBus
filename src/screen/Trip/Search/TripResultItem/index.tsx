@@ -1,7 +1,10 @@
-import type { ITrip } from "@/models/trip";
+import type { ITrip, ITripDetail, ITripLocation } from "@/models/trip";
+import { TripDetailPanel } from "@/screen/Trip/Search/TripDetail";
+import { tripService } from "@/services/TripService";
 import { Bus, ChevronRight, Footprints, Plus } from "lucide-react-native";
-import { Fragment } from "react";
-import { Pressable, Text, View } from "react-native";
+import { Fragment, useState } from "react";
+import { ActivityIndicator, Pressable, Text, View } from "react-native";
+import Toast from "react-native-toast-message";
 
 function formatDuration(minutes: number) {
     if (minutes < 60) {
@@ -20,9 +23,72 @@ function formatDuration(minutes: number) {
 
 type TripResultItemProps = {
     trip: ITrip;
+    origin: ITripLocation;
+    destination: ITripLocation;
+    originName: string;
+    destinationName: string;
 };
 
-export function TripResultItem({ trip }: TripResultItemProps) {
+export function TripResultItem({
+    trip,
+    origin,
+    destination,
+    originName,
+    destinationName,
+}: TripResultItemProps) {
+    const [expanded, setExpanded] = useState(false);
+    const [detail, setDetail] = useState<ITripDetail | null>(null);
+    const [isLoadingDetail, setIsLoadingDetail] = useState(false);
+
+    const canShowDetail =
+        trip.type === "direct" &&
+        trip.meta?.routeId &&
+        trip.meta.pickupOrder != null &&
+        trip.meta.dropoffOrder != null;
+
+    const handleToggleDetail = async () => {
+        if (expanded) {
+            setExpanded(false);
+            return;
+        }
+
+        if (!canShowDetail) {
+            Toast.show({
+                type: "error",
+                text1: "Chưa hỗ trợ xem chi tiết lộ trình này",
+            });
+            return;
+        }
+
+        setExpanded(true);
+
+        if (detail) {
+            return;
+        }
+
+        setIsLoadingDetail(true);
+
+        try {
+            const response = await tripService.getTripDetail({
+                routeId: trip.meta?.routeId,
+                pickupOrder: trip.meta?.pickupOrder,
+                dropoffOrder: trip.meta?.dropoffOrder,
+                origin,
+                destination,
+            });
+
+            setDetail((response.data ?? null) as ITripDetail | null);
+        } catch {
+            Toast.show({
+                type: "error",
+                text1: "Không thể tải chi tiết hành trình",
+            });
+            setExpanded(false);
+        } finally {
+            setIsLoadingDetail(false);
+        }
+    };
+
     return (
         <View className="border-b border-border py-4">
             <View className="flex-row items-start justify-between gap-4">
@@ -63,11 +129,29 @@ export function TripResultItem({ trip }: TripResultItemProps) {
                 ))}
             </View>
 
-            <Pressable className="mt-4 active:opacity-80">
+            <Pressable
+                className="mt-4 active:opacity-80"
+                onPress={handleToggleDetail}
+            >
                 <Text className="text-sm font-medium text-accent">
-                    {">"} Xem thêm chi tiết
+                    {expanded ? "^ Ẩn chi tiết" : "> Xem thêm chi tiết"}
                 </Text>
             </Pressable>
+
+            {expanded ? (
+                isLoadingDetail ? (
+                    <View className="items-center py-6">
+                        <ActivityIndicator color="#005f8b" />
+                    </View>
+                ) : detail ? (
+                    <TripDetailPanel
+                        trip={trip}
+                        detail={detail}
+                        originName={originName}
+                        destinationName={destinationName}
+                    />
+                ) : null
+            ) : null}
         </View>
     );
 }

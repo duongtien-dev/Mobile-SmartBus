@@ -107,6 +107,16 @@ export default function TripSearchScreen() {
                             <TripResultItem
                                 key={`${trip.type}-${trip.totalDuration}-${index}`}
                                 trip={trip}
+                                origin={{
+                                    lat: originLat,
+                                    lng: originLng,
+                                }}
+                                destination={{
+                                    lat: destinationLat,
+                                    lng: destinationLng,
+                                }}
+                                originName={originName}
+                                destinationName={destinationName}
                             />
                         ))
                     ) : (
