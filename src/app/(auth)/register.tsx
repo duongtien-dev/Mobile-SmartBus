@@ -1,6 +1,6 @@
 import { Button } from "@/components/Button";
 import InputText from "@/components/Input/InputText";
-import { AuthService } from "@/services";
+import { authService } from "@/services/AuthService";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import { Eye, EyeOff } from "lucide-react-native";
@@ -36,7 +36,7 @@ export default function Register() {
         setIsSubmitting(true);
 
         try {
-            const response = await AuthService.register(user);
+            const response = await authService.register(user);
 
             Toast.show({
                 type: "success",

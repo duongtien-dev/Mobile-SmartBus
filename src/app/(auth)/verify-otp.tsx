@@ -1,5 +1,5 @@
 import { Button } from "@/components/Button";
-import AuthService from "@/services/AuthService";
+import { authService } from "@/services/AuthService";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
@@ -16,7 +16,6 @@ import Toast from "react-native-toast-message";
 
 const OTP_LENGTH = 6;
 const COUNTDOWN_SECONDS = 60;
-const authService = new AuthService();
 
 function formatTime(seconds: number) {
     const minutes = Math.floor(seconds / 60);
@@ -59,7 +58,7 @@ export default function VerifyOtp() {
             });
 
             router.replace("/login");
-        } catch (error) {
+        } catch {
             Toast.show({
                 type: "error",
                 text1: "Xác thực thất bại",
