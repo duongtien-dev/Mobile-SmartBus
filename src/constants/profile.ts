@@ -93,6 +93,7 @@ export const PROFILE_MENU_SECTIONS: ProfileMenuSection[] = [
                 label: "Tuyến yêu thích",
                 description: "Lưu nhanh tuyến thường dùng",
                 icon: Heart,
+                href: "/routes/favorites",
             },
             {
                 id: "nearby",

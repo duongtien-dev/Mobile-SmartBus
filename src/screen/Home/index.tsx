@@ -126,11 +126,7 @@ export default function HomeScreen() {
                         <QuickActionButton
                             key={action.id}
                             action={action}
-                            onPress={() => {
-                                if (action.id === "lookup") {
-                                    router.push("/routes/lookup" as never);
-                                }
-                            }}
+                            onPress={() => router.push(action.path as any)}
                         />
                     ))}
                 </View>

@@ -15,11 +15,10 @@ import {
     Text,
     View,
 } from "react-native";
-import Toast from "react-native-toast-message";
 import { useToastify } from "@/hooks/useToastify";
 
 export default function Login() {
-    const { setIsAuthenticated, setUser } = useAuthStore();
+    const { setIsAuthenticated, setUser, setToken } = useAuthStore();
     const showToast = useToastify();
 
     const [email, setEmail] = useState("");
@@ -36,12 +35,8 @@ export default function Login() {
         const response = await authService.login({ email, password });
         const { user, token } = response.data;
 
-        setUser({
-            name: user?.full_name,
-            email: user?.email,
-            avatar: "",
-            token: token,
-        });
+        setUser(user);
+        setToken(token);
         setIsAuthenticated(true);
 
         showToast({

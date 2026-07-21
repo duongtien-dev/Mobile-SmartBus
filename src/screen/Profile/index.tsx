@@ -51,6 +51,7 @@ export default function ProfileScreen() {
             case "notifications":
             case "nearby":
             case "help":
+            case "favorites":
                 if (item.href) {
                     router.push(item.href as Href);
                 }
@@ -81,7 +82,7 @@ export default function ProfileScreen() {
                 showsVerticalScrollIndicator={false}
             >
                 <ProfileUserCard
-                    name={user?.name}
+                    name={user?.full_name}
                     email={user?.email}
                     isAuthenticated={isAuthenticated}
                     onEditPress={() =>

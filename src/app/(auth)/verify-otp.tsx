@@ -72,8 +72,8 @@ export default function VerifyOtp() {
     return (
         <View className="flex-1 bg-background">
             <View
-                pointerEvents="none"
                 className="absolute -right-24 -top-16 h-72 w-72 overflow-hidden rounded-full opacity-40"
+                style={{ pointerEvents: "none" }}
             >
                 <LinearGradient
                     colors={["#00a2e8", "#ffc20e"]}
@@ -84,8 +84,8 @@ export default function VerifyOtp() {
             </View>
 
             <View
-                pointerEvents="none"
                 className="absolute -bottom-20 -right-16 h-64 w-64 overflow-hidden rounded-full opacity-35"
+                style={{ pointerEvents: "none" }}
             >
                 <LinearGradient
                     colors={["#ffe082", "#00a2e8"]}

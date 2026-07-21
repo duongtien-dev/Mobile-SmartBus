@@ -19,4 +19,3 @@ class FavoriteRouteService extends BaseService {
 }
 
 export const favoriteRouteService = new FavoriteRouteService();
-export default FavoriteRouteService;
