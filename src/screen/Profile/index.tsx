@@ -29,6 +29,10 @@ export default function ProfileScreen() {
     const appVersion =
         Constants.expoConfig?.version ?? Constants.nativeAppVersion ?? "1.0.0";
 
+    const handleEditProfilePress = () => {
+        router.push("/profile/edit" as Href);
+    };
+
     const handleItemPress = (item: ProfileMenuItemType) => {
         switch (item.id) {
             case "login":
@@ -55,6 +59,9 @@ export default function ProfileScreen() {
                 if (item.href) {
                     router.push(item.href as Href);
                 }
+                return;
+            case "edit-profile":
+                handleEditProfilePress();
                 return;
             case "about":
                 Alert.alert(
@@ -85,12 +92,7 @@ export default function ProfileScreen() {
                     name={user?.full_name}
                     email={user?.email}
                     isAuthenticated={isAuthenticated}
-                    onEditPress={() =>
-                        Alert.alert(
-                            "Thông tin cá nhân",
-                            "Tính năng đang được phát triển. Vui lòng quay lại sau.",
-                        )
-                    }
+                    onEditPress={handleEditProfilePress}
                 />
 
                 {PROFILE_MENU_SECTIONS.map((section) => (

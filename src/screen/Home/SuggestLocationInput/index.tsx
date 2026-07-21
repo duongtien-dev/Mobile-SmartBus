@@ -11,7 +11,7 @@ import {
     View,
 } from "react-native";
 
-type SuggestLocationInputProps = {
+type Props = {
     label: string;
     placeholder: string;
     value: string;
@@ -20,14 +20,11 @@ type SuggestLocationInputProps = {
     zIndex?: number;
 };
 
-export function SuggestLocationInput({
-    label,
-    placeholder,
-    value,
-    onChangeText,
-    onSelect,
-    zIndex = 10,
-}: SuggestLocationInputProps) {
+export function SuggestLocationInput({ ...Props }: Props) {
+    // Destructure props
+    const { label, placeholder, value, onChangeText, onSelect, zIndex = 10 } = Props;
+    // Destructure props
+
     const [isFocused, setIsFocused] = useState(false);
     const keyword = value.trim();
 
