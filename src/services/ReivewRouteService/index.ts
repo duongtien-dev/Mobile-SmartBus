@@ -13,6 +13,10 @@ class ReviewRouteService extends BaseService {
         return this.post('/listReviews', body);
     }
 
+    getReviewSummary(body: object) {
+        return this.post('/summary', body);
+    }
+
     updateReviewRoute(body: object) {
         return this.post('/update', body);
     }

@@ -1,21 +1,15 @@
+import useFetch from "@/hooks/useFetch";
 import usePaginationList from "@/hooks/usePaginationList";
-import {
-    buildReviewSummary,
-    type IReview,
-    type ReviewSummary,
-} from "@/models/review";
+import type { IReview, ReviewSummary } from "@/models/review";
 import { reviewRouteService } from "@/services/ReivewRouteService";
 import { Star } from "lucide-react-native";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 import {
     ActivityIndicator,
     FlatList,
     Text,
     View,
 } from "react-native";
-
-const PAGE_SIZE = 10;
-const SUMMARY_LIMIT = 100;
 
 const RATING_COLORS: Record<1 | 2 | 3 | 4 | 5, string> = {
     5: "#22c55e",
@@ -62,7 +56,7 @@ function ReviewSummarySection({ summary }: { summary: ReviewSummary }) {
 
             <View className="flex-row items-center gap-4">
                 <Text className="text-4xl font-bold text-text-primary">
-                    {summary.total ? summary.average.toFixed(1) : "—"}
+                    {summary.total ? summary.average.toFixed(1) : "0.0"}
                 </Text>
                 <View>
                     <RatingStars rating={summary.average} />
@@ -86,7 +80,7 @@ function ReviewSummarySection({ summary }: { summary: ReviewSummary }) {
                                 <View
                                     className="h-full rounded-full"
                                     style={{
-                                        width,
+                                        width: width as any,
                                         backgroundColor: RATING_COLORS[rating],
                                     }}
                                 />
@@ -118,8 +112,18 @@ function ReviewItem({ review }: { review: IReview }) {
 }
 
 export function ReviewsTab({ routeId }: ReviewsTabProps) {
-    const [summary, setSummary] = useState<ReviewSummary | null>(null);
-    const [isSummaryLoading, setIsSummaryLoading] = useState(true);
+    const {
+        data: summary,
+        isLoading: isSummaryLoading,
+        loadFetchFn: loadSummary,
+    } = useFetch<ReviewSummary>({
+        fetchFn: async () => {
+            const response = await reviewRouteService.getReviewSummary({
+                routeId,
+            });
+            return response.data;
+        },
+    });
 
     const {
         list: reviews,
@@ -132,7 +136,7 @@ export function ReviewsTab({ routeId }: ReviewsTabProps) {
             const response = await reviewRouteService.getReviewRoutes(payload);
             return response.data ?? [];
         },
-        limit: PAGE_SIZE,
+        limit: 12,
         params: { routeId, sort: "newest" },
     });
 
@@ -141,31 +145,7 @@ export function ReviewsTab({ routeId }: ReviewsTabProps) {
     }, [routeId]);
 
     useEffect(() => {
-        let mounted = true;
-
-        const fetchSummary = async () => {
-            setIsSummaryLoading(true);
-            try {
-                const response = await reviewRouteService.getReviewRoutes({
-                    routeId,
-                    page: 1,
-                    limit: SUMMARY_LIMIT,
-                    sort: "newest",
-                });
-                if (mounted) {
-                    setSummary(
-                        buildReviewSummary((response.data ?? []) as IReview[]),
-                    );
-                }
-            } finally {
-                if (mounted) setIsSummaryLoading(false);
-            }
-        };
-
-        fetchSummary();
-        return () => {
-            mounted = false;
-        };
+        loadSummary();
     }, [routeId]);
 
     const listHeader = useMemo(() => {
