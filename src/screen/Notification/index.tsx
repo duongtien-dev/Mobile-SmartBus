@@ -8,8 +8,6 @@ import { useEffect, useState } from "react";
 import { ActivityIndicator, FlatList, Text, View } from "react-native";
 import { NoticeCard } from "./NoticeCard";
 
-const PAGE_SIZE = 10;
-
 const listTabs = [
     {
         label: "Mới nhất",
@@ -37,7 +35,7 @@ export default function NotificationsScreen() {
             const response = await postService.listPosts(payload);
             return response.data ?? [];
         },
-        limit: PAGE_SIZE,
+        limit: 12,
         params: { sort: activeTab },
     });
 

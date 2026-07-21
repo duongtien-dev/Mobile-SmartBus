@@ -1,16 +1,16 @@
 import { Pressable, Text, View } from "react-native";
 
-type SectionHeaderProps = {
+type Props = {
     title: string;
     actionLabel?: string;
     onActionPress?: () => void;
 };
 
-export function SectionHeader({
-    title,
-    actionLabel,
-    onActionPress,
-}: SectionHeaderProps) {
+export function SectionHeader({ ...Props }: Props) {
+    // Destructure props
+    const { title, actionLabel, onActionPress } = Props;
+    // Destructure props
+
     return (
         <View className="mb-4 flex-row items-center justify-between">
             <Text className="text-sm font-bold tracking-wide text-primary">
