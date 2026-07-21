@@ -2,7 +2,7 @@ import BaseService from '@/services/BaseService';
 
 class RouteService extends BaseService {
     constructor() {
-        super('/route');
+        super('/routes');
     }
 
     createRoute(body: object) {
@@ -10,11 +10,11 @@ class RouteService extends BaseService {
     }
 
     getRoutes(body: object) {
-        return this.post('/list', body);
+        return this.post('/listRoutes', body);
     }
 
     getRouteById(body: object) {
-        return this.post('/getById', body);
+        return this.post('/detail', body);
     }
 
     updateRoute(body: object) {
@@ -24,7 +24,7 @@ class RouteService extends BaseService {
     deleteRoute(body: object) {
         return this.post('/delete', body);
     }
-
 }
 
+export const routeService = new RouteService();
 export default RouteService;

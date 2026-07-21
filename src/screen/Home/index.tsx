@@ -123,7 +123,15 @@ export default function HomeScreen() {
             >
                 <View className="mt-3 flex-row">
                     {QUICK_ACTIONS.map((action) => (
-                        <QuickActionButton key={action.id} action={action} />
+                        <QuickActionButton
+                            key={action.id}
+                            action={action}
+                            onPress={() => {
+                                if (action.id === "lookup") {
+                                    router.push("/routes/lookup" as never);
+                                }
+                            }}
+                        />
                     ))}
                 </View>
 
