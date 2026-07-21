@@ -1,11 +1,10 @@
-import InputText from "@/components/Input/InputText";
 import SearchInput from "@/components/SearchInput";
 import usePaginationList from "@/hooks/usePaginationList";
 import type { IRoute } from "@/models/route";
 import { RouteCard } from "@/screen/Route/Lookup/RouteCard";
 import { routeService } from "@/services/RouteService";
 import { router } from "expo-router";
-import { ArrowLeft, Search } from "lucide-react-native";
+import { ArrowLeft } from "lucide-react-native";
 import { useEffect, useState } from "react";
 import {
     ActivityIndicator,
@@ -23,11 +22,12 @@ export default function RouteLookupScreen() {
     const [searchInput, setSearchInput] = useState("");
     const {
         list: routes,
+        setList,
         loadFirstPage,
         loadMore,
         isSkeletonLoading,
         isLoadingMore,
-    } = usePaginationList<IRoute, { sort: "newest"; search: string }>({
+    } = usePaginationList<IRoute, { sort: string; search: string }>({
         fetchFn: async (payload) => {
             const response = await routeService.getRoutes(payload);
             return response.data ?? [];
@@ -40,10 +40,18 @@ export default function RouteLookupScreen() {
         loadFirstPage();
     }, [searchInput]);
 
+    const handleFavoriteChange = (routeId: string, isFavorite: boolean) => {
+        setList((prev) =>
+            prev.map((item) =>
+                item._id === routeId ? { ...item, isFavorite } : item,
+            ),
+        );
+    };
+
     return (
         <View className="flex-1 bg-background">
             <View className="bg-primary" style={{ paddingTop: insets.top }}>
-                <View className="h-12 flex-row items-center gap-2 px-4">
+                <View className="py-3 flex-row items-center gap-2 px-4">
                     <Pressable
                         accessibilityRole="button"
                         accessibilityLabel="Quay lại"
@@ -70,7 +78,12 @@ export default function RouteLookupScreen() {
                 className="flex-1"
                 data={routes}
                 keyExtractor={(item) => item._id}
-                renderItem={({ item }) => <RouteCard route={item} />}
+                renderItem={({ item }) => (
+                    <RouteCard
+                        route={item}
+                        onFavoriteChange={handleFavoriteChange}
+                    />
+                )}
                 onEndReached={loadMore}
                 onEndReachedThreshold={0.5}
                 showsVerticalScrollIndicator={false}

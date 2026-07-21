@@ -9,6 +9,7 @@ export interface IRoute {
     turnOnDay?: number;
     startName?: string;
     endName?: string;
+    isFavorite?: boolean;
     /** Giờ hoạt động hiển thị (nếu API bổ sung sau) */
     operatingHours?: string;
     /** Giá vé (nếu API bổ sung sau) */

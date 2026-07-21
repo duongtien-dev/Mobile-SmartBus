@@ -1,10 +1,13 @@
 import type { IRoute } from "@/models/route";
+import { favoriteRouteService } from "@/services/FavoriteRouteService";
 import { Clock, Heart, Star, Ticket } from "lucide-react-native";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Pressable, Text, View } from "react-native";
+import Toast from "react-native-toast-message";
 
 type RouteCardProps = {
     route: IRoute;
+    onFavoriteChange?: (routeId: string, isFavorite: boolean) => void;
 };
 
 function formatPrice(amount: number) {
@@ -21,13 +24,47 @@ function getRouteTitle(route: IRoute) {
     return route.code;
 }
 
-export function RouteCard({ route }: RouteCardProps) {
-    const [favorited, setFavorited] = useState(false);
+export function RouteCard({ route, onFavoriteChange }: RouteCardProps) {
+    const [favorited, setFavorited] = useState(Boolean(route.isFavorite));
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const title = getRouteTitle(route);
     const hasMeta =
         Boolean(route.operatingHours) ||
         route.price != null ||
         route.rating != null;
+
+    useEffect(() => {
+        setFavorited(Boolean(route.isFavorite));
+    }, [route.isFavorite, route._id]);
+
+    const handleToggleFavorite = async () => {
+        if (isSubmitting) return;
+
+        const nextValue = !favorited;
+        setFavorited(nextValue);
+        setIsSubmitting(true);
+
+        try {
+            if (nextValue) {
+                await favoriteRouteService.addFavorite({ routeId: route._id });
+            } else {
+                await favoriteRouteService.removeFavorite({
+                    routeId: route._id,
+                });
+            }
+            onFavoriteChange?.(route._id, nextValue);
+        } catch {
+            setFavorited(!nextValue);
+            Toast.show({
+                type: "error",
+                text1: nextValue
+                    ? "Không thể thêm yêu thích"
+                    : "Không thể bỏ yêu thích",
+            });
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
 
     return (
         <View className="flex-row items-start gap-3 border-b border-border px-5 py-4">
@@ -96,8 +133,9 @@ export function RouteCard({ route }: RouteCardProps) {
                         favorited ? "Bỏ yêu thích" : "Thêm yêu thích"
                     }
                     className="active:opacity-70"
+                    disabled={isSubmitting}
                     hitSlop={8}
-                    onPress={() => setFavorited((prev) => !prev)}
+                    onPress={handleToggleFavorite}
                 >
                     <Heart
                         color={favorited ? "#e50049" : "#94a3b8"}

@@ -1,9 +1,26 @@
-import { Tabs } from "expo-router";
+import useAuthStore from "@/store/auth.store";
+import { Redirect, Tabs } from "expo-router";
 
 import { NavigationTabs } from "@/components/navigation";
 import { TAB_CONFIG, TAB_ROUTES } from "@/constants/tabs";
+import { ActivityIndicator, View } from "react-native";
 
 export default function TabLayout() {
+    const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+    const isLoading = useAuthStore((state) => state.isLoading);
+
+    if (isLoading) {
+        return (
+            <View className="flex-1 items-center justify-center bg-background">
+                <ActivityIndicator color="#005f8b" />
+            </View>
+        );
+    }
+
+    if (!isAuthenticated) {
+        return <Redirect href="/login" />;
+    }
+
     return (
         <Tabs
             screenOptions={{ headerShown: false }}
