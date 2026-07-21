@@ -1,6 +1,7 @@
 import { Button } from "@/components/Button";
 import { PageHeader } from "@/components/PageHeader";
 import useFetch from "@/hooks/useFetch";
+import { useToastify } from "@/hooks/useToastify";
 import type { IPaymentMethod } from "@/models/paymentMethod";
 import { BankFormFields } from "@/screen/Payment/BankForm/BankFormFields";
 import {
@@ -20,10 +21,10 @@ import {
     Text,
     View,
 } from "react-native";
-import Toast from "react-native-toast-message";
 
 export default function UpdateBankFormScreen() {
     const { id } = useLocalSearchParams<{ id?: string }>();
+    const showToast = useToastify();
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [formData, setFormData] = useState<BankFormData>(INITIAL_BANK_FORM);
 
@@ -73,25 +74,17 @@ export default function UpdateBankFormScreen() {
             return;
         }
         setIsSubmitting(true);
+        const payload = parseBankFormData(formData);
+        const res = await paymentService.updatePayment({ id, ...payload });
 
-        try {
-            const payload = parseBankFormData(formData);
-            await paymentService.updatePayment({ id, ...payload });
-
-            Toast.show({
-                type: "success",
-                text1: "Cập nhật phương thức thành công",
-            });
-
+        showToast({
+            type: res.success ? "success" : "error",
+            content: res.success ? "Cập nhật phương thức thành công" : "Cập nhật phương thức thất bại",
+        });
+        if (res.success) {
             router.replace("/payment");
-        } catch {
-            Toast.show({
-                type: "error",
-                text1: "Cập nhật phương thức thất bại",
-            });
-        } finally {
-            setIsSubmitting(false);
         }
+        setIsSubmitting(false);
     };
 
     if (isLoading || !method) {

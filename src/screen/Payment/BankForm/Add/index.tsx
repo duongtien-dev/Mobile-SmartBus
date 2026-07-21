@@ -1,5 +1,6 @@
 import { Button } from "@/components/Button";
 import { PageHeader } from "@/components/PageHeader";
+import { useToastify } from "@/hooks/useToastify";
 import { BankFormFields } from "@/screen/Payment/BankForm/BankFormFields";
 import {
     INITIAL_BANK_FORM,
@@ -18,11 +19,11 @@ import {
     Text,
     View,
 } from "react-native";
-import Toast from "react-native-toast-message";
 
 export default function AddBankFormScreen() {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [formData, setFormData] = useState<BankFormData>(INITIAL_BANK_FORM);
+    const showToast = useToastify();
 
     const handleChange = (key: keyof BankFormData, value: string) => {
         setFormData((prev) => ({ ...prev, [key]: value }));
@@ -36,25 +37,17 @@ export default function AddBankFormScreen() {
         }
 
         setIsSubmitting(true);
+        const payload = parseBankFormData(formData);
+        const res = await paymentService.createPayment(payload);
 
-        try {
-            const payload = parseBankFormData(formData);
-            await paymentService.createPayment(payload);
-
-            Toast.show({
-                type: "success",
-                text1: "Thêm phương thức thành công",
-            });
-
+        showToast({
+            type: res.success ? "success" : "error",
+            content: res.success ? "Thêm phương thức thành công" : "Thêm phương thức thất bại",
+        });
+        if (res.success) {
             router.replace("/payment");
-        } catch {
-            Toast.show({
-                type: "error",
-                text1: "Thêm phương thức thất bại",
-            });
-        } finally {
-            setIsSubmitting(false);
         }
+        setIsSubmitting(false);
     };
 
     return (
