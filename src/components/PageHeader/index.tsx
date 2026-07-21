@@ -36,11 +36,11 @@ export function PageHeader({
             {/* Title always centered to full header width */}
             {title ? (
                 <View
-                    pointerEvents="none"
                     className="absolute inset-x-5 items-center justify-center"
                     style={{
                         top: insets.top + 12,
                         bottom: 12,
+                        pointerEvents: "none",
                     }}
                 >
                     <Text
