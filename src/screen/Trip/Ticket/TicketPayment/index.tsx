@@ -217,7 +217,7 @@ export default function TicketPaymentScreen() {
 
                             <Pressable
                                 className="mt-2 flex-row items-center gap-2 active:opacity-80"
-                                onPress={() => router.push("/payment/bank")}
+                                onPress={() => router.push("/payment/add")}
                             >
                                 <Plus color="#005f8b" size={18} />
                                 <Text className="text-sm font-medium text-accent">

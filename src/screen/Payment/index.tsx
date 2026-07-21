@@ -62,7 +62,7 @@ export default function PaymentScreen() {
                     type="primary"
                     variant="bold"
                     className="min-w-[180px] rounded-lg px-8"
-                    onPress={() => router.push("/payment/bank")}
+                    onPress={() => router.push("/payment/add")}
                 >
                     {hasPaymentMethods ? "Thêm phương thức" : "Thiết lập ngay"}
                 </Button>
