@@ -1,4 +1,6 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { create } from 'zustand';
+import { createJSONStorage, persist } from 'zustand/middleware';
 
 interface IUser {
     name: string;
@@ -16,33 +18,33 @@ type AuthState = {
     setUser: (user: IUser | null) => void;
     setLoading: (loading: boolean) => void;
     logout: () => void;
-    // fetchAuthenticatedUser: () => Promise<void>;
-}
+};
 
-const useAuthStore = create<AuthState>((set) => ({
-    isAuthenticated: false,
-    user: null,
-    isLoading: false,
+const useAuthStore = create<AuthState>()(
+    persist(
+        (set) => ({
+            isAuthenticated: false,
+            user: null,
+            isLoading: true,
 
-    setIsAuthenticated: (value) => set({ isAuthenticated: value }),
-    setUser: (user) => set({ user }),
-    setLoading: (value) => set({ isLoading: value }),
-    logout: () => set({ isAuthenticated: false, user: null, isLoading: false }),
-    // fetchAuthenticatedUser: async () => {
-    //     set({ isLoading: true });
-
-    //     try {
-    //         const user = await getCurrentUser();
-
-    //         if (user) set({ isAuthenticated: true, user: user as User })
-    //         else set({ isAuthenticated: false, user: null });
-    //     } catch (e) {
-    //         console.log('fetchAuthenticatedUser error', e);
-    //         set({ isAuthenticated: false, user: null })
-    //     } finally {
-    //         set({ isLoading: false });
-    //     }
-    // }
-}))
+            setIsAuthenticated: (value) => set({ isAuthenticated: value }),
+            setUser: (user) => set({ user }),
+            setLoading: (value) => set({ isLoading: value }),
+            logout: () =>
+                set({ isAuthenticated: false, user: null, isLoading: false }),
+        }),
+        {
+            name: 'auth-storage',
+            storage: createJSONStorage(() => AsyncStorage),
+            partialize: (state) => ({
+                isAuthenticated: state.isAuthenticated,
+                user: state.user,
+            }),
+            onRehydrateStorage: () => () => {
+                useAuthStore.setState({ isLoading: false });
+            },
+        },
+    ),
+);
 
 export default useAuthStore;
