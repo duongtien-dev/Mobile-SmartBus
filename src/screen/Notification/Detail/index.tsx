@@ -5,7 +5,7 @@ import { postService } from "@/services/PostService";
 import { Image } from "expo-image";
 import { router } from "expo-router";
 import moment from "moment";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import {
     ActivityIndicator,
     Pressable,
@@ -22,13 +22,16 @@ type Props = {
 export default function NoticeDetailScreen({ id }: Props) {
     const insets = useSafeAreaInsets();
 
-    const { data: post, isLoading } = useFetch<IPost>({
+    const { data: post, isLoading, loadFetchFn } = useFetch<IPost>({
         fetchFn: async () => {
             const response = await postService.getPostDetail({ id });
-            return response.data as IPost;
+            return response.data;
         },
-        deps: [id],
     });
+
+    useEffect(() => {
+        loadFetchFn();
+    }, [id]);
 
     if (isLoading) {
         return (
@@ -62,8 +65,6 @@ export default function NoticeDetailScreen({ id }: Props) {
         );
     }
 
-    const image = post.images?.[0];
-
     return (
         <View className="flex-1 bg-background">
             <PageHeader title="Chi tiết" isIconBack />
@@ -94,12 +95,12 @@ export default function NoticeDetailScreen({ id }: Props) {
                     </Text>
                 </View>
 
-                {image ? (
+                {post.images ? (
                     <View className="mt-5 overflow-hidden rounded-xl">
                         <Image
                             className="h-48 w-full"
                             contentFit="cover"
-                            source={image}
+                            source={post.images?.[0]}
                         />
                     </View>
                 ) : null}
