@@ -1,7 +1,7 @@
 import { Button } from "@/components/Button";
 import { Select } from "@/components/Select";
 import TextArea from "@/components/Input/TextArea";
-import useFetch from "@/hooks/useFetch";
+import usePaginationList from "@/hooks/usePaginationList";
 import { useToastify } from "@/hooks/useToastify";
 import type { IRoute } from "@/models/route";
 import { getRouteTitle } from "@/screen/Route/Detail/utils";
@@ -22,6 +22,8 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+const PAGE_SIZE = 12;
+
 export default function CreateReviewScreen() {
     const insets = useSafeAreaInsets();
     const showToast = useToastify();
@@ -32,27 +34,28 @@ export default function CreateReviewScreen() {
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const {
-        data: routes,
-        isLoading,
-        loadFetchFn,
-    } = useFetch<IRoute[]>({
-        fetchFn: async () => {
-            const response = await routeService.getRoutes({
-                unreviewedOnly: true,
-                page: 1,
-                limit: 100,
-            });
+        list: routes,
+        loadFirstPage,
+        loadMore,
+        isSkeletonLoading,
+        isLoadingMore,
+        isLastPage,
+    } = usePaginationList<IRoute, { unreviewedOnly: boolean }>({
+        fetchFn: async (payload) => {
+            const response = await routeService.getRoutes(payload);
             return response.data ?? [];
         },
+        limit: PAGE_SIZE,
+        params: { unreviewedOnly: true },
     });
 
     useEffect(() => {
-        loadFetchFn();
+        loadFirstPage();
     }, []);
 
     const routeOptions = useMemo(
         () =>
-            (routes ?? []).map((route) => ({
+            routes.map((route) => ({
                 value: route._id,
                 label: getRouteTitle(route),
             })),
@@ -106,7 +109,7 @@ export default function CreateReviewScreen() {
                 </View>
             </View>
 
-            {isLoading ? (
+            {isSkeletonLoading ? (
                 <View className="flex-1 items-center justify-center">
                     <ActivityIndicator color="#005f8b" />
                 </View>
@@ -126,13 +129,34 @@ export default function CreateReviewScreen() {
                                 Chọn tuyến xe
                             </Text>
                             {routeOptions.length > 0 ? (
-                                <Select
-                                    value={selectedRouteId}
-                                    onValueChange={setSelectedRouteId}
-                                    placeholder="Chọn tuyến xe"
-                                    options={routeOptions}
-                                    triggerClassName="h-12 rounded-xl border-border bg-surface px-4"
-                                />
+                                <>
+                                    <Select
+                                        value={selectedRouteId}
+                                        onValueChange={setSelectedRouteId}
+                                        placeholder="Chọn tuyến xe"
+                                        options={routeOptions}
+                                        triggerClassName="h-12 rounded-xl border-border bg-surface px-4"
+                                    />
+                                    {!isLastPage ? (
+                                        <Pressable
+                                            accessibilityRole="button"
+                                            className="mt-2 items-center py-2 active:opacity-70"
+                                            disabled={isLoadingMore}
+                                            onPress={loadMore}
+                                        >
+                                            {isLoadingMore ? (
+                                                <ActivityIndicator
+                                                    color="#005f8b"
+                                                    size="small"
+                                                />
+                                            ) : (
+                                                <Text className="text-sm font-medium text-accent">
+                                                    Tải thêm tuyến
+                                                </Text>
+                                            )}
+                                        </Pressable>
+                                    ) : null}
+                                </>
                             ) : (
                                 <Text className="rounded-xl bg-surface px-4 py-3 text-sm text-text-muted">
                                     Không có tuyến nào cần đánh giá
