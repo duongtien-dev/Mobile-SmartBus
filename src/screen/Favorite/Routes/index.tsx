@@ -15,8 +15,6 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-const PAGE_SIZE = 10;
-
 const FAVORITE_TABS = [
     { key: "routes", label: "Tuyến" },
     { key: "stops", label: "Trạm" },
@@ -40,7 +38,7 @@ export default function FavoriteRoutesScreen() {
             const response = await favoriteRouteService.listFavorites(payload);
             return response.data ?? [];
         },
-        limit: PAGE_SIZE,
+        limit: 12,
         params: {},
     });
 
@@ -64,7 +62,7 @@ export default function FavoriteRoutesScreen() {
     };
 
     return (
-        <View className="flex-1 bg-background">
+        <View className="flex-1 bg-background flex flex-col gap-5">
             <View className="bg-alert" style={{ paddingTop: insets.top }}>
                 <View className="flex-row items-center gap-2 px-4 py-3">
                     <Pressable
@@ -82,7 +80,7 @@ export default function FavoriteRoutesScreen() {
                 </View>
             </View>
 
-            <View className="border-b border-border px-5">
+            <View className="border-b border-border pb-5">
                 <TabContainer
                     tabs={FAVORITE_TABS.map((tab) => ({
                         key: tab.key,
@@ -91,7 +89,7 @@ export default function FavoriteRoutesScreen() {
                     value={activeTab}
                     onChange={(value) => setActiveTab(value as FavoriteTab)}
                     variant="underline"
-                    tabListClassName="gap-8"
+                    tabListClassName="gap-10 justify-center"
                 />
             </View>
 
