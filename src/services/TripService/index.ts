@@ -2,15 +2,18 @@ import BaseService from '@/services/BaseService';
 
 class TripService extends BaseService {
     constructor() {
-        super('/trips');
+        super('');
+    }
+    suggestLocations(body: object) {
+        return this.post('/suggest-locations', body);
     }
 
     searchTrips(body: object) {
-        return this.post('/search', body);
+        return this.post('/trips/search', body);
     }
 
     getTripDetail(body: object) {
-        return this.post('/detail', body);
+        return this.post('/trips/detail', body);
     }
 }
 

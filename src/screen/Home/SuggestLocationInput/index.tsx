@@ -1,6 +1,6 @@
 import InputText from "@/components/Input/InputText";
 import type { ISuggestLocation } from "@/models/suggestLocation";
-import { stripService } from "@/services/StripService";
+import { tripService } from "@/services/TripService";
 import { useEffect, useState } from "react";
 import {
     ActivityIndicator,
@@ -43,7 +43,7 @@ export function SuggestLocationInput({
             setIsLoading(true);
 
             try {
-                const response = await stripService.suggestLocations({
+                const response = await tripService.suggestLocations({
                     keyword,
                 });
                 setSuggestions((response.data ?? []) as ISuggestLocation[]);

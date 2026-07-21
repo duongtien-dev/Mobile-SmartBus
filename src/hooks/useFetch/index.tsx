@@ -2,10 +2,12 @@ import { useCallback, useEffect, useState } from "react";
 
 type UseFetchProps<T> = {
     fetchFn: () => Promise<T>;
+    deps?: any[];
 };
 
 export default function useFetch<T>({
     fetchFn,
+    deps = [],
 }: UseFetchProps<T>) {
 
     const [data, setData] = useState<T | null>(null);
@@ -22,12 +24,13 @@ export default function useFetch<T>({
         } finally {
             setIsLoading(false);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {
         handleFetchFn();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [fetchFn]);
+    }, [fetchFn, ...deps]);
 
 
     return {

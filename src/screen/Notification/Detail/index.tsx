@@ -27,6 +27,7 @@ export default function NoticeDetailScreen({ id }: Props) {
             const response = await postService.getPostDetail({ id });
             return response.data as IPost;
         },
+        deps: [id],
     });
 
     if (isLoading) {
