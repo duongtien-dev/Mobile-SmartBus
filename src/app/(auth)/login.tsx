@@ -16,9 +16,12 @@ import {
     View,
 } from "react-native";
 import Toast from "react-native-toast-message";
+import { useToastify } from "@/hooks/useToastify";
 
 export default function Login() {
     const { setIsAuthenticated, setUser } = useAuthStore();
+    const showToast = useToastify();
+
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
@@ -28,36 +31,27 @@ export default function Login() {
         if (isSubmitting) {
             return;
         }
-
         setIsSubmitting(true);
 
-        try {
-            const response = await authService.login({ email, password });
-            const { user, token } = response.data ?? {};
+        const response = await authService.login({ email, password });
+        const { user, token } = response.data;
 
-            setUser({
-                name: user?.full_name ?? "",
-                email: user?.email ?? email,
-                avatar: "",
-                token: token ?? "",
-            });
-            setIsAuthenticated(true);
+        setUser({
+            name: user?.full_name,
+            email: user?.email,
+            avatar: "",
+            token: token,
+        });
+        setIsAuthenticated(true);
 
-            Toast.show({
-                type: "success",
-                text1: "Đăng nhập thành công",
-            });
-
+        showToast({
+            type: response.success ? "success" : "error",
+            content: response.success ? "Đăng nhập thành công" : "Đăng nhập thất bại",
+        });
+        if (response.success) {
             router.replace("/");
-        } catch {
-            Toast.show({
-                type: "error",
-                text1: "Đăng nhập thất bại",
-                text2: "Email hoặc mật khẩu không đúng",
-            });
-        } finally {
-            setIsSubmitting(false);
         }
+        setIsSubmitting(false);
     };
 
     const isFormValid = email.trim() && password.trim();
