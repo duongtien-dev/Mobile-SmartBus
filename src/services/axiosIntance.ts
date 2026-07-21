@@ -15,7 +15,7 @@ export const createApi = (module: string): AxiosInstance => {
 
     api.interceptors.request.use(
         (config) => {
-            const token = useAuthStore.getState().user?.token;
+            const token = useAuthStore.getState().token;
 
             if (token) {
                 config.headers.Authorization = `Bearer ${token}`;

@@ -81,7 +81,7 @@ export default function ProfileScreen() {
                 showsVerticalScrollIndicator={false}
             >
                 <ProfileUserCard
-                    name={user?.name}
+                    name={user?.full_name}
                     email={user?.email}
                     isAuthenticated={isAuthenticated}
                     onEditPress={() =>
