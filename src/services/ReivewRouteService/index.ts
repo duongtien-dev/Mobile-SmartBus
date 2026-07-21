@@ -20,7 +20,6 @@ class ReviewRouteService extends BaseService {
     deleteReviewRoute(body: object) {
         return this.post('/delete', body);
     }
-
 }
 
-export default ReviewRouteService;
+export const reviewRouteService = new ReviewRouteService();

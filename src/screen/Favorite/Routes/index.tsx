@@ -101,6 +101,12 @@ export default function FavoriteRoutesScreen() {
                     renderItem={({ item }) => (
                         <RouteCard
                             route={{ ...item, isFavorite: true }}
+                            onPress={(route) =>
+                                router.push({
+                                    pathname: "/routes/[id]",
+                                    params: { id: route._id },
+                                })
+                            }
                             onFavoriteChange={handleFavoriteChange}
                         />
                     )}

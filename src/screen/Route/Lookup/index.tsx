@@ -15,8 +15,6 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-const PAGE_SIZE = 10;
-
 export default function RouteLookupScreen() {
     const insets = useSafeAreaInsets();
     const [searchInput, setSearchInput] = useState("");
@@ -32,7 +30,7 @@ export default function RouteLookupScreen() {
             const response = await routeService.getRoutes(payload);
             return response.data ?? [];
         },
-        limit: PAGE_SIZE,
+        limit: 12,
         params: { sort: "newest", search: searchInput },
     });
 
@@ -81,6 +79,12 @@ export default function RouteLookupScreen() {
                 renderItem={({ item }) => (
                     <RouteCard
                         route={item}
+                        onPress={(route) =>
+                            router.push({
+                                pathname: "/routes/[id]",
+                                params: { id: route._id },
+                            })
+                        }
                         onFavoriteChange={handleFavoriteChange}
                     />
                 )}
