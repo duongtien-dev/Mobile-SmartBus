@@ -1,9 +1,10 @@
 import { PageHeader } from "@/components/PageHeader";
+import useFetch from "@/hooks/useFetch";
 import type { ITrip } from "@/models/trip";
 import { TripResultItem } from "@/screen/Trip/Search/TripResultItem";
 import { tripService } from "@/services/TripService";
 import useTripBookingStore from "@/store/tripBooking.store";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import {
     ActivityIndicator,
     ScrollView,
@@ -13,39 +14,24 @@ import {
 
 export default function TripSearchScreen() {
     const searchContext = useTripBookingStore((state) => state.searchContext);
-    const [trips, setTrips] = useState<ITrip[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
 
     const originName = searchContext?.originName ?? "";
     const destinationName = searchContext?.destinationName ?? "";
     const origin = searchContext?.origin;
     const destination = searchContext?.destination;
 
+    const { data: trips, isLoading, loadFetchFn } = useFetch<ITrip[]>({
+        fetchFn: async () => {
+            const response = await tripService.searchTrips({
+                origin,
+                destination,
+            });
+            return response.data ?? [];
+        },
+    });
+
     useEffect(() => {
-        if (!origin || !destination) {
-            setTrips([]);
-            setIsLoading(false);
-            return;
-        }
-
-        const fetchTrips = async () => {
-            setIsLoading(true);
-
-            try {
-                const response = await tripService.searchTrips({
-                    origin,
-                    destination,
-                });
-
-                setTrips((response.data ?? []) as ITrip[]);
-            } catch {
-                setTrips([]);
-            } finally {
-                setIsLoading(false);
-            }
-        };
-
-        fetchTrips();
+        loadFetchFn();
     }, [origin, destination]);
 
     return (
@@ -90,7 +76,7 @@ export default function TripSearchScreen() {
                         <View className="items-center py-10">
                             <ActivityIndicator color="#005f8b" />
                         </View>
-                    ) : trips.length > 0 ? (
+                    ) : trips && trips.length > 0 ? (
                         trips.map((trip, index) => (
                             <TripResultItem
                                 key={`${trip.type}-${trip.totalDuration}-${index}`}

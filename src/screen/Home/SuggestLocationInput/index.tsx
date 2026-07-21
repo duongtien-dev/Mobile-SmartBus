@@ -1,6 +1,7 @@
 import InputText from "@/components/Input/InputText";
+import useFetch from "@/hooks/useFetch";
 import type { ISuggestLocation } from "@/models/suggestLocation";
-import { stripService } from "@/services/StripService";
+import { tripService } from "@/services/TripService";
 import { useEffect, useState } from "react";
 import {
     ActivityIndicator,
@@ -27,43 +28,42 @@ export function SuggestLocationInput({
     onSelect,
     zIndex = 10,
 }: SuggestLocationInputProps) {
-    const [suggestions, setSuggestions] = useState<ISuggestLocation[]>([]);
     const [isFocused, setIsFocused] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
+    const keyword = value.trim();
+
+    const {
+        data: suggestions,
+        isLoading,
+        loadFetchFn,
+    } = useFetch<ISuggestLocation[]>({
+        fetchFn: async () => {
+
+            const response = await tripService.suggestLocations({
+                keyword,
+            });
+            return response.data ?? [];
+        },
+    });
 
     useEffect(() => {
-        const keyword = value.trim();
-
-        if (!keyword) {
-            setSuggestions([]);
-            return;
-        }
-
-        const timer = setTimeout(async () => {
-            setIsLoading(true);
-
-            try {
-                const response = await stripService.suggestLocations({
-                    keyword,
-                });
-                setSuggestions((response.data ?? []) as ISuggestLocation[]);
-            } catch {
-                setSuggestions([]);
-            } finally {
-                setIsLoading(false);
-            }
+        if (!keyword) return;
+        const timer = setTimeout(() => {
+            loadFetchFn();
         }, 400);
 
         return () => clearTimeout(timer);
-    }, [value]);
+    }, [keyword]);
+
+    const suggestionList = suggestions ?? [];
 
     const showSuggestions =
-        isFocused && value.trim().length > 0 && (isLoading || suggestions.length > 0);
+        isFocused &&
+        keyword.length > 0 &&
+        (isLoading || suggestionList.length > 0);
 
     const handleSelect = (item: ISuggestLocation) => {
         onChangeText(item.display_name);
         onSelect?.(item);
-        setSuggestions([]);
         setIsFocused(false);
     };
 
@@ -99,7 +99,7 @@ export function SuggestLocationInput({
                                 showsVerticalScrollIndicator
                                 style={{ maxHeight: 192 }}
                             >
-                                {suggestions.map((item, index) => (
+                                {suggestionList.map((item, index) => (
                                     <Pressable
                                         key={`${item.lat}-${item.lng}-${index}`}
                                         className="border-b border-border px-3 py-3 active:bg-surface"

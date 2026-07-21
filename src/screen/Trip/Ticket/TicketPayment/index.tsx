@@ -23,7 +23,7 @@ const PROVIDER_LABELS: Record<IPaymentMethod["provider"], string> = {
     zalopay: "ZaloPay",
     shopeepay: "ShopeePay",
     visa: "Thẻ quốc tế",
-    napas: "Thẻ ATM",
+    napas: "Tài khoản / Thẻ ngân hàng",
 };
 
 function getPaymentTitle(method: IPaymentMethod) {

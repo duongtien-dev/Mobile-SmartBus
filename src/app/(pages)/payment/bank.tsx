@@ -1,5 +1,5 @@
-import BankFormScreen from "@/screen/Payment/BankForm";
+import UpdateBankFormScreen from "@/screen/Payment/BankForm/Update";
 
 export default function PaymentBankPage() {
-    return <BankFormScreen />;
+    return <UpdateBankFormScreen />;
 }
