@@ -1,4 +1,5 @@
 import InputText from "@/components/Input/InputText";
+import SearchInput from "@/components/SearchInput";
 import usePaginationList from "@/hooks/usePaginationList";
 import type { IRoute } from "@/models/route";
 import { RouteCard } from "@/screen/Route/Lookup/RouteCard";
@@ -20,8 +21,6 @@ const PAGE_SIZE = 10;
 export default function RouteLookupScreen() {
     const insets = useSafeAreaInsets();
     const [searchInput, setSearchInput] = useState("");
-    const [search, setSearch] = useState("");
-
     const {
         list: routes,
         loadFirstPage,
@@ -34,20 +33,12 @@ export default function RouteLookupScreen() {
             return response.data ?? [];
         },
         limit: PAGE_SIZE,
-        params: { sort: "newest", search },
+        params: { sort: "newest", search: searchInput },
     });
 
     useEffect(() => {
-        const timer = setTimeout(() => {
-            setSearch(searchInput.trim());
-        }, 400);
-
-        return () => clearTimeout(timer);
-    }, [searchInput]);
-
-    useEffect(() => {
         loadFirstPage();
-    }, [search]);
+    }, [searchInput]);
 
     return (
         <View className="flex-1 bg-background">
@@ -69,21 +60,10 @@ export default function RouteLookupScreen() {
             </View>
 
             <View className="px-5 pb-3 pt-4">
-                <View className="relative justify-center">
-                    <View
-                        pointerEvents="none"
-                        className="absolute left-3.5 z-10"
-                    >
-                        <Search color="#94a3b8" size={18} />
-                    </View>
-                    <InputText
-                        value={searchInput}
-                        onChangeText={setSearchInput}
-                        placeholder="Nhập số hiệu hoặc tên tuyến..."
-                        returnKeyType="search"
-                        className="rounded-full border-0 bg-surface py-3 pl-11 pr-4"
-                    />
-                </View>
+                <SearchInput
+                    onSearch={setSearchInput}
+                    placeholder="Nhập số hiệu hoặc tên tuyến"
+                />
             </View>
 
             <FlatList
