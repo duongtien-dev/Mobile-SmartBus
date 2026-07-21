@@ -51,6 +51,7 @@ export default function ProfileScreen() {
             case "notifications":
             case "nearby":
             case "help":
+            case "favorites":
                 if (item.href) {
                     router.push(item.href as Href);
                 }

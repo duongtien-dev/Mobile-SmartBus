@@ -130,6 +130,9 @@ export default function HomeScreen() {
                                 if (action.id === "lookup") {
                                     router.push("/routes/lookup" as never);
                                 }
+                                if (action.id === "favorites") {
+                                    router.push("/routes/favorites" as never);
+                                }
                             }}
                         />
                     ))}
