@@ -1,6 +1,8 @@
 import { Button } from "@/components/Button";
 import InputText from "@/components/Input/InputText";
 import { PageHeader } from "@/components/PageHeader";
+import useFetch from "@/hooks/useFetch";
+import type { IPaymentMethod } from "@/models/paymentMethod";
 import InputCardName from "@/screen/Payment/CardForm/Element/InputCardName";
 import InputEmail from "@/screen/Payment/CardForm/Element/InputEmail";
 import { paymentService } from "@/services/PaymentService";
@@ -57,7 +59,6 @@ function InputField({
 export default function BankFormScreen() {
     const { id } = useLocalSearchParams<{ id?: string }>();
     const isEdit = Boolean(id);
-    const [isLoading, setIsLoading] = useState(isEdit);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [formData, setFormData] = useState<Form>({
         bankName: "",
@@ -68,56 +69,40 @@ export default function BankFormScreen() {
         email: "",
     });
 
+    const {
+        data: method,
+        isLoading,
+        loadFetchFn,
+    } = useFetch<IPaymentMethod | null>({
+        fetchFn: async () => {
+            const response = await paymentService.getPaymentMethodById({
+                id,
+            });
+            return response.data;
+        },
+    });
+
     useEffect(() => {
-        if (!id) {
+        if (!isEdit) {
             return;
         }
 
-        const loadPaymentMethod = async () => {
-            setIsLoading(true);
+        loadFetchFn();
+    }, [id, isEdit]);
 
-            try {
-                const response = await paymentService.getPaymentMethodById({ id });
-                const method = response.data;
-
-                if (!method) {
-                    Toast.show({
-                        type: "error",
-                        text1: "Không tìm thấy phương thức thanh toán",
-                    });
-                    router.back();
-                    return;
-                }
-
-                if (method.provider !== "napas") {
-                    router.replace({
-                        pathname: "/payment/visa",
-                        params: { id },
-                    });
-                    return;
-                }
-
-                setFormData({
-                    bankName: method.bankName ?? "",
-                    accountNumber: method.accountNumber ?? "",
-                    cccd: method.cccd ?? "",
-                    cardHolderName: method.cardHolderName ?? "",
-                    phoneNumber: method.phoneNumber ?? "",
-                    email: method.email ?? "",
-                });
-            } catch {
-                Toast.show({
-                    type: "error",
-                    text1: "Không thể tải phương thức thanh toán",
-                });
-                router.back();
-            } finally {
-                setIsLoading(false);
-            }
-        };
-
-        loadPaymentMethod();
-    }, [id]);
+    useEffect(() => {
+        if (!method) {
+            return;
+        }
+        setFormData({
+            bankName: method.bankName ?? "",
+            accountNumber: method.accountNumber ?? "",
+            cccd: method.cccd ?? "",
+            cardHolderName: method.cardHolderName ?? "",
+            phoneNumber: method.phoneNumber ?? "",
+            email: method.email ?? "",
+        });
+    }, [method]);
 
     const handleChange = (key: keyof Form, value: string) => {
         setFormData((prev) => ({ ...prev, [key]: value }));
@@ -150,18 +135,13 @@ export default function BankFormScreen() {
 
         try {
             if (isEdit && id) {
-                await paymentService.updatePayment({
-                    id,
-                    ...body,
-                });
-
+                await paymentService.updatePayment({ id, ...body });
                 Toast.show({
                     type: "success",
                     text1: "Cập nhật phương thức thành công",
                 });
             } else {
                 await paymentService.createPayment(body);
-
                 Toast.show({
                     type: "success",
                     text1: "Thêm phương thức thành công",

@@ -1,5 +1,5 @@
-import AddPaymentMethodScreen from "@/screen/Payment/AddMethod";
+import BankFormScreen from "@/screen/Payment/BankForm";
 
 export default function PaymentAddPage() {
-    return <AddPaymentMethodScreen />;
+    return <BankFormScreen />;
 }

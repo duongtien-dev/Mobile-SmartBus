@@ -23,7 +23,7 @@ const PROVIDER_LABELS: Record<IPaymentMethod["provider"], string> = {
     zalopay: "ZaloPay",
     shopeepay: "ShopeePay",
     visa: "Thẻ quốc tế",
-    napas: "Thẻ ATM",
+    napas: "Tài khoản / Thẻ ngân hàng",
 };
 
 function getPaymentTitle(method: IPaymentMethod) {
@@ -217,7 +217,7 @@ export default function TicketPaymentScreen() {
 
                             <Pressable
                                 className="mt-2 flex-row items-center gap-2 active:opacity-80"
-                                onPress={() => router.push("/payment/add")}
+                                onPress={() => router.push("/payment/bank")}
                             >
                                 <Plus color="#005f8b" size={18} />
                                 <Text className="text-sm font-medium text-accent">

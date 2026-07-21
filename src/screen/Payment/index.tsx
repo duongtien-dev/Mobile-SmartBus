@@ -1,37 +1,26 @@
 import { Button } from "@/components/Button";
 import { PageHeader } from "@/components/PageHeader";
+import useFetch from "@/hooks/useFetch";
 import type { IPaymentMethod } from "@/models/paymentMethod";
 import { PayMethodItem } from "@/screen/Payment/PayMethodItem";
 import { paymentService } from "@/services/PaymentService";
-import { useFocusEffect, useRouter } from "expo-router";
-import { useCallback, useState } from "react";
+import { useRouter } from "expo-router";
+import { useEffect } from "react";
 import { ActivityIndicator, ScrollView, Text, View } from "react-native";
 
 export default function PaymentScreen() {
     const router = useRouter();
-    const [paymentMethods, setPaymentMethods] = useState<IPaymentMethod[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
+    const { data: paymentMethods, isLoading, loadFetchFn } = useFetch<IPaymentMethod[]>({
+        fetchFn: async () => {
+        const response = await paymentService.getMyPaymentMethods({});
+        return response.data ?? [];
+    }});
 
-    const fetchPaymentMethods = useCallback(async () => {
-        setIsLoading(true);
-
-        try {
-            const response = await paymentService.getMyPaymentMethods({});
-            setPaymentMethods(response.data ?? []);
-        } catch {
-            setPaymentMethods([]);
-        } finally {
-            setIsLoading(false);
-        }
+    useEffect(() => {
+        loadFetchFn();
     }, []);
 
-    useFocusEffect(
-        useCallback(() => {
-            fetchPaymentMethods();
-        }, [fetchPaymentMethods]),
-    );
-
-    const hasPaymentMethods = paymentMethods.length > 0;
+    const hasPaymentMethods = paymentMethods && paymentMethods.length > 0;
 
     return (
         <View className="flex-1 bg-background">
@@ -53,10 +42,7 @@ export default function PaymentScreen() {
                             index={index}
                             onPress={() =>
                                 router.push({
-                                    pathname:
-                                        method.provider === "visa"
-                                            ? "/payment/visa"
-                                            : "/payment/bank",
+                                    pathname: "/payment/bank",
                                     params: { id: method._id },
                                 })
                             }
@@ -76,7 +62,7 @@ export default function PaymentScreen() {
                     type="primary"
                     variant="bold"
                     className="min-w-[180px] rounded-lg px-8"
-                    onPress={() => router.push("/payment/add")}
+                    onPress={() => router.push("/payment/bank")}
                 >
                     {hasPaymentMethods ? "Thêm phương thức" : "Thiết lập ngay"}
                 </Button>
