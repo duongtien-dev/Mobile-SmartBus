@@ -14,28 +14,24 @@ import {
 import { authService } from "@/services/AuthService";
 import useAuthStore from "@/store/auth.store";
 import { useToastify } from "@/hooks/useToastify";
-import { z } from "zod";
 import { FormField } from "@/components/Form/FormField";
 
-const schema = z.object({
-    full_name: z.string().trim().min(1, "Họ không được để trống"),
-    email: z.string().trim().email("Email không hợp lệ"),
-    phone: z.string().trim().min(1, "Số điện thoại không được để trống"),
-    gender: z.enum(["Nam", "Nữ"]).optional(),
-    date_of_birth: z.string().optional(),
-    occupation: z.string().trim(),
-    province: z.string().trim(),
-    district: z.string().trim(),
-    ward: z.string().trim(),
-    address_detail: z.string().trim(),
-    is_priority_user: z.boolean(),
-    priority_user: z.string().trim(),
-});
+type TForm = {
+    full_name: string;
+    email: string;
+    phone: string;
+    gender: 'Nam' | 'Nữ' | undefined;
+    date_of_birth: string;
+    occupation: string;
+    province: string;
+    district: string;
+    ward: string;
+    address_detail: string;
+    is_priority_user: boolean;
+    priority_user: string;
+}
 
-type FormValues = z.infer<typeof schema>; // zod.infer<typeof Schema>
-type FieldErrors = Partial<Record<keyof FormValues, string>>;
-
-const EMPTY_FORM: FormValues = {
+const EMPTY_FORM: TForm = {
     full_name: "",
     email: "",
     phone: "",
@@ -57,8 +53,7 @@ export default function EditProfileScreen() {
     const setUser = useAuthStore((s) => s.setUser);
     const showToast = useToastify();
 
-    const [form, setForm] = useState<FormValues>(EMPTY_FORM);
-    const [errors, setErrors] = useState<FieldErrors>({});
+    const [form, setForm] = useState(EMPTY_FORM);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     useEffect(() => {
@@ -80,37 +75,15 @@ export default function EditProfileScreen() {
             is_priority_user: Boolean(user.is_priority_user),
             priority_user: user.priority_user ?? "",
         });
-        setErrors({});
     }, [user]);
 
-    const handleChange = <K extends keyof FormValues>(
-        name: K,
-        value: FormValues[K],
-    ) => {
+    const handleChange = (name: keyof TForm, value: TForm[keyof TForm]) => {
         setForm((prev) => ({ ...prev, [name]: value }));
-        setErrors((prev) => {
-            if (!prev[name]) return prev;
-            const next = { ...prev };
-            delete next[name];
-            return next;
-        });
     }
 
 
     const handleSubmit = async () => {
-        const result = schema.safeParse(form);
-
-        if (!result.success) {
-            const fieldErrors: FieldErrors = {};
-            for (const issue of result.error.issues) {
-                const key = issue.path[0] as keyof FormValues;
-                if (!fieldErrors[key]) fieldErrors[key] = issue.message;
-            }
-            setErrors(fieldErrors);
-            return;
-        }
-
-        const values = result.data;
+        const values = form;
         setIsSubmitting(true);
         try {
             const payload = {
@@ -171,22 +144,22 @@ export default function EditProfileScreen() {
                 showsVerticalScrollIndicator={false}
                 keyboardShouldPersistTaps="handled"
             >
-                <FormField labelText="Họ" required={true} error={errors.full_name}>
+                <FormField labelText="Họ" required={true}>
                     <InputText
                         value={form.full_name}
                         onChangeText={(v) => handleChange("full_name", v)}
                     />
                 </FormField>
 
-                <FormField labelText="Tên" required={true} error={errors.full_name}>
+                <FormField labelText="Tên" required={true}>
                     <InputText value={form.full_name} disabled />
                 </FormField>
 
-                <FormField labelText="Email" required={true} error={errors.email}>
+                <FormField labelText="Email" required={true}>
                     <InputText value={form.email} disabled />
                 </FormField>
 
-                <FormField labelText="Số điện thoại" required={true} error={errors.phone}>
+                <FormField labelText="Số điện thoại" required={true}>
                     <InputText
                         value={form.phone}
                         onChangeText={(v) => handleChange("phone", v)}
@@ -194,7 +167,7 @@ export default function EditProfileScreen() {
                     />
                 </FormField>
 
-                <FormField labelText="Giới tính" required={true} error={errors.gender}>
+                <FormField labelText="Giới tính" required={true}>
                     <RadioGroup
                         className="flex-row items-center gap-6"
                         value={form.gender}
