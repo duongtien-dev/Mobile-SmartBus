@@ -1,25 +1,34 @@
 import { Button } from "@/components/Button";
 import { PageHeader } from "@/components/PageHeader";
 import { QUICK_ACTIONS } from "@/constants/home";
+import { HOME_TIPS, HOME_UTILITIES } from "@/constants/homeSections";
+import useFetch from "@/hooks/useFetch";
 import usePaginationList from "@/hooks/usePaginationList";
 import type { IPost } from "@/models/post";
+import type { IRoute } from "@/models/route";
 import type { ISuggestLocation } from "@/models/suggestLocation";
 import { postService } from "@/services/PostService";
+import { routeService } from "@/services/RouteService";
 import useTripBookingStore from "@/store/tripBooking.store";
 import { router, useFocusEffect } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import {
     ActivityIndicator,
-    Pressable,
     ScrollView,
     Text,
     View,
 } from "react-native";
 import Toast from "react-native-toast-message";
+import { FaqPreview } from "./FaqPreview";
+import { FeaturedRouteCard } from "./FeaturedRouteCard";
 import { NewsCard } from "./NewCard";
 import { QuickActionButton } from "./QuickAction";
+import { SectionHeader } from "./SectionHeader";
 import { SuggestLocationInput } from "./SuggestLocationInput";
+import { TipCard } from "./TipCard";
+import { UtilityCard } from "./UtilityCard";
 
+const FEATURED_ROUTES_LIMIT = 6;
 
 export default function HomeScreen() {
     const setSearchContext = useTripBookingStore(
@@ -35,6 +44,7 @@ export default function HomeScreen() {
         useState<ISuggestLocation | null>(null);
     const [destinationLocation, setDestinationLocation] =
         useState<ISuggestLocation | null>(null);
+
     const {
         list: posts,
         loadFirstPage,
@@ -48,8 +58,24 @@ export default function HomeScreen() {
         params: {},
     });
 
+    const {
+        data: featuredRoutes,
+        isLoading: isFeaturedRoutesLoading,
+        loadFetchFn: loadFeaturedRoutes,
+    } = useFetch<IRoute[]>({
+        fetchFn: async () => {
+            const response = await routeService.getRoutes({
+                page: 1,
+                limit: FEATURED_ROUTES_LIMIT,
+                sort: "newest",
+            });
+            return response.data ?? [];
+        },
+    });
+
     useEffect(() => {
         loadFirstPage();
+        loadFeaturedRoutes();
     }, []);
 
     useFocusEffect(
@@ -86,6 +112,8 @@ export default function HomeScreen() {
 
         router.push("/trips/search" as never);
     };
+
+    const routeList = featuredRoutes ?? [];
 
     return (
         <View className="flex-1 bg-background">
@@ -130,7 +158,7 @@ export default function HomeScreen() {
 
             <ScrollView
                 className="flex-1"
-                contentContainerClassName="px-5 flex-col gap-3 pb-8 pt-3"
+                contentContainerClassName="px-5 flex-col gap-3 pb-10 pt-3"
                 keyboardShouldPersistTaps="handled"
                 showsVerticalScrollIndicator={false}
             >
@@ -145,19 +173,73 @@ export default function HomeScreen() {
                 </View>
 
                 <View className="mt-8">
-                    <View className="mb-4 flex-row items-center justify-between">
-                        <Text className="text-sm font-bold tracking-wide text-primary">
-                            KHÁM PHÁ TIN TỨC
-                        </Text>
-                        <Pressable
-                            className="active:opacity-80"
-                            onPress={() => router.push("/notice/list")}
+                    <SectionHeader
+                        title="TUYẾN XE NỔI BẬT"
+                        actionLabel="Xem tất cả"
+                        onActionPress={() => router.push("/routes/lookup")}
+                    />
+
+                    {isFeaturedRoutesLoading ? (
+                        <View className="h-36 items-center justify-center">
+                            <ActivityIndicator color="#005f8b" />
+                        </View>
+                    ) : routeList.length > 0 ? (
+                        <ScrollView
+                            horizontal
+                            nestedScrollEnabled
+                            showsHorizontalScrollIndicator={false}
+                            contentContainerClassName="pr-5"
                         >
-                            <Text className="text-sm font-medium text-accent">
-                                Xem tất cả
-                            </Text>
-                        </Pressable>
+                            {routeList.map((route) => (
+                                <FeaturedRouteCard
+                                    key={route._id}
+                                    route={route}
+                                />
+                            ))}
+                        </ScrollView>
+                    ) : (
+                        <Text className="text-sm text-text-muted">
+                            Chưa có tuyến xe
+                        </Text>
+                    )}
+                </View>
+
+                <View className="mt-8">
+                    <SectionHeader title="MẸO DI CHUYỂN" />
+                    <ScrollView
+                        horizontal
+                        nestedScrollEnabled
+                        showsHorizontalScrollIndicator={false}
+                        contentContainerClassName="pr-5"
+                    >
+                        {HOME_TIPS.map((tip) => (
+                            <TipCard key={tip.id} tip={tip} />
+                        ))}
+                    </ScrollView>
+                </View>
+
+                <View className="mt-8">
+                    <SectionHeader title="TIỆN ÍCH NHANH" />
+                    <View className="flex-row flex-wrap gap-3">
+                        {HOME_UTILITIES.map((utility) => (
+                            <View key={utility.id} className="w-[47%]">
+                                <UtilityCard
+                                    utility={utility}
+                                    onPress={() =>
+                                        router.push(utility.path as never)
+                                    }
+                                />
+                            </View>
+                        ))}
                     </View>
+                </View>
+
+                <View className="mt-8">
+                    <SectionHeader
+                        title="KHÁM PHÁ TIN TỨC"
+                        actionLabel="Xem tất cả"
+                        onActionPress={() => router.push("/notice/list")}
+                    />
 
                     {isSkeletonLoading ? (
                         <View className="h-40 items-center justify-center">
@@ -172,10 +254,7 @@ export default function HomeScreen() {
                         >
                             {posts.length > 0 ? (
                                 posts.map((item) => (
-                                    <NewsCard
-                                        key={item._id}
-                                        item={item}
-                                    />
+                                    <NewsCard key={item._id} item={item} />
                                 ))
                             ) : (
                                 <Text className="text-sm text-text-muted">
@@ -184,6 +263,15 @@ export default function HomeScreen() {
                             )}
                         </ScrollView>
                     )}
+                </View>
+
+                <View className="mt-8">
+                    <SectionHeader
+                        title="HỎI ĐÁP NHANH"
+                        actionLabel="Xem thêm"
+                        onActionPress={() => router.push("/help")}
+                    />
+                    <FaqPreview />
                 </View>
             </ScrollView>
         </View>
