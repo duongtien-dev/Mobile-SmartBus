@@ -6,8 +6,8 @@ import type { IPost } from "@/models/post";
 import type { ISuggestLocation } from "@/models/suggestLocation";
 import { postService } from "@/services/PostService";
 import useTripBookingStore from "@/store/tripBooking.store";
-import { router } from "expo-router";
-import { useEffect, useState } from "react";
+import { router, useFocusEffect } from "expo-router";
+import { useCallback, useEffect, useState } from "react";
 import {
     ActivityIndicator,
     Pressable,
@@ -20,11 +20,14 @@ import { NewsCard } from "./NewCard";
 import { QuickActionButton } from "./QuickAction";
 import { SuggestLocationInput } from "./SuggestLocationInput";
 
-const NEWS_LIMIT = 10;
 
 export default function HomeScreen() {
     const setSearchContext = useTripBookingStore(
         (state) => state.setSearchContext,
+    );
+    const prefillOrigin = useTripBookingStore((state) => state.prefillOrigin);
+    const clearPrefillOrigin = useTripBookingStore(
+        (state) => state.clearPrefillOrigin,
     );
     const [origin, setOrigin] = useState("");
     const [destination, setDestination] = useState("");
@@ -41,13 +44,23 @@ export default function HomeScreen() {
             const response = await postService.listPosts(payload);
             return response.data ?? [];
         },
-        limit: NEWS_LIMIT,
+        limit: 12,
         params: {},
     });
 
     useEffect(() => {
         loadFirstPage();
     }, []);
+
+    useFocusEffect(
+        useCallback(() => {
+            if (!prefillOrigin) return;
+
+            setOrigin(prefillOrigin.display_name);
+            setOriginLocation(prefillOrigin);
+            clearPrefillOrigin();
+        }, [prefillOrigin, clearPrefillOrigin]),
+    );
 
     const handleSearch = () => {
         if (!originLocation || !destinationLocation) {
@@ -162,12 +175,6 @@ export default function HomeScreen() {
                                     <NewsCard
                                         key={item._id}
                                         item={item}
-                                        onPress={() =>
-                                            router.push({
-                                                pathname: "/notice/[id]",
-                                                params: { id: item._id },
-                                            })
-                                        }
                                     />
                                 ))
                             ) : (

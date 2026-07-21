@@ -3,6 +3,7 @@ import {
     MONTHLY_TICKET_PRICE,
     SINGLE_TICKET_PRICE,
 } from "@/constants/ticket";
+import type { ISuggestLocation } from "@/models/suggestLocation";
 import type { ITrip, ITripLocation } from "@/models/trip";
 import { create } from "zustand";
 
@@ -43,6 +44,7 @@ const initialMonthlyForm: IMonthlyTicketForm = {
 
 type TripBookingState = {
     searchContext: ISearchContext | null;
+    prefillOrigin: ISuggestLocation | null;
     selectedTrip: ITrip | null;
     pickupStopName: string;
     routeCode: string;
@@ -53,6 +55,8 @@ type TripBookingState = {
     totalPrice: number;
 
     setSearchContext: (context: ISearchContext) => void;
+    setPrefillOrigin: (origin: ISuggestLocation) => void;
+    clearPrefillOrigin: () => void;
     setSelectedTrip: (
         trip: ITrip,
         pickupStopName: string,
@@ -69,6 +73,7 @@ type TripBookingState = {
 
 const useTripBookingStore = create<TripBookingState>((set, get) => ({
     searchContext: null,
+    prefillOrigin: null,
     selectedTrip: null,
     pickupStopName: "",
     routeCode: "",
@@ -90,6 +95,10 @@ const useTripBookingStore = create<TripBookingState>((set, get) => ({
             selectedPaymentMethodId: "",
             totalPrice: 0,
         }),
+
+    setPrefillOrigin: (origin) => set({ prefillOrigin: origin }),
+
+    clearPrefillOrigin: () => set({ prefillOrigin: null }),
 
     setSelectedTrip: (trip, pickupStopName, routeCode) =>
         set({
@@ -142,6 +151,7 @@ const useTripBookingStore = create<TripBookingState>((set, get) => ({
     resetBooking: () =>
         set({
             searchContext: null,
+            prefillOrigin: null,
             selectedTrip: null,
             pickupStopName: "",
             routeCode: "",
