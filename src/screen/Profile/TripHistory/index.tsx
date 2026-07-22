@@ -1,4 +1,6 @@
 import { PageHeader } from "@/components/PageHeader";
+import { Card } from "@/components/ui/Card";
+import { SectionTitle } from "@/components/ui/SectionTitle";
 import usePaginationList from "@/hooks/usePaginationList";
 import type { ITicket } from "@/models/ticket";
 import { TripHistoryItem } from "@/screen/Profile/TripHistory/TripHistoryItem";
@@ -35,15 +37,22 @@ export default function TripHistoryScreen() {
     };
 
     return (
-        <View className="flex-1 bg-background">
+        <View className="flex-1 bg-app-shell">
             <PageHeader title="Lịch sử chuyến đi" isIconBack />
 
             <FlatList
                 className="flex-1"
                 data={trips}
                 keyExtractor={(item) => item._id}
+                ListHeaderComponent={
+                    <View className="px-5 pb-2 pt-4">
+                        <SectionTitle title="Các chuyến đã đi gần đây" />
+                    </View>
+                }
                 renderItem={({ item }) => (
-                    <TripHistoryItem ticket={item} onPress={handleTripPress} />
+                    <View className="px-5">
+                        <TripHistoryItem ticket={item} onPress={handleTripPress} />
+                    </View>
                 )}
                 onEndReached={() => {
                     if (trips.length > 0 && !isSkeletonLoading) {
@@ -59,9 +68,11 @@ export default function TripHistoryScreen() {
                             <ActivityIndicator color="#005f8b" />
                         </View>
                     ) : (
-                        <Text className="px-5 py-10 text-center text-sm text-text-muted">
-                            Chưa có chuyến đi nào
-                        </Text>
+                        <Card className="mx-5">
+                            <Text className="py-4 text-center text-sm text-text-muted">
+                                Chưa có chuyến đi nào
+                            </Text>
+                        </Card>
                     )
                 }
                 ListFooterComponent={

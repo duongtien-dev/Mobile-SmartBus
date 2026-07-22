@@ -1,4 +1,5 @@
 import { PageHeader } from "@/components/PageHeader";
+import { Card } from "@/components/ui/Card";
 import { FAQ_ITEMS } from "@/constants/faq";
 import { Image } from "expo-image";
 import { useState } from "react";
@@ -9,23 +10,23 @@ export default function HelpScreen() {
     const [expandedId, setExpandedId] = useState<string | null>(null);
 
     return (
-        <View className="flex-1 bg-background">
+        <View className="flex-1 bg-app-shell">
             <PageHeader title="Trợ giúp" isIconBack />
 
             <ScrollView
                 className="flex-1"
-                contentContainerClassName="pb-10"
+                contentContainerClassName="gap-4 px-5 pb-10 pt-4"
                 showsVerticalScrollIndicator={false}
             >
-                <View className="items-center px-6 pb-4 pt-2">
+                <Card className="items-center" padding="md">
                     <Image
                         source={require("../../../assets/images/FAQ.png")}
-                        className="h-48 w-full"
+                        className="h-40 w-full"
                         contentFit="contain"
                     />
-                </View>
+                </Card>
 
-                <View className="overflow-hidden">
+                <Card padding="none">
                     {FAQ_ITEMS.map((item, index) => (
                         <FAQItem
                             key={item.id}
@@ -39,7 +40,7 @@ export default function HelpScreen() {
                             }
                         />
                     ))}
-                </View>
+                </Card>
             </ScrollView>
         </View>
     );

@@ -38,8 +38,10 @@
         --color-on-alert: #ffffff;
 
         /* Neutrals — không thuộc brand palette */
+        --color-app-shell: #f5f7fa;
+        --color-card: #ffffff;
         --color-background: #ffffff;
-        --color-surface: #f5f8fa;
+        --color-surface: #f0f3f7;
         --color-surface-elevated: #ffffff;
         --color-text-primary: #0f172a;
         --color-text-secondary: #475569;
@@ -82,6 +84,8 @@
             --color-on-highlight: #005f8b;
             --color-on-alert: #ffffff;
 
+            --color-app-shell: #0b1220;
+            --color-card: #1e293b;
             --color-background: #0b1220;
             --color-surface: #141e2e;
             --color-surface-elevated: #1e293b;
@@ -126,6 +130,8 @@
         --color-on-alert: var(--color-on-alert);
 
         /* Neutrals */
+        --color-app-shell: var(--color-app-shell);
+        --color-card: var(--color-card);
         --color-background: var(--color-background);
         --color-surface: var(--color-surface);
         --color-surface-elevated: var(--color-surface-elevated);

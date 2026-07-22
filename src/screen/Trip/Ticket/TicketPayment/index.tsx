@@ -26,7 +26,7 @@ export default function TicketPaymentScreen() {
     };
 
     return (
-        <View className="flex-1 bg-background">
+        <View className="flex-1 bg-app-shell">
             <PageHeader title="Thanh toán" isIconBack={true} />
 
             <ScrollView

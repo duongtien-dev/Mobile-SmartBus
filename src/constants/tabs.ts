@@ -28,7 +28,7 @@ export const TAB_CONFIG: Record<TabRouteName, TabConfig> = {
     index: {
         label: "Trang chủ",
         icon: Home,
-        activeColor: "#00a2e8",
+        activeColor: "#005f8b",
         inactiveColor: "#94a3b8",
         screenIconColor: "#00a2e8",
         screenIconBgClass: "bg-accent-light",
@@ -36,7 +36,7 @@ export const TAB_CONFIG: Record<TabRouteName, TabConfig> = {
     notifications: {
         label: "Thông báo",
         icon: Bell,
-        activeColor: "#00a2e8",
+        activeColor: "#005f8b",
         inactiveColor: "#94a3b8",
         screenIconColor: "#00a2e8",
         screenIconBgClass: "bg-accent-light",
@@ -53,7 +53,7 @@ export const TAB_CONFIG: Record<TabRouteName, TabConfig> = {
     payment: {
         label: "Thanh toán",
         icon: CreditCard,
-        activeColor: "#00a2e8",
+        activeColor: "#005f8b",
         inactiveColor: "#94a3b8",
         screenIconColor: "#005f8b",
         screenIconBgClass: "bg-primary-light",
@@ -61,7 +61,7 @@ export const TAB_CONFIG: Record<TabRouteName, TabConfig> = {
     profile: {
         label: "Tài khoản",
         icon: User,
-        activeColor: "#00a2e8",
+        activeColor: "#005f8b",
         inactiveColor: "#94a3b8",
         screenIconColor: "#005f8b",
         screenIconBgClass: "bg-primary-light",

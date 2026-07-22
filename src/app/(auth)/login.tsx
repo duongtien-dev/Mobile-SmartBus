@@ -1,9 +1,9 @@
 import { Button } from "@/components/Button";
+import { Card } from "@/components/ui/Card";
 import InputText from "@/components/Input/InputText";
 import { useToastify } from "@/hooks/useToastify";
 import { authService } from "@/services/AuthService";
 import useAuthStore from "@/store/auth.store";
-import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import { Eye, EyeOff } from "lucide-react-native";
 import { useState } from "react";
@@ -13,6 +13,7 @@ import {
     KeyboardAvoidingView,
     Platform,
     Pressable,
+    ScrollView,
     Text,
     View,
 } from "react-native";
@@ -27,9 +28,7 @@ export default function Login() {
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const handleLogin = async () => {
-        if (isSubmitting) {
-            return;
-        }
+        if (isSubmitting) return;
         setIsSubmitting(true);
 
         const response = await authService.login({ email, password });
@@ -41,7 +40,9 @@ export default function Login() {
 
         showToast({
             type: response.success ? "success" : "error",
-            content: response.success ? "Đăng nhập thành công" : "Đăng nhập thất bại",
+            content: response.success
+                ? "Đăng nhập thành công"
+                : "Đăng nhập thất bại",
         });
         if (response.success) {
             router.replace("/");
@@ -52,27 +53,38 @@ export default function Login() {
     const isFormValid = email.trim() && password.trim();
 
     return (
-        <LinearGradient
-            colors={["#004a6e", "#0082ba", "#ffe082"]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            className="flex-1"
-        >
+        <View className="flex-1 bg-app-shell">
+            <View className="items-center bg-primary px-5 pb-10 pt-12">
+                <Image
+                    source={require("../../../assets/images/logo.png")}
+                    style={{ width: 160, height: 120 }}
+                    resizeMode="contain"
+                />
+                <Text className="mt-4 text-2xl font-bold text-on-primary">
+                    DanaBus
+                </Text>
+                <Text className="mt-1 text-sm text-on-primary/80">
+                    Xe buýt thông minh Đà Nẵng
+                </Text>
+            </View>
+
             <KeyboardAvoidingView
                 behavior={Platform.OS === "ios" ? "padding" : "height"}
+                className="flex-1"
             >
-                <View className="flex-1 justify-center px-5">
-                    <View className="items-center">
-                        <Image
-                            source={require("../../../assets/images/logo.png")}
-                            style={{ width: 255, height: 290 }}
-                            resizeMode="contain"
-                        />
-                    </View>
+                <ScrollView
+                    className="flex-1"
+                    contentContainerClassName="px-5 pb-10"
+                    keyboardShouldPersistTaps="handled"
+                    showsVerticalScrollIndicator={false}
+                >
+                    <Card className="-mt-6 gap-4" padding="lg">
+                        <Text className="text-lg font-bold text-text-primary">
+                            Đăng nhập
+                        </Text>
 
-                    <View className="gap-4">
                         <View className="gap-2">
-                            <Text className="text-sm font-medium text-on-primary">
+                            <Text className="text-sm font-medium text-text-secondary">
                                 Email
                             </Text>
                             <InputText
@@ -81,12 +93,12 @@ export default function Login() {
                                 placeholder="Email"
                                 autoCapitalize="none"
                                 keyboardType="email-address"
-                                className="w-full text"
+                                className="w-full rounded-xl border-0 bg-surface"
                             />
                         </View>
 
                         <View className="gap-2">
-                            <Text className="text-sm font-medium text-on-primary">
+                            <Text className="text-sm font-medium text-text-secondary">
                                 Mật khẩu
                             </Text>
                             <View className="relative">
@@ -95,7 +107,7 @@ export default function Login() {
                                     onChangeText={setPassword}
                                     placeholder="Mật khẩu"
                                     secureTextEntry={!showPassword}
-                                    className="w-full pr-10"
+                                    className="w-full rounded-xl border-0 bg-surface pr-10"
                                 />
                                 <Pressable
                                     onPress={() => setShowPassword((v) => !v)}
@@ -112,16 +124,19 @@ export default function Login() {
 
                         <Pressable
                             className="self-end active:opacity-80"
-                            onPress={() => router.push("/forgot-password" as never)}
+                            onPress={() =>
+                                router.push("/forgot-password" as never)
+                            }
                         >
-                            <Text className="text-sm text-on-primary">
-                                Quên mật khẩu
+                            <Text className="text-sm font-medium text-primary">
+                                Quên mật khẩu?
                             </Text>
                         </Pressable>
 
                         <Button
-                            type="accent"
+                            type="primary"
                             variant="bold"
+                            className="w-full rounded-xl"
                             disabled={!isFormValid || isSubmitting}
                             onPress={handleLogin}
                         >
@@ -131,28 +146,21 @@ export default function Login() {
                                 "Đăng nhập"
                             )}
                         </Button>
-                    </View>
+                    </Card>
 
-                    <View className="mt-10 items-center gap-4">
-                        <Text className="text-sm text-on-primary">
+                    <View className="mt-6 items-center gap-3">
+                        <Text className="text-sm text-text-muted">
                             Chưa có tài khoản?{" "}
                             <Text
-                                className="font-semibold underline"
+                                className="font-semibold text-primary"
                                 onPress={() => router.push("/register")}
                             >
-                                Đăng ký ngay!
+                                Đăng ký ngay
                             </Text>
                         </Text>
-
-                        <Button
-                            className="w-full font-bold text-md"
-                            onPress={() => router.push("/register")}
-                        >
-                            Tạo tài khoản
-                        </Button>
                     </View>
-                </View>
+                </ScrollView>
             </KeyboardAvoidingView>
-        </LinearGradient>
+        </View>
     );
 }
