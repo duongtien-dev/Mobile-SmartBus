@@ -1,7 +1,6 @@
 import { PageHeader } from "@/components/PageHeader";
 import type { IPaymentMethod } from "@/models/paymentMethod";
-import { FormFooter } from "@/screen/Trip/Ticket/shared/FormFooter";
-import { FormSection } from "@/screen/Trip/Ticket/shared/FormSection";
+import { FormControls } from "@/screen/Trip/Ticket/Element/FormControls";
 import { paymentService } from "@/services/PaymentService";
 import useTripBookingStore from "@/store/tripBooking.store";
 import { cn } from "@/lib/utils";
@@ -150,7 +149,8 @@ export default function TicketPaymentScreen() {
                         contentContainerClassName="gap-6 px-5 pb-6 pt-2"
                         showsVerticalScrollIndicator={false}
                     >
-                        <FormSection title="Chọn phương thức thanh toán">
+                        <View className="gap-4">
+                            <Text className="text-base font-bold text-primary">Chọn phương thức thanh toán</Text>
                             {hasPaymentMethods ? (
                                 <View className="gap-2">
                                     {paymentMethods.map((method, index) => {
@@ -224,10 +224,11 @@ export default function TicketPaymentScreen() {
                                     Thêm phương thức thanh toán khác
                                 </Text>
                             </Pressable>
-                        </FormSection>
+                        </View>
 
 
-                            <FormSection title="Thông tin hành khách">
+                            <View className="gap-4">
+                                <Text className="text-base font-bold text-primary">Thông tin hành khách</Text>
                                 <InfoRow
                                     label="Họ và tên"
                                     value={singleForm.fullName}
@@ -240,10 +241,11 @@ export default function TicketPaymentScreen() {
                                     label="Đối tượng ưu tiên"
                                     value="Không"
                                 />
-                            </FormSection>
+                            </View>
 
 
-                        <FormSection title="Thông tin lượt đi">
+                        <View className="gap-4">
+                            <Text className="text-base font-bold text-primary">Thông tin lượt đi</Text>
                             {routeCode ? (
                                 <InfoRow
                                     label="Tuyến xe"
@@ -294,10 +296,10 @@ export default function TicketPaymentScreen() {
                                     />
                                 </>
                             )}
-                        </FormSection>
+                        </View>
                     </ScrollView>
 
-                    <FormFooter
+                    <FormControls
                         price={totalPrice}
                         buttonLabel="Thanh toán"
                         disabled={!selectedPaymentMethodId}

@@ -2,19 +2,16 @@ import { Button } from "@/components/Button";
 import { formatVnd } from "@/constants/ticket";
 import { Text, View } from "react-native";
 
-type FormFooterProps = {
+type FormControlsProps = {
     price: number;
     buttonLabel?: string;
     disabled?: boolean;
     onPress?: () => void;
 };
 
-export function FormFooter({
-    price,
-    buttonLabel = "Tiếp theo",
-    disabled,
-    onPress,
-}: FormFooterProps) {
+export function FormControls({...Props}: FormControlsProps) {
+    const { price, buttonLabel = "Tiếp theo", disabled, onPress } = Props;
+
     return (
         <View className="border-t border-border bg-background px-5 pb-6 pt-4">
             <View className="flex-row items-center justify-between gap-4">

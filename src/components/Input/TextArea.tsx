@@ -12,7 +12,7 @@ const TextArea: React.FC<TextAreaProps> = ({ className, ...props }) => {
             placeholder="Nội dung"
             textAlignVertical="top"
             underlineColorAndroid="transparent"
-            className={`max-h-48 w-full rounded-lg px-3 py-2.5 text-base text-text-primary bg-background placeholder:text-text-muted border border-border focus:border-primary focus:outline-none ${className}`}
+            className={`max-h-48 w-full rounded-lg px-3 py-2.5 text-md text-text-primary bg-background placeholder:text-text-muted border border-border focus:border-primary focus:outline-none ${className}`}
             {...props}
         />
     );

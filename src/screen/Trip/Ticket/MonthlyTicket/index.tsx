@@ -1,9 +1,5 @@
 import { Select } from "@/components/Select";
 import { PageHeader } from "@/components/PageHeader";
-import { FormField } from "@/screen/Trip/Ticket/shared/FormField";
-import { FormFooter } from "@/screen/Trip/Ticket/shared/FormFooter";
-import { FormSection } from "@/screen/Trip/Ticket/shared/FormSection";
-import { ReadonlyField } from "@/screen/Trip/Ticket/shared/ReadonlyField";
 import useTripBookingStore, {
     computeMonthlyTicketPrice,
 } from "@/store/tripBooking.store";
@@ -16,6 +12,12 @@ import {
     Text,
     View,
 } from "react-native";
+import { FormField } from "@/components/Form/FormField";
+import InputText from "@/components/Input/InputText";
+import { LocationInfo } from "../Element/LocationInfo";
+import { FormControls } from "../Element/FormControls";
+import { TicketInfo } from "./TicketInfo";
+import { InputOption } from "./InputOption";
 
 const TICKET_COUNT_OPTIONS = [
     { value: "1", label: "1" },
@@ -26,14 +28,14 @@ const TICKET_COUNT_OPTIONS = [
 export default function MonthlyTicketScreen() {
     const searchContext = useTripBookingStore((state) => state.searchContext);
     const ticketType = useTripBookingStore((state) => state.ticketType);
-    const monthlyForm = useTripBookingStore((state) => state.monthlyForm);
-    const updateMonthlyForm = useTripBookingStore(
+    const formData = useTripBookingStore((state) => state.monthlyForm);
+    const handleChangForm = useTripBookingStore(
         (state) => state.updateMonthlyForm,
     );
     const setTotalPrice = useTripBookingStore((state) => state.setTotalPrice);
 
-    const originName = searchContext?.originName ?? "Điểm đi";
-    const destinationName = searchContext?.destinationName ?? "Điểm đến";
+    const originName = searchContext?.originName;
+    const destinationName = searchContext?.destinationName;
     const isMultiRoute = ticketType === "monthly-multi";
 
     const pageTitle = useMemo(
@@ -42,15 +44,12 @@ export default function MonthlyTicketScreen() {
         [isMultiRoute],
     );
 
-    const { usageMonth, ticketCount } = monthlyForm;
+    const { usageMonth, ticketCount } = formData;
 
     const totalPrice = useMemo(
         () => computeMonthlyTicketPrice(ticketCount),
         [ticketCount],
     );
-
-    const canSubmit =
-        usageMonth.trim().length > 0 && ticketCount.length > 0;
 
     const handleSubmit = () => {
         setTotalPrice(totalPrice);
@@ -71,59 +70,22 @@ export default function MonthlyTicketScreen() {
                     showsVerticalScrollIndicator={false}
                     keyboardShouldPersistTaps="handled"
                 >
-                    <FormSection title="Điểm đi / đến">
-                        <ReadonlyField label="Điểm đi" value={originName} />
-                        <ReadonlyField
-                            label="Điểm đến"
-                            value={destinationName}
+                    <LocationInfo
+                        originName={originName}
+                        destinationName={destinationName}
+                    />
+                    <View className="gap-4">
+                        <TicketInfo usageMonth={usageMonth} />
+                        <InputOption
+                            value={ticketCount}
+                            onChange={(value) => handleChangForm({ ticketCount: value })}
+                            options={TICKET_COUNT_OPTIONS}
                         />
-                    </FormSection>
-
-                    <FormSection title="Thông tin lượt đi">
-                        <ReadonlyField
-                            label="Trạm đón (Có thể lên tại bất kỳ trạm nào)"
-                            value="Không giới hạn"
-                        />
-
-                        <FormField
-                            label="Tháng sử dụng"
-                            value={usageMonth}
-                            placeholder="Chọn tháng sử dụng"
-                            onChangeText={(value) =>
-                                updateMonthlyForm({ usageMonth: value })
-                            }
-                        />
-
-                        <View className="flex-row gap-3">
-                            <View className="flex-1">
-                                <ReadonlyField
-                                    label="Giờ đi"
-                                    value="Không giới hạn"
-                                />
-                            </View>
-
-                            <View className="flex-1 gap-2">
-                                <Text className="text-sm font-medium text-primary">
-                                    Số lượng vé{" "}
-                                    <Text className="text-alert">*</Text>
-                                </Text>
-                                <Select
-                                    value={ticketCount}
-                                    onValueChange={(value) =>
-                                        updateMonthlyForm({ ticketCount: value })
-                                    }
-                                    placeholder="Chọn"
-                                    options={TICKET_COUNT_OPTIONS}
-                                    triggerClassName="h-12 rounded-xl border-0 bg-surface px-4 shadow-sm"
-                                />
-                            </View>
-                        </View>
-                    </FormSection>
+                    </View>
                 </ScrollView>
 
-                <FormFooter
+                <FormControls
                     price={totalPrice}
-                    disabled={!canSubmit}
                     onPress={handleSubmit}
                 />
             </KeyboardAvoidingView>

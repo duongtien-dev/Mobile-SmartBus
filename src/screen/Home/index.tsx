@@ -1,7 +1,7 @@
 import { Button } from "@/components/Button";
 import { PageHeader } from "@/components/PageHeader";
 import { QUICK_ACTIONS } from "@/constants/home";
-import { HOME_TIPS, HOME_UTILITIES } from "@/constants/homeSections";
+import { HOME_TIPS } from "@/constants/homeSections";
 import useFetch from "@/hooks/useFetch";
 import usePaginationList from "@/hooks/usePaginationList";
 import type { IPost } from "@/models/post";
@@ -26,7 +26,6 @@ import { QuickActionButton } from "./QuickAction";
 import { SectionHeader } from "./SectionHeader";
 import { SuggestLocationInput } from "./SuggestLocationInput";
 import { TipCard } from "./TipCard";
-import { UtilityCard } from "./UtilityCard";
 
 const FEATURED_ROUTES_LIMIT = 6;
 
@@ -216,22 +215,6 @@ export default function HomeScreen() {
                             <TipCard key={tip.id} tip={tip} />
                         ))}
                     </ScrollView>
-                </View>
-
-                <View className="mt-8">
-                    <SectionHeader title="TIỆN ÍCH NHANH" />
-                    <View className="flex-row flex-wrap gap-3">
-                        {HOME_UTILITIES.map((utility) => (
-                            <View key={utility.id} className="w-[47%]">
-                                <UtilityCard
-                                    utility={utility}
-                                    onPress={() =>
-                                        router.push(utility.path as never)
-                                    }
-                                />
-                            </View>
-                        ))}
-                    </View>
                 </View>
 
                 <View className="mt-8">

@@ -57,35 +57,4 @@ export const HOME_TIPS: HomeTip[] = [
     },
 ];
 
-export const HOME_UTILITIES: HomeUtility[] = [
-    {
-        id: "payment",
-        label: "Thanh toán",
-        icon: CreditCard,
-        path: "/payment",
-        colorClass: "bg-accent/10",
-    },
-    {
-        id: "notifications",
-        label: "Thông báo",
-        icon: Bell,
-        path: "/notifications",
-        colorClass: "bg-primary/10",
-    },
-    {
-        id: "scan",
-        label: "Quét mã",
-        icon: QrCode,
-        path: "/scan",
-        colorClass: "bg-highlight/10",
-    },
-    {
-        id: "help",
-        label: "Trợ giúp",
-        icon: HelpCircle,
-        path: "/help",
-        colorClass: "bg-alert/10",
-    },
-];
-
 export const HOME_FAQ_PREVIEW_COUNT = 3;

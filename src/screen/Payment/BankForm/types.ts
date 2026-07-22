@@ -16,17 +16,6 @@ export const INITIAL_BANK_FORM: BankFormData = {
     email: "",
 };
 
-export function isBankFormValid(formData: BankFormData) {
-    return Boolean(
-        formData.bankName.trim() &&
-        formData.accountNumber.trim() &&
-        formData.cccd.trim() &&
-        formData.cardHolderName.trim() &&
-        formData.phoneNumber.trim() &&
-        formData.email.trim(),
-    );
-}
-
 export function parseBankFormData(formData: BankFormData) {
     return {
         provider: "napas",
