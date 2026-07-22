@@ -17,65 +17,38 @@ import { useToastify } from "@/hooks/useToastify";
 import { FormField } from "@/components/Form/FormField";
 
 type TForm = {
-    full_name: string;
-    email: string;
-    phone: string;
+    full_name?: string;
+    email?: string;
+    phone?: string;
     gender: 'Nam' | 'Nữ' | undefined;
-    date_of_birth: string;
-    occupation: string;
-    province: string;
-    district: string;
-    ward: string;
-    address_detail: string;
-    is_priority_user: boolean;
-    priority_user: string;
+    date_of_birth?: string;
+    occupation?: string;
+    province?: string;
+    district?: string;
+    ward?: string;
+    address_detail?: string;
 }
-
-const EMPTY_FORM: TForm = {
-    full_name: "",
-    email: "",
-    phone: "",
-    gender: undefined,
-    date_of_birth: "",
-    occupation: "",
-    province: "",
-    district: "",
-    ward: "",
-    address_detail: "",
-    is_priority_user: false,
-    priority_user: "",
-};
 
 const GENDER_OPTIONS: ("Nam" | "Nữ")[] = ["Nam", "Nữ"];
 
-export default function EditProfileScreen() {
+export default function FormProfile() {
     const user = useAuthStore((s) => s.user);
     const setUser = useAuthStore((s) => s.setUser);
     const showToast = useToastify();
 
-    const [form, setForm] = useState(EMPTY_FORM);
+    const [form, setForm] = useState<TForm>({
+        full_name: user?.full_name,
+        email: user?.email,
+        phone: user?.phone,
+        gender: user?.gender as 'Nam' | 'Nữ',
+        date_of_birth: user?.date_of_birth,
+        occupation: user?.occupation,
+        province: user?.province,
+        district: user?.district,
+        ward: user?.ward,
+        address_detail: user?.address_detail,
+    });
     const [isSubmitting, setIsSubmitting] = useState(false);
-
-    useEffect(() => {
-        if (!user) return;
-
-        setForm({
-            full_name: user.full_name,
-            email: user.email ?? "",
-            phone: user.phone ?? "",
-            gender: user.gender as 'Nam' | 'Nữ',
-            date_of_birth: user.date_of_birth
-                ? new Date(user.date_of_birth).toISOString().slice(0, 10)
-                : "",
-            occupation: user.occupation ?? "",
-            province: user.province ?? "",
-            district: user.district ?? "",
-            ward: user.ward ?? "",
-            address_detail: user.address_detail ?? "",
-            is_priority_user: Boolean(user.is_priority_user),
-            priority_user: user.priority_user ?? "",
-        });
-    }, [user]);
 
     const handleChange = (name: keyof TForm, value: TForm[keyof TForm]) => {
         setForm((prev) => ({ ...prev, [name]: value }));
@@ -85,45 +58,30 @@ export default function EditProfileScreen() {
     const handleSubmit = async () => {
         const values = form;
         setIsSubmitting(true);
-        try {
-            const payload = {
-                full_name: values.full_name.trim(),
-                phone: values.phone.trim(),
-                gender: values.gender ?? undefined,
-                date_of_birth: values.date_of_birth?.trim()
-                    ? new Date(values.date_of_birth).toISOString()
-                    : undefined,
-                occupation: values.occupation?.trim() || undefined,
-                province: values.province.trim() || undefined,
-                district: values.district.trim() || undefined,
-                ward: values.ward.trim() || undefined,
-                address_detail: values.address_detail.trim() || undefined,
-                is_priority_user: values.is_priority_user,
-                priority_user: values.is_priority_user
-                    ? values.priority_user.trim() || "priority"
-                    : undefined,
-            };
+        const payload = {
+            full_name: values.full_name,
+            phone: values.phone,
+            gender: values.gender,
+            date_of_birth: values.date_of_birth,
+            occupation: values.occupation,
+            province: values.province,
+            district: values.district,
+            ward: values.ward,
+            address_detail: values.address_detail,
+        };
 
-            const response = await authService.updateProfile(payload);
-            const updated = response.data;
+        const response = await authService.updateProfile(payload);
 
-            if (updated) {
-                setUser(updated);
-            }
+        showToast({
+            type: response.success ? "success" : "error",
+            content: response.success ? "Cập nhật thông tin thành công" : "Cập nhật thông tin thất bại",
+        });
 
-            showToast({
-                type: "success",
-                content: "Cập nhật thông tin thành công",
-            });
+        if (response.success) {
+            setUser(response.data);
             router.back();
-        } catch {
-            showToast({
-                type: "error",
-                content: "Cập nhật thông tin thất bại",
-            });
-        } finally {
-            setIsSubmitting(false);
         }
+        setIsSubmitting(false);
     }
 
     if (!user) {
@@ -144,25 +102,25 @@ export default function EditProfileScreen() {
                 showsVerticalScrollIndicator={false}
                 keyboardShouldPersistTaps="handled"
             >
-                <FormField labelText="Họ" required={true}>
+                <FormField labelText="Họ và tên" required={true}>
                     <InputText
                         value={form.full_name}
-                        onChangeText={(v) => handleChange("full_name", v)}
+                        onChangeText={(value) => handleChange("full_name", value)}
                     />
                 </FormField>
 
-                <FormField labelText="Tên" required={true}>
-                    <InputText value={form.full_name} disabled />
-                </FormField>
-
                 <FormField labelText="Email" required={true}>
-                    <InputText value={form.email} disabled />
+                    <InputText
+                        value={form.email}
+                        onChangeText={(value) => handleChange("email", value)}
+                        disabled
+                    />
                 </FormField>
 
                 <FormField labelText="Số điện thoại" required={true}>
                     <InputText
                         value={form.phone}
-                        onChangeText={(v) => handleChange("phone", v)}
+                        onChangeText={(value) => handleChange("phone", value)}
                         keyboardType="phone-pad"
                     />
                 </FormField>
@@ -195,7 +153,7 @@ export default function EditProfileScreen() {
                 <FormField labelText="Ngày sinh">
                     <InputText
                         value={form.date_of_birth}
-                        onChangeText={(v) => handleChange("date_of_birth", v)}
+                        onChangeText={(value) => handleChange("date_of_birth", value)}
                         placeholder="YYYY-MM-DD"
                     />
                 </FormField>
@@ -203,7 +161,7 @@ export default function EditProfileScreen() {
                 <FormField labelText="Nghề nghiệp">
                     <InputText
                         value={form.occupation}
-                        onChangeText={(v) => handleChange("occupation", v)}
+                        onChangeText={(value) => handleChange("occupation", value)}
                     />
                 </FormField>
 
@@ -216,42 +174,24 @@ export default function EditProfileScreen() {
                         />
                         <InputText
                             value={form.district}
-                            onChangeText={(v) => handleChange("district", v)}
+                            onChangeText={(value) => handleChange("district", value)}
                             placeholder="Quận/Huyện"
                         />
                         <InputText
                             value={form.ward}
-                            onChangeText={(v) => handleChange("ward", v)}
+                            onChangeText={(value) => handleChange("ward", value)}
                             placeholder="Phường/Xã"
                         />
                         <InputText
                             value={form.address_detail}
-                            onChangeText={(v) => handleChange("address_detail", v)}
+                            onChangeText={(value) => handleChange("address_detail", value)}
                             placeholder="Địa chỉ chi tiết"
                         />
                     </View>
                 </FormField>
 
-                <View className="mt-1 flex-row items-center justify-between rounded-xl border border-border bg-surface-elevated px-4 py-3">
-                    <View className="flex-1">
-                        <Text className="text-sm font-medium text-text-primary">
-                            Đối tượng ưu tiên
-                        </Text>
-                        <Text className="mt-1 text-xs text-text-muted">
-                            {form.is_priority_user ? "Đã bật" : "Chưa bật"}
-                        </Text>
-                    </View>
-                    <Switch
-                        checked={form.is_priority_user}
-                        onCheckedChange={(v) => handleChange("is_priority_user", v)}
-                    />
-                </View>
-
                 <View className="pt-2">
-                    <Button
-                        type="accent"
-                        variant="bold"
-                        className="w-full rounded-xl"
+                    <Button type="accent" variant="bold" className="w-full rounded-xl"
                         disabled={isSubmitting}
                         onPress={handleSubmit}
                     >

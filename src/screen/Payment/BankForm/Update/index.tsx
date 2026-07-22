@@ -6,7 +6,6 @@ import type { IPaymentMethod } from "@/models/paymentMethod";
 import { BankFormFields } from "@/screen/Payment/BankForm/BankFormFields";
 import {
     INITIAL_BANK_FORM,
-    isBankFormValid,
     parseBankFormData,
     type BankFormData,
 } from "@/screen/Payment/BankForm/types";
@@ -67,10 +66,8 @@ export default function UpdateBankFormScreen() {
         setFormData((prev) => ({ ...prev, [key]: value }));
     };
 
-    const canSubmit = isBankFormValid(formData);
-
     const handleSubmit = async () => {
-        if (!canSubmit || isSubmitting || !id) {
+        if (isSubmitting || !id) {
             return;
         }
         setIsSubmitting(true);
@@ -118,11 +115,8 @@ export default function UpdateBankFormScreen() {
                         onChange={handleChange}
                     />
 
-                    <Button
-                        type="primary"
-                        variant="bold"
-                        className="w-full rounded-lg"
-                        disabled={!canSubmit || isSubmitting}
+                    <Button type="primary" variant="bold" className="w-full rounded-lg"
+                        disabled={isSubmitting}
                         onPress={handleSubmit}
                     >
                         {isSubmitting ? (
