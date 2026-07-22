@@ -1,19 +1,13 @@
-import { Select } from "@/components/Select";
 import { PageHeader } from "@/components/PageHeader";
-import useTripBookingStore, {
-    computeMonthlyTicketPrice,
-} from "@/store/tripBooking.store";
+import useTripBookingStore, { computeMonthlyTicketPrice } from "@/store/tripBooking.store";
 import { router } from "expo-router";
 import { useMemo } from "react";
 import {
     KeyboardAvoidingView,
     Platform,
     ScrollView,
-    Text,
     View,
 } from "react-native";
-import { FormField } from "@/components/Form/FormField";
-import InputText from "@/components/Input/InputText";
 import { LocationInfo } from "../Element/LocationInfo";
 import { FormControls } from "../Element/FormControls";
 import { TicketInfo } from "./TicketInfo";
