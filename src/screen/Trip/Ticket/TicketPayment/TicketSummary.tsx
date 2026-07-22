@@ -1,6 +1,6 @@
 import useTripBookingStore from "@/store/tripBooking.store";
 import { Text, View } from "react-native";
-import { ArrowDown, CalendarClock, MapPin, Ticket } from "lucide-react-native";
+import { CalendarClock, Circle, MapPin, Ticket } from "lucide-react-native";
 import IconDetail from "./IconDetail";
 
 const TicketSummary = () => {
@@ -13,44 +13,55 @@ const TicketSummary = () => {
 
     const origin = searchContext?.originName ?? "Điểm đi";
     const dest = searchContext?.destinationName ?? "Điểm đến";
+    const isSingleTicket = ticketType === "single";
 
-    const TICKET_TYPE_CONFIG: Record<
-        "single" | "monthly",
-        { badgeLabel: string; primaryLabel: string; primaryValue: string; countValue: string; pickupValue: string }
-    > = {
-        single: {
+    const config = isSingleTicket
+        ? {
             badgeLabel: "VÉ LƯỢT ĐI",
             primaryLabel: "Khởi hành",
             primaryValue: `${singleForm.departureTime} • ${singleForm.departureDate}`,
             countValue: `${(singleForm.seatCount || "0").padStart(2, "0")} ghế`,
-            pickupValue: pickupStopName,
-        },
-        monthly: {
-            badgeLabel: "VÉ THÁNG",
+            pickupValue: pickupStopName || "—",
+        }
+        : {
+            badgeLabel:
+                ticketType === "monthly-multi"
+                    ? "VÉ THÁNG LIÊN TUYẾN"
+                    : "VÉ THÁNG ĐƠN TUYẾN",
             primaryLabel: "Tháng sử dụng",
-            primaryValue: monthlyForm.usageMonth,
+            primaryValue: monthlyForm.usageMonth || "—",
             countValue: `${(monthlyForm.ticketCount || "0").padStart(2, "0")} vé`,
             pickupValue: "Không giới hạn",
-        },
-    };
-    const config = TICKET_TYPE_CONFIG[ticketType as "single" | "monthly"];
+        };
 
     return (
         <View className="mb-6 overflow-hidden rounded-2xl border border-border bg-surface shadow-sm">
             <View className="bg-primary/5 p-4 border-b border-border border-dashed">
-                <Text className="text-xs font-medium text-primary mb-2">
+                <Text className="text-xs font-medium text-primary mb-3">
                     {config.badgeLabel} • {routeCode}
                 </Text>
-                <View className="flex-col items-center justify-center gap-2">
-                    <Text className="text-base font-bold text-text-primary" numberOfLines={2}>
-                        {origin}
-                    </Text>
-                    <View className="items-center justify-center rounded-full bg-surface-elevated">
-                        <ArrowDown size={18} color="#005f8b" />
+
+                <View>
+                    <View className="flex-row gap-3">
+                        <View className="items-center w-5">
+                            <Circle size={14} color="#005f8b" fill="#005f8b" />
+                            <View className="w-px flex-1 bg-border/70 my-1" />
+                        </View>
+                        <View className="flex-1 pb-3">
+                            <Text className="text-[11px] text-text-muted mb-0.5">Điểm đi</Text>
+                            <Text className="text-sm font-bold text-text-primary">{origin}</Text>
+                        </View>
                     </View>
-                    <Text className="text-center text-base font-bold text-text-primary" numberOfLines={2}>
-                        {dest}
-                    </Text>
+
+                    <View className="flex-row gap-3">
+                        <View className="items-center w-5">
+                            <MapPin size={16} color="#005f8b" />
+                        </View>
+                        <View className="flex-1">
+                            <Text className="text-[11px] text-text-muted mb-0.5">Điểm đến</Text>
+                            <Text className="text-sm font-bold text-text-primary">{dest}</Text>
+                        </View>
+                    </View>
                 </View>
             </View>
 
