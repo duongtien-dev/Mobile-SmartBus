@@ -86,3 +86,31 @@ export function getTicketValidityLabel(ticket: ITicket) {
 export function getTicketRouteTitle(ticket: ITicket) {
     return ticket.routeName.replace(/^Tuyến\s+/i, "");
 }
+
+export function getTripHistoryDateLabel(ticket: ITicket) {
+    const source = ticket.usedAt ?? ticket.departureDate ?? ticket.createdAt;
+    return formatDate(source);
+}
+
+export function getTripHistoryTimeLabel(ticket: ITicket) {
+    if (ticket.usedAt) {
+        const date = new Date(ticket.usedAt);
+        if (!Number.isNaN(date.getTime())) {
+            return `${pad(date.getHours())}:${pad(date.getMinutes())} | ${formatDate(ticket.usedAt)}`;
+        }
+    }
+
+    return getTicketSubtitle(ticket);
+}
+
+export function getTripHistoryStatusLabel(ticket: ITicket) {
+    if (ticket.status === "used" || ticket.usedAt) {
+        return "Đã sử dụng";
+    }
+
+    if (ticket.status === "expired") {
+        return "Đã hết hạn";
+    }
+
+    return "Đã hoàn thành";
+}

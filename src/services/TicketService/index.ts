@@ -20,6 +20,10 @@ class TicketService extends BaseService {
     getTicketDetail(body: object) {
         return this.post("/detail", body);
     }
+
+    getTripHistory(body: object) {
+        return this.post("/history", body);
+    }
 }
 
 export const ticketService = new TicketService();

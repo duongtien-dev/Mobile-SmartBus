@@ -4,9 +4,8 @@ import {
     PROFILE_MENU_SECTIONS,
 } from "@/constants/profile";
 import useAuthStore from "@/store/auth.store";
-import Constants from "expo-constants";
 import { router, type Href } from "expo-router";
-import { Alert, ScrollView, Text, View } from "react-native";
+import { Alert, ScrollView, View } from "react-native";
 import { ProfileMenuSection } from "./MenuSection";
 import { ProfileUserCard } from "./UserCard";
 
@@ -14,18 +13,8 @@ type MenuItem =
     | (typeof PROFILE_MENU_SECTIONS)[number]["items"][number]
     | (typeof PROFILE_AUTH_ACTIONS)[number];
 
-function filterMenuItems(items: readonly MenuItem[], isAuthenticated: boolean) {
-    return items.filter((item) => {
-        if ("authOnly" in item && item.authOnly && !isAuthenticated) return false;
-        if ("guestOnly" in item && item.guestOnly && isAuthenticated) return false;
-        return true;
-    });
-}
-
 export default function ProfileScreen() {
     const { user, isAuthenticated, logout } = useAuthStore();
-    const appVersion =
-        Constants.expoConfig?.version ?? Constants.nativeAppVersion ?? "1.0.0";
 
     const handleEditProfilePress = () => {
         router.push("/profile/edit" as Href);
@@ -49,14 +38,6 @@ export default function ProfileScreen() {
                     },
                 },
             ]);
-            return;
-        }
-
-        if (item.id === "about") {
-            Alert.alert(
-                "Về DanaBus",
-                `Ứng dụng xe buýt thông minh\nPhiên bản ${appVersion}`,
-            );
             return;
         }
 
@@ -85,23 +66,16 @@ export default function ProfileScreen() {
                     <ProfileMenuSection
                         key={section.id}
                         title={section.title}
-                        items={filterMenuItems(section.items, isAuthenticated)}
+                        items={section.items}
                         onItemPress={handleItemPress}
                     />
                 ))}
 
                 <ProfileMenuSection
                     title="Phiên đăng nhập"
-                    items={filterMenuItems(
-                        PROFILE_AUTH_ACTIONS,
-                        isAuthenticated,
-                    )}
+                    items={PROFILE_AUTH_ACTIONS}
                     onItemPress={handleItemPress}
                 />
-
-                <Text className="mt-2 text-center text-xs text-text-muted">
-                    DanaBus · v{appVersion}
-                </Text>
             </ScrollView>
         </View>
     );

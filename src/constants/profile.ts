@@ -48,6 +48,7 @@ export const PROFILE_MENU_SECTIONS = [
                 label: "Lịch sử chuyến đi",
                 description: "Các chuyến đã đi gần đây",
                 icon: History,
+                href: "/profile/trip-history",
                 authOnly: true,
             },
         ],
