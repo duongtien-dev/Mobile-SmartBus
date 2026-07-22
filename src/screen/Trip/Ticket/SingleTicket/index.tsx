@@ -12,7 +12,7 @@ import {
 } from "react-native";
 import { LocationInfo } from "../Element/LocationInfo";
 import { FormControls } from "../Element/FormControls";
-import { DepartureInfo } from "./DepartureInfo";
+import { TicketInfo } from "./TicketInfo";
 import { InputTime } from "./InputTime";
 import { InputSeat } from "./InputSeat";
 import { InputCustomer } from "./InputCustomer";
@@ -72,7 +72,7 @@ export default function SingleTicketScreen() {
                         originName={originName}
                         destinationName={destinationName}
                     />
-                    <DepartureInfo
+                    <TicketInfo
                         pickupStopName={pickupStopName}
                         departureDate={formData.departureDate}
                     />

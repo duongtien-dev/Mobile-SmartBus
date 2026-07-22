@@ -7,7 +7,7 @@ interface Props {
     departureDate: string;
 }
 
-export function DepartureInfo({ pickupStopName, departureDate }: Props) {
+export function TicketInfo({ pickupStopName, departureDate }: Props) {
     return (
         <View className="gap-4">
             <Text className="text-base font-bold text-primary">Thông tin lượt đi</Text>

@@ -16,6 +16,8 @@ import { FormField } from "@/components/Form/FormField";
 import InputText from "@/components/Input/InputText";
 import { LocationInfo } from "../Element/LocationInfo";
 import { FormControls } from "../Element/FormControls";
+import { TicketInfo } from "./TicketInfo";
+import { InputOption } from "./InputOption";
 
 const TICKET_COUNT_OPTIONS = [
     { value: "1", label: "1" },
@@ -26,8 +28,8 @@ const TICKET_COUNT_OPTIONS = [
 export default function MonthlyTicketScreen() {
     const searchContext = useTripBookingStore((state) => state.searchContext);
     const ticketType = useTripBookingStore((state) => state.ticketType);
-    const monthlyForm = useTripBookingStore((state) => state.monthlyForm);
-    const updateMonthlyForm = useTripBookingStore(
+    const formData = useTripBookingStore((state) => state.monthlyForm);
+    const handleChangForm = useTripBookingStore(
         (state) => state.updateMonthlyForm,
     );
     const setTotalPrice = useTripBookingStore((state) => state.setTotalPrice);
@@ -42,7 +44,7 @@ export default function MonthlyTicketScreen() {
         [isMultiRoute],
     );
 
-    const { usageMonth, ticketCount } = monthlyForm;
+    const { usageMonth, ticketCount } = formData;
 
     const totalPrice = useMemo(
         () => computeMonthlyTicketPrice(ticketCount),
@@ -72,52 +74,13 @@ export default function MonthlyTicketScreen() {
                         originName={originName}
                         destinationName={destinationName}
                     />
-
                     <View className="gap-4">
-                        <Text className="text-base font-bold text-primary">Thông tin lượt đi</Text>
-                        <FormField labelText="Trạm đón (Có thể lên tại bất kỳ trạm nào)">
-                            <InputText
-                                value="Không giới hạn"
-                                editable={false}
-                                className="h-12 rounded-xl border-0 bg-surface px-4 shadow-sm"
-                            />
-                        </FormField>
-
-                        <FormField labelText="Tháng sử dụng">
-                            <InputText
-                                value={usageMonth}
-                                editable={false}
-                                className="h-12 rounded-xl border-0 bg-surface px-4 shadow-sm"
-                            />
-                        </FormField>
-
-                        <View className="flex-row gap-3">
-                            <View className="flex-1">
-                                <FormField labelText="Giờ đi">
-                                    <InputText
-                                        value="Không giới hạn"
-                                        editable={false}
-                                        className="h-12 rounded-xl border-0 bg-surface px-4 shadow-sm"
-                                    />
-                                </FormField>
-                            </View>
-
-                            <View className="flex-1 gap-2">
-                                <Text className="text-sm font-medium text-primary">
-                                    Số lượng vé{" "}
-                                    <Text className="text-alert">*</Text>
-                                </Text>
-                                <Select
-                                    value={ticketCount}
-                                    onValueChange={(value) =>
-                                        updateMonthlyForm({ ticketCount: value })
-                                    }
-                                    placeholder="Chọn"
-                                    options={TICKET_COUNT_OPTIONS}
-                                    triggerClassName="h-12 rounded-xl border-0 bg-surface px-4 shadow-sm"
-                                />
-                            </View>
-                        </View>
+                        <TicketInfo usageMonth={usageMonth} />
+                        <InputOption
+                            value={ticketCount}
+                            onChange={(value) => handleChangForm({ ticketCount: value })}
+                            options={TICKET_COUNT_OPTIONS}
+                        />
                     </View>
                 </ScrollView>
 
