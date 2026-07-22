@@ -20,12 +20,10 @@ import {
     Text,
     View,
 } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const PAGE_SIZE = 12;
 
 export default function CreateReviewScreen() {
-    const insets = useSafeAreaInsets();
     const showToast = useToastify();
 
     const [selectedRouteId, setSelectedRouteId] = useState<string>();
@@ -92,7 +90,7 @@ export default function CreateReviewScreen() {
 
     return (
         <View className="flex-1 bg-background">
-            <View className="bg-highlight" style={{ paddingTop: insets.top }}>
+            <View className="bg-highlight">
                 <View className="flex-row items-center gap-2 px-4 py-3">
                     <Pressable
                         accessibilityRole="button"

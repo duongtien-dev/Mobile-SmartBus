@@ -13,10 +13,8 @@ import {
     Text,
     View,
 } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function MyReviewsScreen() {
-    const insets = useSafeAreaInsets();
     const user = useAuthStore((state) => state.user);
 
     const {
@@ -47,7 +45,7 @@ export default function MyReviewsScreen() {
 
     return (
         <View className="flex-1 bg-surface">
-            <View className="bg-highlight" style={{ paddingTop: insets.top }}>
+            <View className="bg-highlight">
                 <View className="flex-row items-center gap-2 px-4 py-3">
                     <Pressable
                         accessibilityRole="button"

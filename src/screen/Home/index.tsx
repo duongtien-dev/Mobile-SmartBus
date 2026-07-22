@@ -116,7 +116,7 @@ export default function HomeScreen() {
 
     return (
         <View className="flex-1 bg-background">
-            <PageHeader isIconRight={true} />
+            {/* <PageHeader title="Trang chủ" /> */}
 
             <View className="z-50 px-5">
                 <View className="gap-4">

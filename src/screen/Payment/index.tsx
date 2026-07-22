@@ -24,7 +24,7 @@ export default function PaymentScreen() {
 
     return (
         <View className="flex-1 bg-background">
-            <PageHeader title="Thanh toán" isIconRight={false} />
+            <PageHeader title="Thanh toán" />
 
             {isLoading ? (
                 <View className="mt-10 items-center">

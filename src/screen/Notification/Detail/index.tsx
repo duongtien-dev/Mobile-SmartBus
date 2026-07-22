@@ -13,15 +13,12 @@ import {
     Text,
     View,
 } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 type Props = {
     id: string;
 };
 
 export default function NoticeDetailScreen({ id }: Props) {
-    const insets = useSafeAreaInsets();
-
     const { data: post, isLoading, loadFetchFn } = useFetch<IPost>({
         fetchFn: async () => {
             const response = await postService.getPostDetail({ id });
@@ -35,10 +32,7 @@ export default function NoticeDetailScreen({ id }: Props) {
 
     if (isLoading) {
         return (
-            <View
-                className="flex-1 items-center justify-center bg-background"
-                style={{ paddingTop: insets.top }}
-            >
+            <View className="flex-1 items-center justify-center bg-background">
                 <ActivityIndicator color="#005f8b" />
             </View>
         );
@@ -46,10 +40,7 @@ export default function NoticeDetailScreen({ id }: Props) {
 
     if (!post) {
         return (
-            <View
-                className="flex-1 items-center justify-center bg-background px-6"
-                style={{ paddingTop: insets.top }}
-            >
+            <View className="flex-1 items-center justify-center bg-background px-6">
                 <Text className="text-base font-semibold text-text-primary">
                     Không tìm thấy nội dung
                 </Text>
@@ -82,31 +73,24 @@ export default function NoticeDetailScreen({ id }: Props) {
                     </View>
                 ) : null}
 
-                <Text className="mt-4 text-xl font-bold leading-7 text-primary">
+                <Text className="mt-3 text-xl font-bold text-text-primary">
                     {post.title}
                 </Text>
 
-                <View className="mt-3 flex-row items-center gap-3">
-                    <Text className="text-sm text-text-muted">
-                        {moment(post.createdAt).format("HH:mm")}
-                    </Text>
-                    <Text className="text-sm text-text-muted">
-                        {moment(post.createdAt).format("DD/MM/YYYY")}
-                    </Text>
-                </View>
+                <Text className="mt-2 text-sm text-text-muted">
+                    {moment(post.createdAt).format("DD/MM/YYYY HH:mm")}
+                </Text>
 
-                {post.images ? (
-                    <View className="mt-5 overflow-hidden rounded-xl">
-                        <Image
-                            className="h-48 w-full"
-                            contentFit="cover"
-                            source={post.images?.[0]}
-                        />
-                    </View>
+                {post.images?.[0] ? (
+                    <Image
+                        source={post.images[0]}
+                        className="mt-4 h-48 w-full rounded-xl"
+                        contentFit="cover"
+                    />
                 ) : null}
 
-                <Text className="mt-5 text-base leading-7 text-text-primary">
-                    {post.content || post.summary}
+                <Text className="mt-4 text-base leading-6 text-text-secondary">
+                    {post.content}
                 </Text>
             </ScrollView>
         </View>
