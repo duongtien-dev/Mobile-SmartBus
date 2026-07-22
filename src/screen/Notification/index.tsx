@@ -44,9 +44,8 @@ export default function NotificationsScreen() {
     }, [activeTab]);
 
     return (
-        <View className="flex-1 bg-background">
+        <View className="flex-1 gap-5 bg-background">
             <PageHeader title="Thông báo" isIconBack={false} />
-
             <View className="px-5">
                 <View className="flex-col gap-5 overflow-hidden bg-surface-elevated">
                     <View className="relative h-48 overflow-hidden rounded-lg">

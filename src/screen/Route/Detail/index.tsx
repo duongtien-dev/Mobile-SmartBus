@@ -19,7 +19,6 @@ import {
     Text,
     View,
 } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const DETAIL_TABS = [
     { key: "schedule", label: "Biểu đồ giờ" },
@@ -31,7 +30,6 @@ const DETAIL_TABS = [
 type DetailTab = (typeof DETAIL_TABS)[number]["key"];
 
 export default function RouteDetailScreen() {
-    const insets = useSafeAreaInsets();
     const { id } = useLocalSearchParams<{ id: string }>();
     const routeId = Array.isArray(id) ? id[0] : id;
 
@@ -86,7 +84,7 @@ export default function RouteDetailScreen() {
     if (error || !route) {
         return (
             <View className="flex-1 bg-background">
-                <View className="bg-primary" style={{ paddingTop: insets.top }}>
+                <View className="bg-primary">
                     <View className="flex-row items-center gap-2 px-4 py-3">
                         <Pressable
                             accessibilityRole="button"
@@ -113,7 +111,7 @@ export default function RouteDetailScreen() {
 
     return (
         <View className="flex-1 bg-background">
-            <View className="bg-primary" style={{ paddingTop: insets.top }}>
+            <View className="bg-primary">
                 <View className="flex-row items-center gap-2 px-4 py-3">
                     <Pressable
                         accessibilityRole="button"

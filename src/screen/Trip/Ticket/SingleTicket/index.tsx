@@ -1,4 +1,3 @@
-
 import { PageHeader } from "@/components/PageHeader";
 import useTripBookingStore, {
     computeSingleTicketPrice,
@@ -15,7 +14,6 @@ import { FormControls } from "../Element/FormControls";
 import { TicketInfo } from "./TicketInfo";
 import { InputTime } from "./InputTime";
 import { InputSeat } from "./InputSeat";
-import { InputCustomer } from "./InputCustomer";
 import { InputTerm } from "./InputTerm";
 
 const TIME_OPTIONS = [
@@ -79,30 +77,27 @@ export default function SingleTicketScreen() {
                     <View className="flex-row gap-3">
                         <InputTime
                             value={formData.departureTime}
-                            onChange={(value) => handleChangForm({ departureTime: value })}
+                            onChange={(value) =>
+                                handleChangForm({ departureTime: value })
+                            }
                             options={TIME_OPTIONS}
                         />
                         <InputSeat
-                            value={formData.seatCount}
-                            onChange={(value) => handleChangForm({ seatCount: value })}
+                            value={formData.seatCount || "1"}
+                            onChange={(value) =>
+                                handleChangForm({ seatCount: value })
+                            }
                             options={SEAT_OPTIONS}
                         />
                     </View>
-                    <InputCustomer
-                        fullName={formData.fullName}
-                        phoneNumber={formData.phoneNumber}
-                        onChangeName={(value) => handleChangForm({ fullName: value })}
-                        onChangePhoneNumber={(value) => handleChangForm({ phoneNumber: value })}
-                    />
                     <InputTerm
                         value={formData.acceptedTerms}
-                        onChange={(value) => handleChangForm({ acceptedTerms: value })}
+                        onChange={(value) =>
+                            handleChangForm({ acceptedTerms: value })
+                        }
                     />
                 </ScrollView>
-                <FormControls
-                    price={totalPrice}
-                    onPress={handleSubmit}
-                />
+                <FormControls price={totalPrice} onPress={handleSubmit} />
             </KeyboardAvoidingView>
         </View>
     );

@@ -5,6 +5,7 @@ import {
 } from "@/constants/ticket";
 import type { ISuggestLocation } from "@/models/suggestLocation";
 import type { ITrip, ITripLocation } from "@/models/trip";
+import moment, { now } from "moment";
 import { create } from "zustand";
 
 export interface ISearchContext {
@@ -29,16 +30,16 @@ export interface IMonthlyTicketForm {
 }
 
 const initialSingleForm: ISingleTicketForm = {
-    departureDate: "",
+    departureDate: moment(now()).format("DD/MM/YYYY"),
     departureTime: "",
-    seatCount: "",
+    seatCount: "1",
     fullName: "",
     phoneNumber: "",
     acceptedTerms: false,
 };
 
 const initialMonthlyForm: IMonthlyTicketForm = {
-    usageMonth: "",
+    usageMonth: moment(now()).format("MM/YYYY"),
     ticketCount: "",
 };
 

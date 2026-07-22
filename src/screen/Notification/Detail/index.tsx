@@ -13,15 +13,12 @@ import {
     Text,
     View,
 } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 type Props = {
     id: string;
 };
 
 export default function NoticeDetailScreen({ id }: Props) {
-    const insets = useSafeAreaInsets();
-
     const { data: post, isLoading, loadFetchFn } = useFetch<IPost>({
         fetchFn: async () => {
             const response = await postService.getPostDetail({ id });
@@ -35,10 +32,7 @@ export default function NoticeDetailScreen({ id }: Props) {
 
     if (isLoading) {
         return (
-            <View
-                className="flex-1 items-center justify-center bg-background"
-                style={{ paddingTop: insets.top }}
-            >
+            <View className="flex-1 items-center justify-center bg-background">
                 <ActivityIndicator color="#005f8b" />
             </View>
         );
@@ -46,10 +40,7 @@ export default function NoticeDetailScreen({ id }: Props) {
 
     if (!post) {
         return (
-            <View
-                className="flex-1 items-center justify-center bg-background px-6"
-                style={{ paddingTop: insets.top }}
-            >
+            <View className="flex-1 items-center justify-center bg-background px-6">
                 <Text className="text-base font-semibold text-text-primary">
                     Không tìm thấy nội dung
                 </Text>

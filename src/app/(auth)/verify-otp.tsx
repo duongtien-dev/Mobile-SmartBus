@@ -11,7 +11,6 @@ import {
     TextInput,
     View,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 
 const OTP_LENGTH = 6;
@@ -95,7 +94,7 @@ export default function VerifyOtp() {
                 />
             </View>
 
-            <SafeAreaView className="flex-1">
+            <View className="flex-1">
                 <KeyboardAvoidingView
                     behavior={Platform.OS === "ios" ? "padding" : "height"}
                     className="flex-1"
@@ -156,7 +155,7 @@ export default function VerifyOtp() {
                         </View>
                     </View>
                 </KeyboardAvoidingView>
-            </SafeAreaView>
+            </View>
         </View>
     );
 }

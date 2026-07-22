@@ -1,5 +1,4 @@
 import { Button } from "@/components/Button";
-import { PageHeader } from "@/components/PageHeader";
 import { QUICK_ACTIONS } from "@/constants/home";
 import { HOME_TIPS } from "@/constants/homeSections";
 import useFetch from "@/hooks/useFetch";
@@ -116,9 +115,7 @@ export default function HomeScreen() {
 
     return (
         <View className="flex-1 bg-background">
-            <PageHeader isIconRight={true} />
-
-            <View className="z-50 px-5">
+            <View className="z-50 px-5 pt-4">
                 <View className="gap-4">
                     <SuggestLocationInput
                         label="Điểm đi"

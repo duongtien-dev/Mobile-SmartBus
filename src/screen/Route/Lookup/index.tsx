@@ -13,10 +13,8 @@ import {
     Text,
     View,
 } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function RouteLookupScreen() {
-    const insets = useSafeAreaInsets();
     const [searchInput, setSearchInput] = useState("");
     const {
         list: routes,
@@ -48,7 +46,7 @@ export default function RouteLookupScreen() {
 
     return (
         <View className="flex-1 bg-background">
-            <View className="bg-primary" style={{ paddingTop: insets.top }}>
+            <View className="bg-primary">
                 <View className="py-3 flex-row items-center gap-2 px-4">
                     <Pressable
                         accessibilityRole="button"

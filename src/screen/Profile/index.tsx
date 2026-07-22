@@ -8,7 +8,6 @@ import useAuthStore from "@/store/auth.store";
 import Constants from "expo-constants";
 import { router, type Href } from "expo-router";
 import { Alert, ScrollView, Text, View } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ProfileMenuSection } from "./MenuSection";
 import { ProfileUserCard } from "./UserCard";
 
@@ -24,7 +23,6 @@ function filterMenuItems(
 }
 
 export default function ProfileScreen() {
-    const insets = useSafeAreaInsets();
     const { user, isAuthenticated, logout } = useAuthStore();
     const appVersion =
         Constants.expoConfig?.version ?? Constants.nativeAppVersion ?? "1.0.0";
@@ -78,14 +76,11 @@ export default function ProfileScreen() {
     };
 
     return (
-        <View
-            className="flex-1 bg-background"
-            style={{ paddingTop: insets.top }}
-        >
+        <View className="flex-1 bg-background">
             <PageHeader title="Tài khoản" isIconBack={false} />
             <ScrollView
                 className="flex-1"
-                contentContainerClassName="gap-5 px-5 pb-10"
+                contentContainerClassName="gap-5 px-5 pb-10 pt-5"
                 showsVerticalScrollIndicator={false}
             >
                 <ProfileUserCard

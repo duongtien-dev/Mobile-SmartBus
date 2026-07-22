@@ -13,7 +13,6 @@ import {
     Text,
     View,
 } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const FAVORITE_TABS = [
     { key: "routes", label: "Tuyến" },
@@ -23,7 +22,6 @@ const FAVORITE_TABS = [
 type FavoriteTab = (typeof FAVORITE_TABS)[number]["key"];
 
 export default function FavoriteRoutesScreen() {
-    const insets = useSafeAreaInsets();
     const [activeTab, setActiveTab] = useState<FavoriteTab>("routes");
 
     const {
@@ -63,7 +61,7 @@ export default function FavoriteRoutesScreen() {
 
     return (
         <View className="flex-1 bg-background flex flex-col gap-5">
-            <View className="bg-alert" style={{ paddingTop: insets.top }}>
+            <View className="bg-alert">
                 <View className="flex-row items-center gap-2 px-4 py-3">
                     <Pressable
                         accessibilityRole="button"
