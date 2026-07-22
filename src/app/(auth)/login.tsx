@@ -1,5 +1,6 @@
 import { Button } from "@/components/Button";
 import InputText from "@/components/Input/InputText";
+import { useToastify } from "@/hooks/useToastify";
 import { authService } from "@/services/AuthService";
 import useAuthStore from "@/store/auth.store";
 import { LinearGradient } from "expo-linear-gradient";
@@ -15,7 +16,6 @@ import {
     Text,
     View,
 } from "react-native";
-import { useToastify } from "@/hooks/useToastify";
 
 export default function Login() {
     const { setIsAuthenticated, setUser, setToken } = useAuthStore();
@@ -142,7 +142,7 @@ export default function Login() {
                         </Text>
 
                         <Button
-                            className="w-full rounded-xl bg-white text-primary font-bold text-md"
+                            className="w-full font-bold text-md"
                             onPress={() => router.push("/register")}
                         >
                             Tạo tài khoản

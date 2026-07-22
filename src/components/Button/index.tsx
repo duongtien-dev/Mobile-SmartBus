@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { Pressable, type PressableProps } from "react-native";
+import { Pressable, Text, type PressableProps } from "react-native";
 
 type ButtonVariant = "outline" | "bold";
 type ButtonType = "primary" | "secondary" | "danger" | "accent";
@@ -54,6 +54,15 @@ export function Button({
     ...props
 }: ButtonProps) {
 
+    const content =
+        typeof children === "string" || typeof children === "number" ? (
+            <Text className={`${classType[variant][type]} ${labelClassName}`}>
+                {children}
+            </Text>
+        ) : (
+            children
+        );
+
     return (
         <Pressable
             accessibilityRole="button"
@@ -61,7 +70,7 @@ export function Button({
             disabled={disabled}
             {...props}
         >
-            {children}
+            {content}
         </Pressable>
     );
 }
