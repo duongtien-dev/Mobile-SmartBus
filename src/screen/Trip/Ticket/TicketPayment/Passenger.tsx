@@ -1,9 +1,10 @@
-import useTripBookingStore from "@/store/tripBooking.store";
+
 import { Text, View } from "react-native";
 import { Phone, User } from "lucide-react-native";
+import useAuthStore from "@/store/auth.store";
 
 const Passenger = () => {
-    const singleForm = useTripBookingStore((state) => state.singleForm);
+    const user = useAuthStore((state) => state.user);
 
     return (
         <View className="mb-6 rounded-2xl border border-border bg-surface p-4 shadow-sm">
@@ -20,7 +21,7 @@ const Passenger = () => {
                     <View className="flex-1 border-b border-border/50 pb-2">
                         <Text className="text-xs text-text-muted">Họ và tên</Text>
                         <Text className="text-sm font-semibold text-text-primary mt-0.5">
-                            {singleForm.fullName || "Chưa cập nhật"}
+                            {user?.full_name || "N/A"}
                         </Text>
                     </View>
                 </View>
@@ -32,7 +33,7 @@ const Passenger = () => {
                     <View className="flex-1">
                         <Text className="text-xs text-text-muted">Số điện thoại</Text>
                         <Text className="text-sm font-semibold text-text-primary mt-0.5">
-                            {singleForm.phoneNumber || "Chưa cập nhật"}
+                            {user?.phone || "N/A"}
                         </Text>
                     </View>
                 </View>

@@ -44,11 +44,9 @@ export default function MonthlyTicketScreen() {
         [isMultiRoute],
     );
 
-    const { usageMonth, ticketCount } = formData;
-
     const totalPrice = useMemo(
-        () => computeMonthlyTicketPrice(ticketCount),
-        [ticketCount],
+        () => computeMonthlyTicketPrice(formData.ticketCount),
+        [formData.ticketCount],
     );
 
     const handleSubmit = () => {
@@ -75,9 +73,9 @@ export default function MonthlyTicketScreen() {
                         destinationName={destinationName}
                     />
                     <View className="gap-4">
-                        <TicketInfo usageMonth={usageMonth} />
+                        <TicketInfo usageMonth={formData.usageMonth} />
                         <InputOption
-                            value={ticketCount}
+                            value={formData.ticketCount || "1"}
                             onChange={(value) => handleChangForm({ ticketCount: value })}
                             options={TICKET_COUNT_OPTIONS}
                         />
