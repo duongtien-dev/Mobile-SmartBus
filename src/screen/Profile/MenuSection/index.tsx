@@ -1,18 +1,26 @@
-import type { ProfileMenuItem as ProfileMenuItemType } from "@/constants/profile";
+import type { LucideIcon } from "lucide-react-native";
 import { ProfileMenuItem } from "@/screen/Profile/MenuItem";
 import { Text, View } from "react-native";
 
-type ProfileMenuSectionProps = {
-    title: string;
-    items: ProfileMenuItemType[];
-    onItemPress: (item: ProfileMenuItemType) => void;
+type MenuItem = {
+    id: string;
+    label: string;
+    description?: string;
+    icon: LucideIcon;
+    destructive?: boolean;
 };
 
-export function ProfileMenuSection({
+type ProfileMenuSectionProps<T extends MenuItem> = {
+    title: string;
+    items: readonly T[];
+    onItemPress: (item: T) => void;
+};
+
+export function ProfileMenuSection<T extends MenuItem>({
     title,
     items,
     onItemPress,
-}: ProfileMenuSectionProps) {
+}: ProfileMenuSectionProps<T>) {
     if (items.length === 0) {
         return null;
     }
