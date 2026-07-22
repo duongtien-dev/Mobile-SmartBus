@@ -1,15 +1,15 @@
+import { PageHeader } from "@/components/PageHeader";
+import { Card } from "@/components/ui/Card";
 import SearchInput from "@/components/SearchInput";
 import usePaginationList from "@/hooks/usePaginationList";
 import type { IRoute } from "@/models/route";
 import { RouteCard } from "@/screen/Route/Lookup/RouteCard";
 import { routeService } from "@/services/RouteService";
 import { router } from "expo-router";
-import { ArrowLeft } from "lucide-react-native";
 import { useEffect, useState } from "react";
 import {
     ActivityIndicator,
     FlatList,
-    Pressable,
     Text,
     View,
 } from "react-native";
@@ -45,23 +45,8 @@ export default function RouteLookupScreen() {
     };
 
     return (
-        <View className="flex-1 bg-background">
-            <View className="bg-primary">
-                <View className="py-3 flex-row items-center gap-2 px-4">
-                    <Pressable
-                        accessibilityRole="button"
-                        accessibilityLabel="Quay lại"
-                        className="h-10 w-10 items-center justify-center active:opacity-80"
-                        hitSlop={8}
-                        onPress={() => router.back()}
-                    >
-                        <ArrowLeft color="#ffffff" size={24} />
-                    </Pressable>
-                    <Text className="text-lg font-bold text-on-primary">
-                        Tra cứu tuyến xe
-                    </Text>
-                </View>
-            </View>
+        <View className="flex-1 bg-app-shell">
+            <PageHeader title="Tra cứu tuyến xe" isIconBack />
 
             <View className="px-5 pb-3 pt-4">
                 <SearchInput
@@ -75,16 +60,20 @@ export default function RouteLookupScreen() {
                 data={routes}
                 keyExtractor={(item) => item._id}
                 renderItem={({ item }) => (
-                    <RouteCard
-                        route={item}
-                        onPress={(route) =>
-                            router.push({
-                                pathname: "/routes/[id]",
-                                params: { id: route._id },
-                            })
-                        }
-                        onFavoriteChange={handleFavoriteChange}
-                    />
+                    <View className="px-5 pb-3">
+                        <Card padding="none">
+                            <RouteCard
+                                route={item}
+                                onPress={(route) =>
+                                    router.push({
+                                        pathname: "/routes/[id]",
+                                        params: { id: route._id },
+                                    })
+                                }
+                                onFavoriteChange={handleFavoriteChange}
+                            />
+                        </Card>
+                    </View>
                 )}
                 onEndReached={loadMore}
                 onEndReachedThreshold={0.5}
@@ -97,9 +86,11 @@ export default function RouteLookupScreen() {
                             <ActivityIndicator color="#005f8b" />
                         </View>
                     ) : (
-                        <Text className="px-5 py-10 text-center text-sm text-text-muted">
-                            Không tìm thấy tuyến xe
-                        </Text>
+                        <Card className="mx-5">
+                            <Text className="py-4 text-center text-sm text-text-muted">
+                                Không tìm thấy tuyến xe
+                            </Text>
+                        </Card>
                     )
                 }
                 ListFooterComponent={

@@ -15,7 +15,7 @@ type ButtonProps = Omit<PressableProps, "children"> & {
 };
 
 const baseClass =
-    "flex-row items-center justify-center rounded-lg";
+    "flex-row items-center justify-center rounded-xl min-h-[48px]";
 
 const buttonClasses = {
     outline: {
@@ -56,8 +56,8 @@ const labelClasses = {
 } as const;
 
 const sizeClasses = {
-    sm: "px-4 py-2.5",
-    md: "px-4 py-3",
+    sm: "px-4 py-2.5 min-h-[40px]",
+    md: "px-5 py-3.5 min-h-[48px]",
 } as const;
 
 export function Button({

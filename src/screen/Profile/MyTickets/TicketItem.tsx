@@ -1,4 +1,6 @@
 import type { ITicket } from "@/models/ticket";
+import { Card } from "@/components/ui/Card";
+import { StatusPill } from "@/components/ui/StatusPill";
 import {
     getTicketRouteTitle,
     getTicketStatusConfig,
@@ -9,6 +11,15 @@ import {
 import { Image } from "expo-image";
 import { ChevronRight, Ticket } from "lucide-react-native";
 import { Pressable, Text, View } from "react-native";
+
+function statusToVariant(
+    status: ITicket["status"],
+): "success" | "warning" | "muted" | "danger" {
+    if (status === "paid" || status === "active") return "success";
+    if (status === "pending") return "warning";
+    if (status === "cancelled") return "danger";
+    return "muted";
+}
 
 type MyTicketItemProps = {
     ticket: ITicket;
@@ -22,31 +33,37 @@ export function MyTicketItem({ ticket, onPress }: MyTicketItemProps) {
     return (
         <Pressable
             accessibilityRole="button"
-            className="flex-row gap-3 border-b border-border px-4 py-4 active:bg-surface"
+            className="mb-3 active:opacity-90"
             onPress={() => onPress?.(ticket)}
         >
-            <View className="h-11 w-11 items-center justify-center rounded-xl bg-primary/10">
-                <Ticket color="#005f8b" size={22} />
-            </View>
-
-            <View className="min-w-0 flex-1 gap-1">
-                <Text className="text-base font-bold text-text-primary" numberOfLines={2}>
-                    Tuyến {getTicketRouteTitle(ticket)}
-                </Text>
-                <Text className="text-sm text-text-muted" numberOfLines={1}>
-                    Lên xe tại: {ticket.startStopName}
-                </Text>
-                <Text className="text-sm text-text-muted">
-                    {getTicketValidityLabel(ticket)}
-                </Text>
-            </View>
-
-            <View className="items-end gap-1">
-                <View className={`rounded-full px-2.5 py-1 ${status.badgeClass}`}>
-                    <Text className="text-xs font-semibold">{status.label}</Text>
+            <Card className="flex-row gap-3" padding="md">
+                <View className="h-11 w-11 items-center justify-center rounded-full bg-primary-light">
+                    <Ticket color="#005f8b" size={22} />
                 </View>
-                <Text className="text-xs text-text-muted">({typeLabel})</Text>
-            </View>
+
+                <View className="min-w-0 flex-1 gap-1">
+                    <Text
+                        className="text-base font-bold text-text-primary"
+                        numberOfLines={2}
+                    >
+                        Tuyến {getTicketRouteTitle(ticket)}
+                    </Text>
+                    <Text className="text-sm text-text-muted" numberOfLines={1}>
+                        Lên xe tại: {ticket.startStopName}
+                    </Text>
+                    <Text className="text-sm text-text-muted">
+                        {getTicketValidityLabel(ticket)}
+                    </Text>
+                </View>
+
+                <View className="items-end gap-1">
+                    <StatusPill
+                        label={status.label}
+                        variant={statusToVariant(ticket.status)}
+                    />
+                    <Text className="text-xs text-text-muted">({typeLabel})</Text>
+                </View>
+            </Card>
         </Pressable>
     );
 }
@@ -60,32 +77,36 @@ export function QrTicketItem({ ticket, onPress }: QrTicketItemProps) {
     return (
         <Pressable
             accessibilityRole="button"
-            className="mx-5 mb-3 flex-row items-center gap-3 rounded-2xl border border-border bg-surface-elevated px-4 py-4 active:opacity-90"
+            className="mb-3 active:opacity-90"
             onPress={() => onPress?.(ticket)}
         >
-            <View className="h-14 w-14 items-center justify-center overflow-hidden rounded-xl bg-white">
-                {ticket.qrCodeImage ? (
-                    <Image
-                        source={{ uri: ticket.qrCodeImage }}
-                        style={{ width: 52, height: 52 }}
-                        contentFit="contain"
-                    />
-                ) : (
-                    <Ticket color="#005f8b" size={24} />
-                )}
-            </View>
+            <Card className="flex-row items-center gap-3" padding="md">
+                <View className="h-14 w-14 items-center justify-center overflow-hidden rounded-xl bg-surface">
+                    {ticket.qrCodeImage ? (
+                        <Image
+                            source={{ uri: ticket.qrCodeImage }}
+                            style={{ width: 52, height: 52 }}
+                            contentFit="contain"
+                        />
+                    ) : (
+                        <Ticket color="#005f8b" size={24} />
+                    )}
+                </View>
 
-            <View className="min-w-0 flex-1 gap-1">
-                <Text className="text-base font-bold text-text-primary" numberOfLines={2}>
-                    {getTicketRouteTitle(ticket)}
-                </Text>
-                <Text className="text-sm text-text-muted">
-                    {getTicketSubtitle(ticket)}
-                </Text>
-            </View>
+                <View className="min-w-0 flex-1 gap-1">
+                    <Text
+                        className="text-base font-bold text-text-primary"
+                        numberOfLines={2}
+                    >
+                        {getTicketRouteTitle(ticket)}
+                    </Text>
+                    <Text className="text-sm text-text-muted">
+                        {getTicketSubtitle(ticket)}
+                    </Text>
+                </View>
 
-            {/* <Text className="text-xl text-primary">{">"}</Text> */}
-            <ChevronRight color="#005f8b" size={24} />
+                <ChevronRight color="#005f8b" size={22} />
+            </Card>
         </Pressable>
     );
 }

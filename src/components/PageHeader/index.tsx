@@ -3,34 +3,46 @@ import { router } from "expo-router";
 import { ArrowLeft } from "lucide-react-native";
 import { Pressable, Text, View, type ViewProps } from "react-native";
 
+type PageHeaderVariant = "default" | "immersive";
+
 type PageHeaderProps = ViewProps & {
     title?: string;
     isIconBack?: boolean;
+    variant?: PageHeaderVariant;
+    subtitle?: string;
 };
 
 export function PageHeader({
     title,
+    subtitle,
     isIconBack = false,
+    variant = "default",
     className,
     style,
+    children,
     ...props
 }: PageHeaderProps) {
+    const isImmersive = variant === "immersive";
+
     return (
         <View
             className={cn(
-                "relative w-full border-b border-border bg-background px-5 py-3",
+                "relative w-full px-5 py-3",
+                isImmersive
+                    ? "bg-app-shell"
+                    : "border-b border-border bg-card shadow-sm",
                 className,
             )}
-            style={[{ minHeight: 56 }, style]}
+            style={[{ minHeight: isImmersive ? 48 : 56 }, style]}
             {...props}
         >
-            {title ? (
+            {title && !isImmersive ? (
                 <View
                     className="absolute inset-x-5 inset-y-0 items-center justify-center"
                     style={{ pointerEvents: "none" }}
                 >
                     <Text
-                        className="px-12 text-center text-xl font-bold text-primary"
+                        className="px-12 text-center text-lg font-bold text-text-primary"
                         numberOfLines={1}
                     >
                         {title}
@@ -38,7 +50,7 @@ export function PageHeader({
                 </View>
             ) : null}
 
-            <View className="z-10 h-10 flex-row items-center">
+            <View className="z-10 min-h-10 flex-1 flex-row items-center justify-between">
                 <View className="min-w-10 flex-row items-center justify-start">
                     {isIconBack ? (
                         <Pressable
@@ -52,6 +64,21 @@ export function PageHeader({
                         </Pressable>
                     ) : null}
                 </View>
+
+                {isImmersive && title ? (
+                    <View className="flex-1 gap-0.5 px-2">
+                        <Text className="text-xl font-bold text-text-primary">
+                            {title}
+                        </Text>
+                        {subtitle ? (
+                            <Text className="text-sm text-text-muted">
+                                {subtitle}
+                            </Text>
+                        ) : null}
+                    </View>
+                ) : null}
+
+                {children}
             </View>
         </View>
     );

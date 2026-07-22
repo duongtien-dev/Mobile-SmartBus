@@ -1,15 +1,15 @@
+import { PageHeader } from "@/components/PageHeader";
 import TabContainer from "@/components/TabContainer";
+import { Card } from "@/components/ui/Card";
 import usePaginationList from "@/hooks/usePaginationList";
 import type { IRoute } from "@/models/route";
 import { RouteCard } from "@/screen/Route/Lookup/RouteCard";
 import { favoriteRouteService } from "@/services/FavoriteRouteService";
 import { router } from "expo-router";
-import { ArrowLeft } from "lucide-react-native";
 import { useEffect, useState } from "react";
 import {
     ActivityIndicator,
     FlatList,
-    Pressable,
     Text,
     View,
 } from "react-native";
@@ -60,25 +60,10 @@ export default function FavoriteRoutesScreen() {
     };
 
     return (
-        <View className="flex-1 bg-background flex flex-col gap-5">
-            <View className="bg-alert">
-                <View className="flex-row items-center gap-2 px-4 py-3">
-                    <Pressable
-                        accessibilityRole="button"
-                        accessibilityLabel="Quay lại"
-                        className="h-10 w-10 items-center justify-center active:opacity-80"
-                        hitSlop={8}
-                        onPress={() => router.back()}
-                    >
-                        <ArrowLeft color="#ffffff" size={24} />
-                    </Pressable>
-                    <Text className="text-lg font-bold text-on-alert">
-                        Yêu thích
-                    </Text>
-                </View>
-            </View>
+        <View className="flex-1 bg-app-shell">
+            <PageHeader title="Yêu thích" isIconBack />
 
-            <View className="border-b border-border pb-5">
+            <View className="border-b border-border bg-card px-5 pb-4">
                 <TabContainer
                     tabs={FAVORITE_TABS.map((tab) => ({
                         key: tab.key,
@@ -97,16 +82,20 @@ export default function FavoriteRoutesScreen() {
                     data={routes}
                     keyExtractor={(item) => item._id}
                     renderItem={({ item }) => (
-                        <RouteCard
-                            route={{ ...item, isFavorite: true }}
-                            onPress={(route) =>
-                                router.push({
-                                    pathname: "/routes/[id]",
-                                    params: { id: route._id },
-                                })
-                            }
-                            onFavoriteChange={handleFavoriteChange}
-                        />
+                        <View className="px-5 pt-3">
+                            <Card padding="none">
+                                <RouteCard
+                                    route={{ ...item, isFavorite: true }}
+                                    onPress={(route) =>
+                                        router.push({
+                                            pathname: "/routes/[id]",
+                                            params: { id: route._id },
+                                        })
+                                    }
+                                    onFavoriteChange={handleFavoriteChange}
+                                />
+                            </Card>
+                        </View>
                     )}
                     onEndReached={loadMore}
                     onEndReachedThreshold={0.5}
@@ -118,9 +107,11 @@ export default function FavoriteRoutesScreen() {
                                 <ActivityIndicator color="#005f8b" />
                             </View>
                         ) : (
-                            <Text className="px-5 py-10 text-center text-sm text-text-muted">
-                                Chưa có tuyến yêu thích
-                            </Text>
+                            <Card className="mx-5 mt-4">
+                                <Text className="py-4 text-center text-sm text-text-muted">
+                                    Chưa có tuyến yêu thích
+                                </Text>
+                            </Card>
                         )
                     }
                     ListFooterComponent={
@@ -132,9 +123,11 @@ export default function FavoriteRoutesScreen() {
                     }
                 />
             ) : (
-                <Text className="px-5 py-10 text-center text-sm text-text-muted">
-                    Tính năng trạm yêu thích sắp ra mắt
-                </Text>
+                <Card className="mx-5 mt-4">
+                    <Text className="py-6 text-center text-sm text-text-muted">
+                        Tính năng trạm yêu thích sắp ra mắt
+                    </Text>
+                </Card>
             )}
         </View>
     );

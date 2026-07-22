@@ -38,7 +38,7 @@ export default function MyTicketQrListScreen() {
     };
 
     return (
-        <View className="flex-1 bg-background">
+        <View className="flex-1 bg-app-shell">
             <PageHeader title="Mã QR khả dụng" isIconBack />
 
             <FlatList
@@ -46,7 +46,9 @@ export default function MyTicketQrListScreen() {
                 data={tickets}
                 keyExtractor={(item) => item._id}
                 renderItem={({ item }) => (
-                    <QrTicketItem ticket={item} onPress={handleTicketPress} />
+                    <View className="px-5">
+                        <QrTicketItem ticket={item} onPress={handleTicketPress} />
+                    </View>
                 )}
                 onEndReached={loadMore}
                 onEndReachedThreshold={0.5}

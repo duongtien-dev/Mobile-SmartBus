@@ -1,4 +1,6 @@
 import { PageHeader } from "@/components/PageHeader";
+import { Card } from "@/components/ui/Card";
+import { StatusPill } from "@/components/ui/StatusPill";
 import type { ITicket } from "@/models/ticket";
 import { ticketService } from "@/services/TicketService";
 import {
@@ -41,7 +43,7 @@ export default function MyTicketDetailScreen() {
 
     if (isLoading) {
         return (
-            <View className="flex-1 items-center justify-center bg-background">
+            <View className="flex-1 items-center justify-center bg-app-shell">
                 <ActivityIndicator color="#005f8b" />
             </View>
         );
@@ -49,7 +51,7 @@ export default function MyTicketDetailScreen() {
 
     if (!ticket || error) {
         return (
-            <View className="flex-1 bg-background">
+            <View className="flex-1 bg-app-shell">
                 <PageHeader title="Chi tiết vé" isIconBack />
                 <Text className="px-5 py-10 text-center text-sm text-text-muted">
                     {error ?? "Không tìm thấy vé"}
@@ -61,15 +63,15 @@ export default function MyTicketDetailScreen() {
     const status = getTicketStatusConfig(ticket.status);
 
     return (
-        <View className="flex-1 bg-background">
+        <View className="flex-1 bg-app-shell">
             <PageHeader title="Chi tiết vé" isIconBack />
 
             <ScrollView
                 className="flex-1"
-                contentContainerClassName="gap-5 px-5 pb-10 pt-5"
+                contentContainerClassName="gap-4 px-5 pb-10 pt-5"
                 showsVerticalScrollIndicator={false}
             >
-                <View className="items-center rounded-2xl border border-border bg-surface-elevated p-6">
+                <Card className="items-center" padding="lg">
                     {ticket.qrCodeImage ? (
                         <Image
                             source={{ uri: ticket.qrCodeImage }}
@@ -88,18 +90,14 @@ export default function MyTicketDetailScreen() {
                             {ticket.qrCode}
                         </Text>
                     ) : null}
-                </View>
+                </Card>
 
-                <View className="gap-4 rounded-2xl border border-border bg-surface-elevated p-5">
+                <Card className="gap-4" padding="lg">
                     <View className="flex-row items-start justify-between gap-3">
                         <Text className="flex-1 text-lg font-bold text-text-primary">
                             Tuyến {getTicketRouteTitle(ticket)}
                         </Text>
-                        <View className={`rounded-full px-2.5 py-1 ${status.badgeClass}`}>
-                            <Text className="text-xs font-semibold">
-                                {status.label}
-                            </Text>
-                        </View>
+                        <StatusPill label={status.label} variant="primary" />
                     </View>
 
                     <DetailRow label="Loại vé" value={getTicketTypeLabel(ticket.ticketType)} />
@@ -112,7 +110,7 @@ export default function MyTicketDetailScreen() {
                         label="Giá"
                         value={`${ticket.price.toLocaleString("vi-VN")} đồng`}
                     />
-                </View>
+                </Card>
             </ScrollView>
         </View>
     );

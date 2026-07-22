@@ -1,4 +1,8 @@
 import { Button } from "@/components/Button";
+import { PageHeader } from "@/components/PageHeader";
+import { Card } from "@/components/ui/Card";
+import { SearchPillContainer } from "@/components/ui/SearchPill";
+import { SectionTitle } from "@/components/ui/SectionTitle";
 import { QUICK_ACTIONS } from "@/constants/home";
 import { HOME_TIPS } from "@/constants/homeSections";
 import useFetch from "@/hooks/useFetch";
@@ -8,11 +12,14 @@ import type { IRoute } from "@/models/route";
 import type { ISuggestLocation } from "@/models/suggestLocation";
 import { postService } from "@/services/PostService";
 import { routeService } from "@/services/RouteService";
+import useAuthStore from "@/store/auth.store";
 import useTripBookingStore from "@/store/tripBooking.store";
 import { router, useFocusEffect } from "expo-router";
+import { UserRound } from "lucide-react-native";
 import { useCallback, useEffect, useState } from "react";
 import {
     ActivityIndicator,
+    Pressable,
     ScrollView,
     Text,
     View,
@@ -22,13 +29,13 @@ import { FaqPreview } from "./FaqPreview";
 import { FeaturedRouteCard } from "./FeaturedRouteCard";
 import { NewsCard } from "./NewCard";
 import { QuickActionButton } from "./QuickAction";
-import { SectionHeader } from "./SectionHeader";
 import { SuggestLocationInput } from "./SuggestLocationInput";
 import { TipCard } from "./TipCard";
 
 const FEATURED_ROUTES_LIMIT = 6;
 
 export default function HomeScreen() {
+    const user = useAuthStore((state) => state.user);
     const setSearchContext = useTripBookingStore(
         (state) => state.setSearchContext,
     );
@@ -112,11 +119,26 @@ export default function HomeScreen() {
     };
 
     const routeList = featuredRoutes ?? [];
+    const greetingName = user?.full_name?.split(" ")[0] ?? "bạn";
 
     return (
-        <View className="flex-1 bg-background">
-            <View className="z-50 px-5 pt-4">
-                <View className="gap-4">
+        <View className="flex-1 bg-app-shell">
+            <PageHeader
+                variant="immersive"
+                title={`Xin chào, ${greetingName}`}
+                subtitle="Bạn muốn đi đâu hôm nay?"
+            >
+                <Pressable
+                    accessibilityRole="button"
+                    className="absolute right-0 top-0 h-10 w-10 items-center justify-center rounded-full bg-primary-light active:opacity-80"
+                    onPress={() => router.push("/profile")}
+                >
+                    <UserRound color="#005f8b" size={22} />
+                </Pressable>
+            </PageHeader>
+
+            <View className="z-50 px-5 pb-2">
+                <SearchPillContainer>
                     <SuggestLocationInput
                         label="Điểm đi"
                         placeholder="Địa chỉ hiện tại"
@@ -131,7 +153,7 @@ export default function HomeScreen() {
 
                     <SuggestLocationInput
                         label="Điểm đến"
-                        placeholder="Điểm đến"
+                        placeholder="Bạn muốn đến đâu?"
                         value={destination}
                         onChangeText={(text) => {
                             setDestination(text);
@@ -142,49 +164,51 @@ export default function HomeScreen() {
                     />
 
                     <Button
-                        type="accent"
+                        type="primary"
                         variant="bold"
                         className="w-full rounded-xl"
                         onPress={handleSearch}
                     >
-                        Tìm
+                        Tìm chuyến
                     </Button>
-                </View>
+                </SearchPillContainer>
             </View>
 
             <ScrollView
                 className="flex-1"
-                contentContainerClassName="px-5 flex-col gap-3 pb-10 pt-3"
+                contentContainerClassName="gap-6 px-5 pb-10 pt-4"
                 keyboardShouldPersistTaps="handled"
                 showsVerticalScrollIndicator={false}
             >
-                <View className="mt-3 flex-row">
-                    {QUICK_ACTIONS.map((action) => (
-                        <QuickActionButton
-                            key={action.id}
-                            action={action}
-                            onPress={() => router.push(action.path as any)}
-                        />
-                    ))}
-                </View>
+                <Card padding="md" shadow>
+                    <View className="flex-row justify-between">
+                        {QUICK_ACTIONS.map((action) => (
+                            <QuickActionButton
+                                key={action.id}
+                                action={action}
+                                onPress={() => router.push(action.path as any)}
+                            />
+                        ))}
+                    </View>
+                </Card>
 
-                <View className="mt-8">
-                    <SectionHeader
-                        title="TUYẾN XE NỔI BẬT"
+                <View>
+                    <SectionTitle
+                        title="Tuyến xe nổi bật"
                         actionLabel="Xem tất cả"
                         onActionPress={() => router.push("/routes/lookup")}
                     />
 
                     {isFeaturedRoutesLoading ? (
-                        <View className="h-36 items-center justify-center">
+                        <Card className="h-36 items-center justify-center">
                             <ActivityIndicator color="#005f8b" />
-                        </View>
+                        </Card>
                     ) : routeList.length > 0 ? (
                         <ScrollView
                             horizontal
                             nestedScrollEnabled
                             showsHorizontalScrollIndicator={false}
-                            contentContainerClassName="pr-5"
+                            contentContainerClassName="gap-3 pr-2"
                         >
                             {routeList.map((route) => (
                                 <FeaturedRouteCard
@@ -194,19 +218,21 @@ export default function HomeScreen() {
                             ))}
                         </ScrollView>
                     ) : (
-                        <Text className="text-sm text-text-muted">
-                            Chưa có tuyến xe
-                        </Text>
+                        <Card>
+                            <Text className="text-sm text-text-muted">
+                                Chưa có tuyến xe
+                            </Text>
+                        </Card>
                     )}
                 </View>
 
-                <View className="mt-8">
-                    <SectionHeader title="MẸO DI CHUYỂN" />
+                <View>
+                    <SectionTitle title="Mẹo di chuyển" />
                     <ScrollView
                         horizontal
                         nestedScrollEnabled
                         showsHorizontalScrollIndicator={false}
-                        contentContainerClassName="pr-5"
+                        contentContainerClassName="gap-3 pr-2"
                     >
                         {HOME_TIPS.map((tip) => (
                             <TipCard key={tip.id} tip={tip} />
@@ -214,44 +240,48 @@ export default function HomeScreen() {
                     </ScrollView>
                 </View>
 
-                <View className="mt-8">
-                    <SectionHeader
-                        title="KHÁM PHÁ TIN TỨC"
+                <View>
+                    <SectionTitle
+                        title="Khám phá tin tức"
                         actionLabel="Xem tất cả"
                         onActionPress={() => router.push("/notice/list")}
                     />
 
                     {isSkeletonLoading ? (
-                        <View className="h-40 items-center justify-center">
+                        <Card className="h-40 items-center justify-center">
                             <ActivityIndicator color="#005f8b" />
-                        </View>
+                        </Card>
                     ) : (
                         <ScrollView
                             horizontal
                             nestedScrollEnabled
                             showsHorizontalScrollIndicator={false}
-                            contentContainerClassName="pr-5"
+                            contentContainerClassName="gap-3 pr-2"
                         >
                             {posts.length > 0 ? (
                                 posts.map((item) => (
                                     <NewsCard key={item._id} item={item} />
                                 ))
                             ) : (
-                                <Text className="text-sm text-text-muted">
-                                    Chưa có tin tức
-                                </Text>
+                                <Card>
+                                    <Text className="text-sm text-text-muted">
+                                        Chưa có tin tức
+                                    </Text>
+                                </Card>
                             )}
                         </ScrollView>
                     )}
                 </View>
 
-                <View className="mt-8">
-                    <SectionHeader
-                        title="HỎI ĐÁP NHANH"
+                <View>
+                    <SectionTitle
+                        title="Hỏi đáp nhanh"
                         actionLabel="Xem thêm"
                         onActionPress={() => router.push("/help")}
                     />
-                    <FaqPreview />
+                    <Card padding="none">
+                        <FaqPreview />
+                    </Card>
                 </View>
             </ScrollView>
         </View>

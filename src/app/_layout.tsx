@@ -9,7 +9,7 @@ export default function RootLayout() {
         <SafeAreaProvider>
             {/* Dùng style thay className — NativeWind có thể ghi đè padding safe-area */}
             <SafeAreaView
-                style={{ flex: 1, backgroundColor: "#ffffff" }}
+                style={{ flex: 1, backgroundColor: "#f5f7fa" }}
                 edges={["top", "left", "right"]}
             >
                 <StatusBar style="dark" />

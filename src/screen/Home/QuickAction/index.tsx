@@ -22,8 +22,6 @@ type QuickActionButtonProps = {
 
 export function QuickActionButton({ action, onPress }: QuickActionButtonProps) {
     const Icon = ICONS[action.icon];
-    const iconColor =
-        action.colorClass === "bg-highlight" ? "#005f8b" : "#ffffff";
 
     return (
         <Pressable
@@ -32,9 +30,9 @@ export function QuickActionButton({ action, onPress }: QuickActionButtonProps) {
             onPress={onPress}
         >
             <View
-                className={`mb-2 h-14 w-14 items-center justify-center rounded-full ${action.colorClass}`}
+                className={`mb-2 h-14 w-14 items-center justify-center rounded-full ${action.colorClass === "bg-highlight" ? "bg-highlight-light" : "bg-primary-light"}`}
             >
-                <Icon color={iconColor} size={24} />
+                <Icon color="#005f8b" size={24} />
             </View>
             <Text className="text-center text-xs font-medium text-text-primary">
                 {action.label}

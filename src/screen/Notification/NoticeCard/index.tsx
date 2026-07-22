@@ -1,4 +1,5 @@
 import type { IPost } from "@/models/post";
+import { Card } from "@/components/ui/Card";
 import { router } from "expo-router";
 import { Newspaper } from "lucide-react-native";
 import moment from "moment";
@@ -9,15 +10,11 @@ type NoticeCardProps = {
     index?: number;
 };
 
-export function NoticeCard({ item, index = 0 }: NoticeCardProps) {
-    const isAlt = index % 2 === 0;
-
+export function NoticeCard({ item }: NoticeCardProps) {
     return (
         <Pressable
             accessibilityRole="button"
-            className={`flex-row items-start gap-3 px-4 py-3 active:opacity-80 ${
-                isAlt ? "bg-surface" : "bg-background"
-            }`}
+            className="mb-3 active:opacity-90"
             onPress={() =>
                 router.push({
                     pathname: "/notice/[id]",
@@ -25,27 +22,23 @@ export function NoticeCard({ item, index = 0 }: NoticeCardProps) {
                 })
             }
         >
-            <View className="pt-0.5">
-                <Newspaper color="#005f8b" size={18} strokeWidth={1.8} />
-            </View>
+            <Card className="flex-row items-start gap-3" padding="md">
+                <View className="h-10 w-10 items-center justify-center rounded-full bg-primary-light">
+                    <Newspaper color="#005f8b" size={18} strokeWidth={1.8} />
+                </View>
 
-            <View className="flex-1 gap-1">
-                <Text className="text-sm font-medium leading-5 text-primary">
-                    {item.title}
-                </Text>
-                <View className="flex-row items-center gap-3">
-                    <Text className="text-[11px] text-disabled">
-                        {moment(item.createdAt).format("HH:mm")}
+                <View className="min-w-0 flex-1 gap-1">
+                    <Text
+                        className="text-sm font-semibold leading-5 text-text-primary"
+                        numberOfLines={2}
+                    >
+                        {item.title}
                     </Text>
-                    <Text className="text-[11px] text-disabled">
-                        {moment(item.createdAt).format("DD/MM/YYYY")}
+                    <Text className="text-xs text-text-muted">
+                        {moment(item.createdAt).format("HH:mm · DD/MM/YYYY")}
                     </Text>
                 </View>
-            </View>
-
-            <Text className="pt-0.5 text-xs font-medium text-accent underline">
-                Xem chi tiết
-            </Text>
+            </Card>
         </Pressable>
     );
 }

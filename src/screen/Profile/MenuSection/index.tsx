@@ -1,5 +1,6 @@
+import { Card } from "@/components/ui/Card";
+import { ListRow } from "@/components/ui/ListRow";
 import type { LucideIcon } from "lucide-react-native";
-import { ProfileMenuItem } from "@/screen/Profile/MenuItem";
 import { Text, View } from "react-native";
 
 type MenuItem = {
@@ -30,19 +31,22 @@ export function ProfileMenuSection<T extends MenuItem>({
             <Text className="px-1 text-xs font-bold tracking-wide text-text-muted">
                 {title.toUpperCase()}
             </Text>
-            <View className="overflow-hidden rounded-xl border border-border bg-surface-elevated">
+            <Card padding="none" shadow>
                 {items.map((item, index) => (
-                    <ProfileMenuItem
-                        key={item.id}
-                        label={item.label}
-                        description={item.description}
-                        icon={item.icon}
-                        index={index}
-                        destructive={item.destructive}
-                        onPress={() => onItemPress(item)}
-                    />
+                    <View key={item.id}>
+                        <ListRow
+                            label={item.label}
+                            description={item.description}
+                            icon={item.icon}
+                            destructive={item.destructive}
+                            onPress={() => onItemPress(item)}
+                        />
+                        {index < items.length - 1 ? (
+                            <View className="mx-4 h-px bg-border" />
+                        ) : null}
+                    </View>
                 ))}
-            </View>
+            </Card>
         </View>
     );
 }
