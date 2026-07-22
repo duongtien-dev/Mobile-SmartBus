@@ -1,6 +1,6 @@
 import { Select } from "@/components/Select";
 import { PageHeader } from "@/components/PageHeader";
-import { FormControls } from "@/screen/Trip/Ticket/shared/FormControls";
+import { FormControls } from "@/screen/Trip/Ticket/Element/FormControls";
 import useTripBookingStore, {
     computeMonthlyTicketPrice,
 } from "@/store/tripBooking.store";
