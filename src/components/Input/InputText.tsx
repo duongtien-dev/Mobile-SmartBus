@@ -6,11 +6,9 @@ interface InputTextProps extends TextInputProps {
     disabled?: boolean;
 }
 
-const InputText: React.FC<InputTextProps> = ({
-    className,
-    disabled = false,
-    ...props
-}) => {
+const InputText: React.FC<InputTextProps> = ({...Props}: InputTextProps) => {
+    // Destructure props
+    const { className, disabled, ...props } = Props;
     return (
         <TextInput
             editable={!disabled}
