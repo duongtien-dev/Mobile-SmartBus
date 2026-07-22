@@ -1,4 +1,3 @@
-import type { LucideIcon } from "lucide-react-native";
 import {
     Bell,
     CreditCard,
@@ -16,40 +15,7 @@ import {
     UserRound,
 } from "lucide-react-native";
 
-export type ProfileMenuAction =
-    | "edit-profile"
-    | "payment"
-    | "trip-history"
-    | "my-tickets"
-    | "favorites"
-    | "nearby"
-    | "notifications"
-    | "language"
-    | "help"
-    | "terms"
-    | "privacy"
-    | "about"
-    | "login"
-    | "logout";
-
-export type ProfileMenuItem = {
-    id: ProfileMenuAction;
-    label: string;
-    description?: string;
-    icon: LucideIcon;
-    href?: string;
-    destructive?: boolean;
-    authOnly?: boolean;
-    guestOnly?: boolean;
-};
-
-export type ProfileMenuSection = {
-    id: string;
-    title: string;
-    items: ProfileMenuItem[];
-};
-
-export const PROFILE_MENU_SECTIONS: ProfileMenuSection[] = [
+export const PROFILE_MENU_SECTIONS = [
     {
         id: "account",
         title: "Tài khoản",
@@ -59,6 +25,7 @@ export const PROFILE_MENU_SECTIONS: ProfileMenuSection[] = [
                 label: "Thông tin cá nhân",
                 description: "Cập nhật họ tên, số điện thoại",
                 icon: UserRound,
+                href: "/profile/edit",
                 authOnly: true,
             },
             {
@@ -73,6 +40,7 @@ export const PROFILE_MENU_SECTIONS: ProfileMenuSection[] = [
                 label: "Vé của tôi",
                 description: "Vé lượt, vé tháng đang sử dụng",
                 icon: Ticket,
+                href: "/profile/my-tickets",
                 authOnly: true,
             },
             {
@@ -146,9 +114,9 @@ export const PROFILE_MENU_SECTIONS: ProfileMenuSection[] = [
             },
         ],
     },
-];
+] as const;
 
-export const PROFILE_AUTH_ACTIONS: ProfileMenuItem[] = [
+export const PROFILE_AUTH_ACTIONS = [
     {
         id: "login",
         label: "Đăng nhập / Đăng ký",
@@ -165,22 +133,16 @@ export const PROFILE_AUTH_ACTIONS: ProfileMenuItem[] = [
         destructive: true,
         authOnly: true,
     },
-];
+] as const;
 
-export type ProfileStat = {
-    id: string;
-    label: string;
-    value: string;
-};
-
-export const GUEST_PROFILE_STATS: ProfileStat[] = [
+export const GUEST_PROFILE_STATS = [
     { id: "points", label: "Điểm", value: "—" },
     { id: "trips", label: "Chuyến", value: "—" },
     { id: "tickets", label: "Vé tháng", value: "—" },
-];
+] as const;
 
-export const DEMO_PROFILE_STATS: ProfileStat[] = [
+export const DEMO_PROFILE_STATS = [
     { id: "points", label: "Điểm", value: "1.250" },
     { id: "trips", label: "Chuyến", value: "48" },
     { id: "tickets", label: "Vé tháng", value: "1" },
-];
+] as const;
