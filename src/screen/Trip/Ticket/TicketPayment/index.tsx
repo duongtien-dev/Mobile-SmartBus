@@ -1,6 +1,6 @@
 import { PageHeader } from "@/components/PageHeader";
 import type { IPaymentMethod } from "@/models/paymentMethod";
-import { FormFooter } from "@/screen/Trip/Ticket/shared/FormFooter";
+import { FormFooter } from "@/screen/Trip/Ticket/shared/FormControls";
 import { FormSection } from "@/screen/Trip/Ticket/shared/FormSection";
 import { paymentService } from "@/services/PaymentService";
 import useTripBookingStore from "@/store/tripBooking.store";

@@ -1,9 +1,6 @@
 import { Select } from "@/components/Select";
 import { PageHeader } from "@/components/PageHeader";
-import { FormField } from "@/screen/Trip/Ticket/shared/FormField";
-import { FormFooter } from "@/screen/Trip/Ticket/shared/FormFooter";
-import { FormSection } from "@/screen/Trip/Ticket/shared/FormSection";
-import { ReadonlyField } from "@/screen/Trip/Ticket/shared/ReadonlyField";
+import { FormControls } from "@/screen/Trip/Ticket/shared/FormControls";
 import useTripBookingStore, {
     computeMonthlyTicketPrice,
 } from "@/store/tripBooking.store";
@@ -16,6 +13,8 @@ import {
     Text,
     View,
 } from "react-native";
+import { FormField } from "@/components/Form/FormField";
+import InputText from "@/components/Input/InputText";
 
 const TICKET_COUNT_OPTIONS = [
     { value: "1", label: "1" },
@@ -32,8 +31,8 @@ export default function MonthlyTicketScreen() {
     );
     const setTotalPrice = useTripBookingStore((state) => state.setTotalPrice);
 
-    const originName = searchContext?.originName ?? "Điểm đi";
-    const destinationName = searchContext?.destinationName ?? "Điểm đến";
+    const originName = searchContext?.originName;
+    const destinationName = searchContext?.destinationName;
     const isMultiRoute = ticketType === "monthly-multi";
 
     const pageTitle = useMemo(
@@ -48,9 +47,6 @@ export default function MonthlyTicketScreen() {
         () => computeMonthlyTicketPrice(ticketCount),
         [ticketCount],
     );
-
-    const canSubmit =
-        usageMonth.trim().length > 0 && ticketCount.length > 0;
 
     const handleSubmit = () => {
         setTotalPrice(totalPrice);
@@ -71,35 +67,51 @@ export default function MonthlyTicketScreen() {
                     showsVerticalScrollIndicator={false}
                     keyboardShouldPersistTaps="handled"
                 >
-                    <FormSection title="Điểm đi / đến">
-                        <ReadonlyField label="Điểm đi" value={originName} />
-                        <ReadonlyField
-                            label="Điểm đến"
-                            value={destinationName}
-                        />
-                    </FormSection>
+                    <View className="gap-4">
+                        <Text className="text-base font-bold text-primary">Điểm đi / đến</Text>
+                        <FormField labelText="Điểm đi">
+                            <InputText
+                                value={originName}
+                                editable={false}
+                                className="h-12 rounded-xl border-0 bg-surface px-4 shadow-sm"
+                            />
+                        </FormField>
+                        <FormField labelText="Điểm đến">
+                            <InputText
+                                value={destinationName}
+                                editable={false}
+                                className="h-12 rounded-xl border-0 bg-surface px-4 shadow-sm"
+                            />
+                        </FormField>
+                    </View>
 
-                    <FormSection title="Thông tin lượt đi">
-                        <ReadonlyField
-                            label="Trạm đón (Có thể lên tại bất kỳ trạm nào)"
-                            value="Không giới hạn"
-                        />
+                    <View className="gap-4">
+                        <Text className="text-base font-bold text-primary">Thông tin lượt đi</Text>
+                        <FormField labelText="Trạm đón (Có thể lên tại bất kỳ trạm nào)">
+                            <InputText
+                                value="Không giới hạn"
+                                editable={false}
+                                className="h-12 rounded-xl border-0 bg-surface px-4 shadow-sm"
+                            />
+                        </FormField>
 
-                        <FormField
-                            label="Tháng sử dụng"
-                            value={usageMonth}
-                            placeholder="Chọn tháng sử dụng"
-                            onChangeText={(value) =>
-                                updateMonthlyForm({ usageMonth: value })
-                            }
-                        />
+                        <FormField labelText="Tháng sử dụng">
+                            <InputText
+                                value={usageMonth}
+                                editable={false}
+                                className="h-12 rounded-xl border-0 bg-surface px-4 shadow-sm"
+                            />
+                        </FormField>
 
                         <View className="flex-row gap-3">
                             <View className="flex-1">
-                                <ReadonlyField
-                                    label="Giờ đi"
-                                    value="Không giới hạn"
-                                />
+                                <FormField labelText="Giờ đi">
+                                    <InputText
+                                        value="Không giới hạn"
+                                        editable={false}
+                                        className="h-12 rounded-xl border-0 bg-surface px-4 shadow-sm"
+                                    />
+                                </FormField>
                             </View>
 
                             <View className="flex-1 gap-2">
@@ -118,12 +130,11 @@ export default function MonthlyTicketScreen() {
                                 />
                             </View>
                         </View>
-                    </FormSection>
+                    </View>
                 </ScrollView>
 
-                <FormFooter
+                <FormControls
                     price={totalPrice}
-                    disabled={!canSubmit}
                     onPress={handleSubmit}
                 />
             </KeyboardAvoidingView>

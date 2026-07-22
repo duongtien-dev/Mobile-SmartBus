@@ -1,9 +1,6 @@
 import { Select } from "@/components/Select";
 import { PageHeader } from "@/components/PageHeader";
-import { FormField } from "@/screen/Trip/Ticket/shared/FormField";
-import { FormFooter } from "@/screen/Trip/Ticket/shared/FormFooter";
-import { FormSection } from "@/screen/Trip/Ticket/shared/FormSection";
-import { ReadonlyField } from "@/screen/Trip/Ticket/shared/ReadonlyField";
+import { FormControls } from "@/screen/Trip/Ticket/shared/FormControls";
 import useTripBookingStore, {
     computeSingleTicketPrice,
 } from "@/store/tripBooking.store";
@@ -16,6 +13,8 @@ import {
     Text,
     View,
 } from "react-native";
+import { FormField } from "@/components/Form/FormField";
+import InputText from "@/components/Input/InputText";
 
 const TIME_OPTIONS = [
     { value: "06:00", label: "06:00" },
@@ -43,9 +42,9 @@ export default function SingleTicketScreen() {
     );
     const setTotalPrice = useTripBookingStore((state) => state.setTotalPrice);
 
-    const originName = searchContext?.originName ?? "Điểm đi";
-    const destinationName = searchContext?.destinationName ?? "Điểm đến";
-    const displayPickupStop = pickupStopName || "34 Ngũ Hành Sơn";
+    const originName = searchContext?.originName;
+    const destinationName = searchContext?.destinationName;
+    const displayPickupStop = pickupStopName;
 
     const {
         departureDate,
@@ -57,14 +56,6 @@ export default function SingleTicketScreen() {
     } = singleForm;
 
     const totalPrice = computeSingleTicketPrice();
-
-    const canSubmit =
-        departureDate.trim().length > 0 &&
-        departureTime.length > 0 &&
-        seatCount.length > 0 &&
-        fullName.trim().length > 0 &&
-        phoneNumber.trim().length > 0 &&
-        acceptedTerms;
 
     const handleSubmit = () => {
         setTotalPrice(totalPrice);
@@ -85,28 +76,41 @@ export default function SingleTicketScreen() {
                     showsVerticalScrollIndicator={false}
                     keyboardShouldPersistTaps="handled"
                 >
-                    <FormSection title="Điểm đi / đến">
-                        <ReadonlyField label="Điểm đi" value={originName} />
-                        <ReadonlyField
-                            label="Điểm đến"
-                            value={destinationName}
-                        />
-                    </FormSection>
+                    <View className="gap-4">
+                        <Text className="text-base font-bold text-primary">Điểm đi / đến</Text>
+                        <FormField labelText="Điểm đi">
+                            <InputText
+                                value={originName}
+                                editable={false}
+                                className="h-12 rounded-xl border-0 bg-surface px-4 shadow-sm"
+                            />
+                        </FormField>
+                        <FormField labelText="Điểm đến">
+                            <InputText
+                                value={destinationName}
+                                editable={false}
+                                className="h-12 rounded-xl border-0 bg-surface px-4 shadow-sm"
+                            />
+                        </FormField>
+                    </View>
 
-                    <FormSection title="Thông tin lượt đi">
-                        <ReadonlyField
-                            label="Trạm đón (Trạm lên xe)"
-                            value={displayPickupStop}
-                        />
+                    <View className="gap-4">
+                        <Text className="text-base font-bold text-primary">Thông tin lượt đi</Text>
+                        <FormField labelText="Trạm đón (Trạm lên xe)">
+                            <InputText
+                                value={displayPickupStop}
+                                editable={false}
+                                className="h-12 rounded-xl border-0 bg-surface px-4 shadow-sm"
+                            />
+                        </FormField>
 
-                        <FormField
-                            label="Ngày đi"
-                            value={departureDate}
-                            placeholder="Chọn ngày đi"
-                            onChangeText={(value) =>
-                                updateSingleForm({ departureDate: value })
-                            }
-                        />
+                        <FormField labelText="Ngày đi">
+                            <InputText
+                                value={departureDate}
+                                editable={false}
+                                className="h-12 rounded-xl border-0 bg-surface px-4 shadow-sm"
+                            />
+                        </FormField>
 
                         <View className="flex-row gap-3">
                             <View className="flex-1 gap-2">
@@ -142,29 +146,33 @@ export default function SingleTicketScreen() {
                                 />
                             </View>
                         </View>
-                    </FormSection>
+                    </View>
 
-                    <FormSection title="Thông tin khách hàng">
-                        <FormField
-                            label="Họ và tên"
-                            value={fullName}
-                            onChangeText={(value) =>
-                                updateSingleForm({ fullName: value })
-                            }
-                            placeholder="Nhập họ và tên"
-                        />
-                        <FormField
-                            label="Số điện thoại"
-                            value={phoneNumber}
-                            onChangeText={(value) =>
-                                updateSingleForm({ phoneNumber: value })
-                            }
-                            placeholder="Nhập số điện thoại"
-                            keyboardType="phone-pad"
-                        />
-                    </FormSection>
+                    <View className="gap-4">
+                        <Text className="text-base font-bold text-primary">Thông tin khách hàng</Text>
+                        <FormField labelText="Họ và tên">
+                            <InputText
+                                value={fullName}
+                                onChangeText={(value) =>
+                                    updateSingleForm({ fullName: value })
+                                }
+                                placeholder="Nhập họ và tên"
+                            />
+                        </FormField>
+                        <FormField labelText="Số điện thoại">
+                            <InputText
+                                value={phoneNumber}
+                                onChangeText={(value) =>
+                                    updateSingleForm({ phoneNumber: value })
+                                }
+                                placeholder="Nhập số điện thoại"
+                                keyboardType="phone-pad"
+                            />
+                        </FormField>
+                    </View>
 
-                    <FormSection title="Điều khoản và lưu ý">
+                    <View className="gap-4">
+                        <Text className="text-base font-bold text-primary">Điều khoản và lưu ý</Text>
                         <Text className="text-sm leading-6 text-text-muted">
                             (*) Quý khách vui lòng có mặt tại điểm đón trước ít
                             nhất 10 phút so với thời gian đón.
@@ -176,13 +184,10 @@ export default function SingleTicketScreen() {
                         <Pressable
                             className="mt-2 flex-row items-start gap-3 active:opacity-80"
                             onPress={() =>
-                                updateSingleForm({
-                                    acceptedTerms: !acceptedTerms,
-                                })
+                                updateSingleForm({ acceptedTerms: !acceptedTerms })
                             }
                         >
-                            <View
-                                className={`mt-0.5 h-5 w-5 items-center justify-center rounded border-2 ${
+                            <View className={`mt-0.5 h-5 w-5 items-center justify-center rounded border-2 ${
                                     acceptedTerms
                                         ? "border-primary bg-primary"
                                         : "border-border bg-background"
@@ -199,12 +204,11 @@ export default function SingleTicketScreen() {
                                 thông tin của DanaBus.
                             </Text>
                         </Pressable>
-                    </FormSection>
+                    </View>
                 </ScrollView>
 
-                <FormFooter
+                <FormControls
                     price={totalPrice}
-                    disabled={!canSubmit}
                     onPress={handleSubmit}
                 />
             </KeyboardAvoidingView>
