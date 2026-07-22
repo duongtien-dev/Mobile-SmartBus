@@ -18,7 +18,7 @@ export function InputSeat({ value, onChange, options }: Props) {
                 onValueChange={(value) => onChange(value)}
                 placeholder="Chọn số lượng ghế"
                 options={options}
-                triggerClassName="h-12 rounded-xl border-0 bg-surface px-4 shadow-sm"
+                triggerClassName="h-12 rounded-xl"
             />
         </View>
     );

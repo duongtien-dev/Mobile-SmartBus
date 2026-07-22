@@ -18,6 +18,7 @@ export function InputCustomer({ fullName, phoneNumber, onChangeName, onChangePho
                     value={fullName}
                     onChangeText={(value) => onChangeName(value)}
                     placeholder="Nhập họ và tên"
+                    className="h-12 rounded-xl"
                 />
             </FormField>
             <FormField labelText="Số điện thoại">
@@ -26,6 +27,7 @@ export function InputCustomer({ fullName, phoneNumber, onChangeName, onChangePho
                     onChangeText={(value) => onChangePhoneNumber(value)}
                     placeholder="Nhập số điện thoại"
                     keyboardType="phone-pad"
+                    className="h-12 rounded-xl"
                 />
             </FormField>
         </View>

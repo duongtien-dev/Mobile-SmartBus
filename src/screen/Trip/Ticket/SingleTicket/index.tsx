@@ -1,4 +1,4 @@
-import { Select } from "@/components/Select";
+
 import { PageHeader } from "@/components/PageHeader";
 import useTripBookingStore, {
     computeSingleTicketPrice,
@@ -7,19 +7,16 @@ import { router } from "expo-router";
 import {
     KeyboardAvoidingView,
     Platform,
-    Pressable,
     ScrollView,
-    Text,
     View,
 } from "react-native";
-import { FormField } from "@/components/Form/FormField";
-import InputText from "@/components/Input/InputText";
 import { LocationInfo } from "../Element/LocationInfo";
 import { FormControls } from "../Element/FormControls";
 import { DepartureInfo } from "./DepartureInfo";
 import { InputTime } from "./InputTime";
 import { InputSeat } from "./InputSeat";
 import { InputCustomer } from "./InputCustomer";
+import { InputTerm } from "./InputTerm";
 
 const TIME_OPTIONS = [
     { value: "06:00", label: "06:00" },
@@ -75,68 +72,33 @@ export default function SingleTicketScreen() {
                         originName={originName}
                         destinationName={destinationName}
                     />
-
                     <DepartureInfo
                         pickupStopName={pickupStopName}
                         departureDate={formData.departureDate}
                     />
-
                     <View className="flex-row gap-3">
                         <InputTime
                             value={formData.departureTime}
                             onChange={(value) => handleChangForm({ departureTime: value })}
                             options={TIME_OPTIONS}
                         />
-
                         <InputSeat
                             value={formData.seatCount}
                             onChange={(value) => handleChangForm({ seatCount: value })}
                             options={SEAT_OPTIONS}
                         />
                     </View>
-
                     <InputCustomer
                         fullName={formData.fullName}
                         phoneNumber={formData.phoneNumber}
                         onChangeName={(value) => handleChangForm({ fullName: value })}
                         onChangePhoneNumber={(value) => handleChangForm({ phoneNumber: value })}
                     />
-
-                    <View className="gap-4">
-                        <Text className="text-base font-bold text-primary">Điều khoản và lưu ý</Text>
-                        <Text className="text-sm leading-6 text-text-muted">
-                            (*) Quý khách vui lòng có mặt tại điểm đón trước ít
-                            nhất 10 phút so với thời gian đón.
-                        </Text>
-                        <Text className="text-sm leading-6 text-text-muted">
-                            (*) Vé đã mua không thể đổi, trả hoặc hoàn tiền.
-                        </Text>
-
-                        <Pressable
-                            className="mt-2 flex-row items-start gap-3 active:opacity-80"
-                            onPress={() =>
-                                handleChangForm({ acceptedTerms: !formData.acceptedTerms })
-                            }
-                        >
-                            <View className={`mt-0.5 h-5 w-5 items-center justify-center rounded border-2 ${formData.acceptedTerms
-                                    ? "border-primary bg-primary"
-                                    : "border-border bg-background"
-                                }`}
-                            >
-                                {formData.acceptedTerms ? (
-                                    <Text className="text-xs font-bold text-on-primary">
-                                        ✓
-                                    </Text>
-                                ) : null}
-                            </View>
-                            <Text className="flex-1 text-sm leading-6 text-text-primary">
-                                Chấp nhận điều khoản đặt vé & chính sách bảo mật
-                                thông tin của DanaBus.
-                            </Text>
-                        </Pressable>
-                    </View>
+                    <InputTerm
+                        value={formData.acceptedTerms}
+                        onChange={(value) => handleChangForm({ acceptedTerms: value })}
+                    />
                 </ScrollView>
-
                 <FormControls
                     price={totalPrice}
                     onPress={handleSubmit}
