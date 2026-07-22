@@ -1,6 +1,5 @@
 import { Select } from "@/components/Select";
 import { PageHeader } from "@/components/PageHeader";
-import { FormControls } from "@/screen/Trip/Ticket/Element/FormControls";
 import useTripBookingStore, {
     computeSingleTicketPrice,
 } from "@/store/tripBooking.store";
@@ -15,6 +14,12 @@ import {
 } from "react-native";
 import { FormField } from "@/components/Form/FormField";
 import InputText from "@/components/Input/InputText";
+import { LocationInfo } from "../Element/LocationInfo";
+import { FormControls } from "../Element/FormControls";
+import { DepartureInfo } from "./DepartureInfo";
+import { InputTime } from "./InputTime";
+import { InputSeat } from "./InputSeat";
+import { InputCustomer } from "./InputCustomer";
 
 const TIME_OPTIONS = [
     { value: "06:00", label: "06:00" },
@@ -76,100 +81,36 @@ export default function SingleTicketScreen() {
                     showsVerticalScrollIndicator={false}
                     keyboardShouldPersistTaps="handled"
                 >
-                    <View className="gap-4">
-                        <Text className="text-base font-bold text-primary">Điểm đi / đến</Text>
-                        <FormField labelText="Điểm đi">
-                            <InputText
-                                value={originName}
-                                editable={false}
-                                className="h-12 rounded-xl border-0 bg-surface px-4 shadow-sm"
-                            />
-                        </FormField>
-                        <FormField labelText="Điểm đến">
-                            <InputText
-                                value={destinationName}
-                                editable={false}
-                                className="h-12 rounded-xl border-0 bg-surface px-4 shadow-sm"
-                            />
-                        </FormField>
+                    <LocationInfo
+                        originName={originName}
+                        destinationName={destinationName}
+                    />
+
+                    <DepartureInfo
+                        displayPickupStop={displayPickupStop}
+                        departureDate={departureDate}
+                    />
+
+                    <View className="flex-row gap-3">
+                        <InputTime
+                            value={departureTime}
+                            onChange={(value) => updateSingleForm({ departureTime: value })}
+                            options={TIME_OPTIONS}
+                        />
+
+                        <InputSeat
+                            value={seatCount}
+                            onChange={(value) => updateSingleForm({ seatCount: value })}
+                            options={SEAT_OPTIONS}
+                        />
                     </View>
 
-                    <View className="gap-4">
-                        <Text className="text-base font-bold text-primary">Thông tin lượt đi</Text>
-                        <FormField labelText="Trạm đón (Trạm lên xe)">
-                            <InputText
-                                value={displayPickupStop}
-                                editable={false}
-                                className="h-12 rounded-xl border-0 bg-surface px-4 shadow-sm"
-                            />
-                        </FormField>
-
-                        <FormField labelText="Ngày đi">
-                            <InputText
-                                value={departureDate}
-                                editable={false}
-                                className="h-12 rounded-xl border-0 bg-surface px-4 shadow-sm"
-                            />
-                        </FormField>
-
-                        <View className="flex-row gap-3">
-                            <View className="flex-1 gap-2">
-                                <Text className="text-sm font-medium text-primary">
-                                    Giờ đi <Text className="text-alert">*</Text>
-                                </Text>
-                                <Select
-                                    value={departureTime}
-                                    onValueChange={(value) =>
-                                        updateSingleForm({
-                                            departureTime: value,
-                                        })
-                                    }
-                                    placeholder="Chọn giờ"
-                                    options={TIME_OPTIONS}
-                                    triggerClassName="h-12 rounded-xl border-0 bg-surface px-4 shadow-sm"
-                                />
-                            </View>
-
-                            <View className="flex-1 gap-2">
-                                <Text className="text-sm font-medium text-primary">
-                                    Số lượng ghế{" "}
-                                    <Text className="text-alert">*</Text>
-                                </Text>
-                                <Select
-                                    value={seatCount}
-                                    onValueChange={(value) =>
-                                        updateSingleForm({ seatCount: value })
-                                    }
-                                    placeholder="Chọn"
-                                    options={SEAT_OPTIONS}
-                                    triggerClassName="h-12 rounded-xl border-0 bg-surface px-4 shadow-sm"
-                                />
-                            </View>
-                        </View>
-                    </View>
-
-                    <View className="gap-4">
-                        <Text className="text-base font-bold text-primary">Thông tin khách hàng</Text>
-                        <FormField labelText="Họ và tên">
-                            <InputText
-                                value={fullName}
-                                onChangeText={(value) =>
-                                    updateSingleForm({ fullName: value })
-                                }
-                                placeholder="Nhập họ và tên"
-                            />
-                        </FormField>
-                        <FormField labelText="Số điện thoại">
-                            <InputText
-                                value={phoneNumber}
-                                onChangeText={(value) =>
-                                    updateSingleForm({ phoneNumber: value })
-                                }
-                                placeholder="Nhập số điện thoại"
-                                keyboardType="phone-pad"
-                            />
-                        </FormField>
-                    </View>
+                    <InputCustomer
+                        fullName={fullName}
+                        phoneNumber={phoneNumber}
+                        onChangeName={(value) => updateSingleForm({ fullName: value })}
+                        onChangePhoneNumber={(value) => updateSingleForm({ phoneNumber: value })}
+                    />
 
                     <View className="gap-4">
                         <Text className="text-base font-bold text-primary">Điều khoản và lưu ý</Text>
@@ -187,10 +128,9 @@ export default function SingleTicketScreen() {
                                 updateSingleForm({ acceptedTerms: !acceptedTerms })
                             }
                         >
-                            <View className={`mt-0.5 h-5 w-5 items-center justify-center rounded border-2 ${
-                                    acceptedTerms
-                                        ? "border-primary bg-primary"
-                                        : "border-border bg-background"
+                            <View className={`mt-0.5 h-5 w-5 items-center justify-center rounded border-2 ${acceptedTerms
+                                    ? "border-primary bg-primary"
+                                    : "border-border bg-background"
                                 }`}
                             >
                                 {acceptedTerms ? (

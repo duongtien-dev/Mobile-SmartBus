@@ -1,6 +1,5 @@
 import { Select } from "@/components/Select";
 import { PageHeader } from "@/components/PageHeader";
-import { FormControls } from "@/screen/Trip/Ticket/Element/FormControls";
 import useTripBookingStore, {
     computeMonthlyTicketPrice,
 } from "@/store/tripBooking.store";
@@ -15,6 +14,8 @@ import {
 } from "react-native";
 import { FormField } from "@/components/Form/FormField";
 import InputText from "@/components/Input/InputText";
+import { LocationInfo } from "../Element/LocationInfo";
+import { FormControls } from "../Element/FormControls";
 
 const TICKET_COUNT_OPTIONS = [
     { value: "1", label: "1" },
@@ -67,23 +68,10 @@ export default function MonthlyTicketScreen() {
                     showsVerticalScrollIndicator={false}
                     keyboardShouldPersistTaps="handled"
                 >
-                    <View className="gap-4">
-                        <Text className="text-base font-bold text-primary">Điểm đi / đến</Text>
-                        <FormField labelText="Điểm đi">
-                            <InputText
-                                value={originName}
-                                editable={false}
-                                className="h-12 rounded-xl border-0 bg-surface px-4 shadow-sm"
-                            />
-                        </FormField>
-                        <FormField labelText="Điểm đến">
-                            <InputText
-                                value={destinationName}
-                                editable={false}
-                                className="h-12 rounded-xl border-0 bg-surface px-4 shadow-sm"
-                            />
-                        </FormField>
-                    </View>
+                    <LocationInfo
+                        originName={originName}
+                        destinationName={destinationName}
+                    />
 
                     <View className="gap-4">
                         <Text className="text-base font-bold text-primary">Thông tin lượt đi</Text>
