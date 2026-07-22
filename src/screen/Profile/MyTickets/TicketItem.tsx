@@ -7,7 +7,7 @@ import {
     getTicketValidityLabel,
 } from "@/utils/ticket";
 import { Image } from "expo-image";
-import { Ticket } from "lucide-react-native";
+import { ChevronRight, Ticket } from "lucide-react-native";
 import { Pressable, Text, View } from "react-native";
 
 type MyTicketItemProps = {
@@ -84,7 +84,8 @@ export function QrTicketItem({ ticket, onPress }: QrTicketItemProps) {
                 </Text>
             </View>
 
-            <Text className="text-xl text-primary">{">"}</Text>
+            {/* <Text className="text-xl text-primary">{">"}</Text> */}
+            <ChevronRight color="#005f8b" size={24} />
         </Pressable>
     );
 }

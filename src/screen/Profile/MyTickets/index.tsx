@@ -52,17 +52,6 @@ export default function MyTicketsScreen() {
         <View className="flex-1 bg-background">
             <PageHeader title="Vé của bạn" isIconBack />
 
-            <View className="mx-5 mt-5 overflow-hidden rounded-2xl bg-primary">
-                <View className="flex-row items-center gap-4 px-5 py-5">
-                    <View className="h-14 w-14 items-center justify-center rounded-full bg-on-primary/15">
-                        <UserRound color="#ffffff" size={28} />
-                    </View>
-                    <Text className="flex-1 text-lg font-bold text-on-primary">
-                        Xin chào, {user?.full_name ?? "bạn"}
-                    </Text>
-                </View>
-            </View>
-
             <View className="px-5 pt-5">
                 <Button
                     type="primary"
@@ -85,7 +74,11 @@ export default function MyTicketsScreen() {
                 renderItem={({ item }) => (
                     <MyTicketItem ticket={item} onPress={handleTicketPress} />
                 )}
-                onEndReached={loadMore}
+                onEndReached={() => {
+                    if (tickets.length > 0 && !isSkeletonLoading) {
+                        loadMore();
+                    }
+                }}
                 onEndReachedThreshold={0.5}
                 showsVerticalScrollIndicator={false}
                 contentContainerClassName="pb-8"

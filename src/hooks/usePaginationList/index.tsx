@@ -46,23 +46,16 @@ export default function usePaginationList<T, P extends object = {}>({
     };
 
     const loadMore = async () => {
-        if (isLoadingMore || isLastPage) return;
+        if (isLoadingMore || isLastPage || isFetchingFirstPage.current) return;
 
         const nextPage = page + 1;
-
         setIsLoadingMore(true);
 
         try {
-            const data = await fetchFn({
-                ...params,
-                page: nextPage,
-                limit,
-            });
-
+            const data = await fetchFn({ ...params, page: nextPage, limit });
             setList((prev) => [...prev, ...data]);
             setPage(nextPage);
             setIsLastPage(data.length < limit);
-
             return data;
         } finally {
             setIsLoadingMore(false);
