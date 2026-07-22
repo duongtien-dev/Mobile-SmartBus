@@ -50,7 +50,7 @@ export default function FormProfile() {
         setForm((prev) => ({ ...prev, [key]: value }));
     };
 
-    const parseFormData = (form: TForm) => {
+    const parseFormData = () => {
         const body = {
             full_name: form.full_name,
             phone: form.phone,
@@ -68,7 +68,7 @@ export default function FormProfile() {
     const handleSubmit = async () => {
         setIsSubmitting(true);
 
-        const payload = parseFormData(form);
+        const payload = parseFormData();
         const response = await authService.updateProfile(payload);
 
         showToast({
@@ -141,6 +141,7 @@ export default function FormProfile() {
                     <InputText
                         value={form.occupation}
                         onChangeText={(value) => handleChange("occupation", value)}
+                        placeholder="Nghề nghiệp"
                     />
                 </FormField>
 
