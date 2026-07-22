@@ -110,7 +110,10 @@ export default function Login() {
                             </View>
                         </View>
 
-                        <Pressable className="self-end">
+                        <Pressable
+                            className="self-end active:opacity-80"
+                            onPress={() => router.push("/forgot-password" as never)}
+                        >
                             <Text className="text-sm text-on-primary">
                                 Quên mật khẩu
                             </Text>
