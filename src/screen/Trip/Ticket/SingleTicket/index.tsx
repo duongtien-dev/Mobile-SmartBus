@@ -41,24 +41,14 @@ export default function SingleTicketScreen() {
     const pickupStopName = useTripBookingStore(
         (state) => state.pickupStopName,
     );
-    const singleForm = useTripBookingStore((state) => state.singleForm);
-    const updateSingleForm = useTripBookingStore(
+    const formData = useTripBookingStore((state) => state.singleForm);
+    const handleChangForm = useTripBookingStore(
         (state) => state.updateSingleForm,
     );
     const setTotalPrice = useTripBookingStore((state) => state.setTotalPrice);
 
     const originName = searchContext?.originName;
     const destinationName = searchContext?.destinationName;
-    const displayPickupStop = pickupStopName;
-
-    const {
-        departureDate,
-        departureTime,
-        seatCount,
-        fullName,
-        phoneNumber,
-        acceptedTerms,
-    } = singleForm;
 
     const totalPrice = computeSingleTicketPrice();
 
@@ -87,29 +77,29 @@ export default function SingleTicketScreen() {
                     />
 
                     <DepartureInfo
-                        displayPickupStop={displayPickupStop}
-                        departureDate={departureDate}
+                        pickupStopName={pickupStopName}
+                        departureDate={formData.departureDate}
                     />
 
                     <View className="flex-row gap-3">
                         <InputTime
-                            value={departureTime}
-                            onChange={(value) => updateSingleForm({ departureTime: value })}
+                            value={formData.departureTime}
+                            onChange={(value) => handleChangForm({ departureTime: value })}
                             options={TIME_OPTIONS}
                         />
 
                         <InputSeat
-                            value={seatCount}
-                            onChange={(value) => updateSingleForm({ seatCount: value })}
+                            value={formData.seatCount}
+                            onChange={(value) => handleChangForm({ seatCount: value })}
                             options={SEAT_OPTIONS}
                         />
                     </View>
 
                     <InputCustomer
-                        fullName={fullName}
-                        phoneNumber={phoneNumber}
-                        onChangeName={(value) => updateSingleForm({ fullName: value })}
-                        onChangePhoneNumber={(value) => updateSingleForm({ phoneNumber: value })}
+                        fullName={formData.fullName}
+                        phoneNumber={formData.phoneNumber}
+                        onChangeName={(value) => handleChangForm({ fullName: value })}
+                        onChangePhoneNumber={(value) => handleChangForm({ phoneNumber: value })}
                     />
 
                     <View className="gap-4">
@@ -125,15 +115,15 @@ export default function SingleTicketScreen() {
                         <Pressable
                             className="mt-2 flex-row items-start gap-3 active:opacity-80"
                             onPress={() =>
-                                updateSingleForm({ acceptedTerms: !acceptedTerms })
+                                handleChangForm({ acceptedTerms: !formData.acceptedTerms })
                             }
                         >
-                            <View className={`mt-0.5 h-5 w-5 items-center justify-center rounded border-2 ${acceptedTerms
+                            <View className={`mt-0.5 h-5 w-5 items-center justify-center rounded border-2 ${formData.acceptedTerms
                                     ? "border-primary bg-primary"
                                     : "border-border bg-background"
                                 }`}
                             >
-                                {acceptedTerms ? (
+                                {formData.acceptedTerms ? (
                                     <Text className="text-xs font-bold text-on-primary">
                                         ✓
                                     </Text>
