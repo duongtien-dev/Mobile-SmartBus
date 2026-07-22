@@ -7,7 +7,11 @@ import "../global.css";
 export default function RootLayout() {
     return (
         <SafeAreaProvider>
-            <SafeAreaView className="flex-1 bg-background" edges={["top", "left", "right"]}>
+            {/* Dùng style thay className — NativeWind có thể ghi đè padding safe-area */}
+            <SafeAreaView
+                style={{ flex: 1, backgroundColor: "#ffffff" }}
+                edges={["top", "left", "right"]}
+            >
                 <StatusBar style="dark" />
                 <Stack screenOptions={{ headerShown: false }}>
                     <Stack.Screen name="(tabs)" />

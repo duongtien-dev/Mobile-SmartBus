@@ -62,14 +62,14 @@ export default function NearbyScreen() {
                     />
 
                     <NearbySearchBar
-                        topInset={insets.top}
+                        topInset={8}
                         onSelectLocation={setSelectedLocation}
                     />
 
                     {permissionDenied ? (
                         <View
                             className="absolute z-10 self-center rounded-full bg-black/70 px-4 py-2"
-                            style={{ top: insets.top + 72 }}
+                            style={{ top: 80 }}
                         >
                             <Text className="text-xs text-white">
                                 Không có quyền vị trí — dùng mặc định Đà Nẵng

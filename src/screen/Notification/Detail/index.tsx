@@ -73,24 +73,31 @@ export default function NoticeDetailScreen({ id }: Props) {
                     </View>
                 ) : null}
 
-                <Text className="mt-3 text-xl font-bold text-text-primary">
+                <Text className="mt-4 text-xl font-bold leading-7 text-primary">
                     {post.title}
                 </Text>
 
-                <Text className="mt-2 text-sm text-text-muted">
-                    {moment(post.createdAt).format("DD/MM/YYYY HH:mm")}
-                </Text>
+                <View className="mt-3 flex-row items-center gap-3">
+                    <Text className="text-sm text-text-muted">
+                        {moment(post.createdAt).format("HH:mm")}
+                    </Text>
+                    <Text className="text-sm text-text-muted">
+                        {moment(post.createdAt).format("DD/MM/YYYY")}
+                    </Text>
+                </View>
 
-                {post.images?.[0] ? (
-                    <Image
-                        source={post.images[0]}
-                        className="mt-4 h-48 w-full rounded-xl"
-                        contentFit="cover"
-                    />
+                {post.images ? (
+                    <View className="mt-5 overflow-hidden rounded-xl">
+                        <Image
+                            className="h-48 w-full"
+                            contentFit="cover"
+                            source={post.images?.[0]}
+                        />
+                    </View>
                 ) : null}
 
-                <Text className="mt-4 text-base leading-6 text-text-secondary">
-                    {post.content}
+                <Text className="mt-5 text-base leading-7 text-text-primary">
+                    {post.content || post.summary}
                 </Text>
             </ScrollView>
         </View>
