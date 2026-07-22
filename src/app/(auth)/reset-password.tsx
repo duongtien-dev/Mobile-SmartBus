@@ -159,7 +159,7 @@ export default function ResetPasswordScreen() {
                         </View>
 
                         <Pressable
-                            className="flex-row items-center justify-center gap-2 self-center active:opacity-80"
+                            className="flex-row items-center justify-end gap-2 active:opacity-80"
                             onPress={() => setRememberMe((v) => !v)}
                         >
                             <View
