@@ -3,7 +3,7 @@ import { FormControls } from "@/screen/Trip/Ticket/Element/FormControls";
 import { ticketService } from "@/services/TicketService";
 import useAuthStore from "@/store/auth.store";
 import useTripBookingStore from "@/store/tripBooking.store";
-import { buildCreateTicketBody } from "@/utils/buildCreateTicketBody";
+import { parseFormTicketBody } from "@/utils/pasreFormTicketBody";
 import { router } from "expo-router";
 import { useState } from "react";
 import { ScrollView, View } from "react-native";
@@ -33,7 +33,7 @@ export default function TicketPaymentScreen() {
         }
 
         const state = useTripBookingStore.getState();
-        const { body, error } = buildCreateTicketBody({
+        const { body, error } = parseFormTicketBody({
             bookingSelection: state.bookingSelection,
             ticketType: state.ticketType,
             singleForm: state.singleForm,

@@ -8,7 +8,7 @@ import type {
 import type { TicketType } from "@/models/ticket";
 import { parseDdMmYyyyToIso, parseMmYyyyToIso } from "@/utils/date";
 
-type BuildCreateTicketInput = {
+type ParseFormTicketBodyInput = {
     bookingSelection: IBookingSelection | null;
     ticketType: TicketType | null;
     singleForm: ISingleTicketForm;
@@ -17,8 +17,8 @@ type BuildCreateTicketInput = {
     user: IUser | null;
 };
 
-export function buildCreateTicketBody(
-    input: BuildCreateTicketInput,
+export function parseFormTicketBody(
+    input: ParseFormTicketBodyInput,
 ): { body?: CreateTicketBody; error?: string } {
     const {
         bookingSelection,
