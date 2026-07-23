@@ -13,14 +13,14 @@ export function LocationInfo({ originName, destinationName }: Props) {
             <Text className="text-base font-bold text-primary">Điểm đi / đến</Text>
             <FormField labelText="Điểm đi">
                 <InputText
-                    value={originName ?? ""}
+                    value={originName}
                     editable={false}
                     className="h-12 rounded-xl border-0 bg-surface px-4 shadow-sm"
                 />
             </FormField>
             <FormField labelText="Điểm đến">
                 <InputText
-                    value={destinationName ?? ""}
+                    value={destinationName}
                     editable={false}
                     className="h-12 rounded-xl border-0 bg-surface px-4 shadow-sm"
                 />
