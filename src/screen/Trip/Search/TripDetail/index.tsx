@@ -108,12 +108,11 @@ export function TripDetailPanel({
                 />
 
                 <Pressable
-                    className="mb-4 ml-19 active:opacity-80"
+                    className="mb-2 ml-19 active:opacity-80"
                     onPress={() => setShowStops((prev) => !prev)}
                 >
                     <Text className="text-sm font-medium text-accent">
-                        {showStops ? "v" : ">"} Nhấn vào đây để xem danh sách
-                        trạm
+                        {showStops ? "Ẩn danh sách trạm" : "Xem danh sách trạm"}
                     </Text>
                 </Pressable>
 

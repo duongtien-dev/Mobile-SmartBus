@@ -91,14 +91,15 @@ export function TripResultItem({ trip }: TripResultItemProps) {
         }
     };
 
-    const busSegment = trip.segments.find((segment) => segment.type === "bus");
-
     const handleBuyTicket = () => {
-        setSelectedTrip(
-            trip,
-            busSegment?.pickupStopName ?? "",
-            busSegment?.code ?? trip.meta?.code ?? "",
-        );
+        const ok = setSelectedTrip(trip);
+        if (!ok) {
+            Toast.show({
+                type: "error",
+                text1: "Thiếu thông tin tuyến để mua vé",
+            });
+            return;
+        }
 
         router.push("/trips/tickets" as never);
     };
@@ -151,7 +152,7 @@ export function TripResultItem({ trip }: TripResultItemProps) {
                 onPress={handleToggleDetail}
             >
                 <Text className="text-sm font-medium text-accent">
-                    {expanded ? "^ Ẩn chi tiết" : "> Xem thêm chi tiết"}
+                    {expanded ? "Ẩn chi tiết" : "Xem thêm chi tiết"}
                 </Text>
             </Pressable>
 

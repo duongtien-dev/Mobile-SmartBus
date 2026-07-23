@@ -6,6 +6,7 @@ export { default as RouteReportService } from './RouteReportService';
 export { reviewRouteService } from './ReivewRouteService';
 export { stopService } from './StopService';
 export { ticketService } from './TicketService';
+export { ticketProductService } from './TicketProductService';
 export { paymentService } from './PaymentService';
 export { tripService } from './TripService';
 export { favoriteRouteService } from './FavoriteRouteService';

@@ -1,28 +1,77 @@
 import { PageHeader } from "@/components/PageHeader";
 import { FormControls } from "@/screen/Trip/Ticket/Element/FormControls";
+import { ticketService } from "@/services/TicketService";
+import useAuthStore from "@/store/auth.store";
 import useTripBookingStore from "@/store/tripBooking.store";
+import { parseFormTicketBody } from "@/utils/pasreFormTicketBody";
+import { router } from "expo-router";
+import { useState } from "react";
 import { ScrollView, View } from "react-native";
 import Toast from "react-native-toast-message";
+import Passenger from "./Passenger";
 import PaymentMethods from "./PaymentMethods";
 import TicketSummary from "./TicketSummary";
-import Passenger from "./Passenger";
 
 export default function TicketPaymentScreen() {
-    const getTicketLabel = useTripBookingStore((state) => state.getTicketLabel);
     const totalPrice = useTripBookingStore((state) => state.totalPrice);
-    const selectedMethodId = useTripBookingStore((state) => state.selectedPaymentMethodId);
-    const ticketLabel = getTicketLabel();
+    const selectedMethodId = useTripBookingStore(
+        (state) => state.selectedPaymentMethodId,
+    );
+    const setLastPurchasedTicket = useTripBookingStore(
+        (state) => state.setLastPurchasedTicket,
+    );
+    const user = useAuthStore((state) => state.user);
+    const [paying, setPaying] = useState(false);
 
-    const handlePay = () => {
+    const handlePay = async () => {
         if (!selectedMethodId) {
-            Toast.show({ type: "error", text1: "Vui lòng chọn phương thức thanh toán" });
+            Toast.show({
+                type: "error",
+                text1: "Vui lòng chọn phương thức thanh toán",
+            });
             return;
         }
-        Toast.show({
-            type: "success",
-            text1: "Thanh toán (demo)",
-            text2: `${ticketLabel} • ${totalPrice.toLocaleString("vi-VN")} đồng`,
+
+        const state = useTripBookingStore.getState();
+        const { body, error } = parseFormTicketBody({
+            bookingSelection: state.bookingSelection,
+            ticketType: state.ticketType,
+            singleForm: state.singleForm,
+            monthlyForm: state.monthlyForm,
+            selectedPaymentMethodId: state.selectedPaymentMethodId,
+            user,
         });
+        if (error || !body) {
+            Toast.show({ type: "error", text1: error || "Không thể tạo vé" });
+            return;
+        }
+
+        setPaying(true);
+        try {
+            const response = await ticketService.createTicket(body);
+            const ticket = response.data;
+            if (!ticket) {
+                throw new Error(response.message || "Không nhận được dữ liệu vé");
+            }
+
+            setLastPurchasedTicket(ticket);
+            Toast.show({
+                type: "success",
+                text1: "Thanh toán thành công",
+                text2: "Vé của bạn đã sẵn sàng",
+            });
+            // Không resetBooking() ở đây — TripSearch còn trên stack sẽ search lại với origin undefined.
+            // Success screen sẽ dọn booking (giữ lastPurchasedTicket).
+            router.replace("/trips/tickets/success" as never);
+        } catch (err: unknown) {
+            Toast.show({
+                type: "error",
+                text1: "Thanh toán thất bại",
+                text2: (err as Error).message,
+            });
+        } finally {
+            setPaying(false);
+        }
     };
 
     return (
@@ -41,8 +90,8 @@ export default function TicketPaymentScreen() {
 
             <FormControls
                 price={totalPrice}
-                buttonLabel="Thanh toán"
-                disabled={!selectedMethodId}
+                buttonLabel={paying ? "Đang xử lý..." : "Thanh toán"}
+                disabled={!selectedMethodId || paying}
                 onPress={handlePay}
             />
         </View>

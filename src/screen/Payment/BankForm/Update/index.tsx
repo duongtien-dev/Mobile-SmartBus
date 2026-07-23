@@ -94,7 +94,7 @@ export default function UpdateBankFormScreen() {
 
     return (
         <View className="flex-1 flex-col gap-5 bg-background">
-            <PageHeader title="Cập nhật phương thức thanh toán" />
+            <PageHeader title="Cập nhật phương thức thanh toán" isIconBack />
 
             <KeyboardAvoidingView
                 className="flex-1"

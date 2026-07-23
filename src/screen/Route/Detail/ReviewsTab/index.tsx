@@ -23,13 +23,6 @@ type ReviewsTabProps = {
     routeId: string;
 };
 
-function getReviewerName(review: IReview) {
-    if (typeof review.userId === "object" && review.userId?.full_name) {
-        return review.userId.full_name;
-    }
-    return "Người dùng";
-}
-
 function RatingStars({ rating }: { rating: number }) {
     return (
         <View className="flex-row gap-0.5">
@@ -98,7 +91,7 @@ function ReviewItem({ review }: { review: IReview }) {
         <View className="border-b border-border px-5 py-4">
             <View className="flex-row items-center justify-between gap-3">
                 <Text className="text-sm font-semibold text-text-primary">
-                    {getReviewerName(review)}
+                    {review.user?.full_name}
                 </Text>
                 <RatingStars rating={review.rating} />
             </View>

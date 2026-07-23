@@ -1,12 +1,15 @@
-import type { TicketTypeId } from "@/constants/ticket";
-import {
-    MONTHLY_TICKET_PRICE,
-    SINGLE_TICKET_PRICE,
-} from "@/constants/ticket";
+import type { ITicket, TicketType } from "@/models/ticket";
+import type { ITicketProduct } from "@/models/ticketProduct";
 import type { ISuggestLocation } from "@/models/suggestLocation";
 import type { ITrip, ITripLocation } from "@/models/trip";
+import {
+    resolveBookingSelection,
+    type IBookingSelection,
+} from "@/utils/resolveBookingSelection";
 import moment, { now } from "moment";
 import { create } from "zustand";
+
+export type { IBookingSelection };
 
 export interface ISearchContext {
     originName: string;
@@ -47,75 +50,87 @@ type TripBookingState = {
     searchContext: ISearchContext | null;
     prefillOrigin: ISuggestLocation | null;
     selectedTrip: ITrip | null;
-    pickupStopName: string;
-    routeCode: string;
-    ticketType: TicketTypeId | null;
+    bookingSelection: IBookingSelection | null;
+    ticketType: TicketType | null;
+    selectedTicketProduct: ITicketProduct | null;
     singleForm: ISingleTicketForm;
     monthlyForm: IMonthlyTicketForm;
     selectedPaymentMethodId: string;
     totalPrice: number;
+    lastPurchasedTicket: ITicket | null;
 
     setSearchContext: (context: ISearchContext) => void;
     setPrefillOrigin: (origin: ISuggestLocation) => void;
     clearPrefillOrigin: () => void;
-    setSelectedTrip: (
-        trip: ITrip,
-        pickupStopName: string,
-        routeCode: string,
-    ) => void;
-    setTicketType: (type: TicketTypeId) => void;
+    setSelectedTrip: (trip: ITrip) => boolean;
+    setTicketType: (product: ITicketProduct) => void;
     updateSingleForm: (data: Partial<ISingleTicketForm>) => void;
     updateMonthlyForm: (data: Partial<IMonthlyTicketForm>) => void;
     setSelectedPaymentMethodId: (id: string) => void;
     setTotalPrice: (price: number) => void;
+    setLastPurchasedTicket: (ticket: ITicket | null) => void;
     getTicketLabel: () => string;
     resetBooking: () => void;
+};
+
+const clearedSelection = {
+    selectedTrip: null as ITrip | null,
+    bookingSelection: null as IBookingSelection | null,
+    ticketType: null as TicketType | null,
+    selectedTicketProduct: null as ITicketProduct | null,
+    singleForm: initialSingleForm,
+    monthlyForm: initialMonthlyForm,
+    selectedPaymentMethodId: "",
+    totalPrice: 0,
 };
 
 const useTripBookingStore = create<TripBookingState>((set, get) => ({
     searchContext: null,
     prefillOrigin: null,
     selectedTrip: null,
-    pickupStopName: "",
-    routeCode: "",
+    bookingSelection: null,
     ticketType: null,
+    selectedTicketProduct: null,
     singleForm: initialSingleForm,
     monthlyForm: initialMonthlyForm,
     selectedPaymentMethodId: "",
     totalPrice: 0,
+    lastPurchasedTicket: null,
 
     setSearchContext: (context) =>
         set({
             searchContext: context,
-            selectedTrip: null,
-            pickupStopName: "",
-            routeCode: "",
-            ticketType: null,
-            singleForm: initialSingleForm,
-            monthlyForm: initialMonthlyForm,
-            selectedPaymentMethodId: "",
-            totalPrice: 0,
+            ...clearedSelection,
         }),
 
     setPrefillOrigin: (origin) => set({ prefillOrigin: origin }),
 
     clearPrefillOrigin: () => set({ prefillOrigin: null }),
 
-    setSelectedTrip: (trip, pickupStopName, routeCode) =>
+    setSelectedTrip: (trip) => {
+        const bookingSelection = resolveBookingSelection(
+            trip,
+            get().searchContext,
+        );
+        if (!bookingSelection) return false;
+
         set({
             selectedTrip: trip,
-            pickupStopName,
-            routeCode,
+            bookingSelection,
             ticketType: null,
+            selectedTicketProduct: null,
             singleForm: initialSingleForm,
             monthlyForm: initialMonthlyForm,
             selectedPaymentMethodId: "",
             totalPrice: 0,
-        }),
+        });
+        return true;
+    },
 
-    setTicketType: (type) =>
+    setTicketType: (product) =>
         set({
-            ticketType: type,
+            ticketType: product.code,
+            selectedTicketProduct: product,
             selectedPaymentMethodId: "",
             totalPrice: 0,
         }),
@@ -134,15 +149,18 @@ const useTripBookingStore = create<TripBookingState>((set, get) => ({
 
     setTotalPrice: (price) => set({ totalPrice: price }),
 
+    setLastPurchasedTicket: (ticket) => set({ lastPurchasedTicket: ticket }),
+
     getTicketLabel: () => {
-        const { ticketType } = get();
+        const { selectedTicketProduct, ticketType } = get();
+        if (selectedTicketProduct?.title) return selectedTicketProduct.title;
 
         switch (ticketType) {
             case "single":
                 return "Vé lượt";
-            case "monthly-single":
+            case "monthlySingleRoute":
                 return "Vé tháng đơn tuyến";
-            case "monthly-multi":
+            case "monthlyInterRoute":
                 return "Vé tháng liên tuyến";
             default:
                 return "Vé";
@@ -153,24 +171,17 @@ const useTripBookingStore = create<TripBookingState>((set, get) => ({
         set({
             searchContext: null,
             prefillOrigin: null,
-            selectedTrip: null,
-            pickupStopName: "",
-            routeCode: "",
-            ticketType: null,
-            singleForm: initialSingleForm,
-            monthlyForm: initialMonthlyForm,
-            selectedPaymentMethodId: "",
-            totalPrice: 0,
+            ...clearedSelection,
         }),
 }));
 
-export function computeSingleTicketPrice() {
-    return SINGLE_TICKET_PRICE;
+export function computeSingleTicketPrice(unitPrice?: number) {
+    return unitPrice ?? 0;
 }
 
-export function computeMonthlyTicketPrice(ticketCount: string) {
+export function computeMonthlyTicketPrice(ticketCount: string, unitPrice?: number) {
     const count = Number(ticketCount) || 1;
-    return MONTHLY_TICKET_PRICE * count;
+    return (unitPrice ?? 0) * count;
 }
 
 export default useTripBookingStore;

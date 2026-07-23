@@ -1,13 +1,14 @@
+import type { IRoute } from "@/models/route";
+import type { IUser } from "@/models/user";
+
+export type IReviewUser = Pick<IUser, "_id" | "full_name" | "email">;
+
+export type IReviewRoute = Pick<IRoute, "_id" | "code" | "name">;
+
 export interface IReview {
     _id: string;
-    routeId: string | { _id: string; code?: string; name?: string };
-    userId:
-        | string
-        | {
-              _id: string;
-              full_name?: string;
-              email?: string;
-          };
+    user: IReviewUser | null;
+    route: IReviewRoute | null;
     rating: number;
     content?: string;
     createdAt?: string;
@@ -18,4 +19,10 @@ export type ReviewSummary = {
     average: number;
     total: number;
     distribution: Record<1 | 2 | 3 | 4 | 5, number>;
+};
+
+export type CreateReviewBody = {
+    routeId: string;
+    rating: number;
+    content?: string;
 };

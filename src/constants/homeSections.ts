@@ -1,10 +1,6 @@
 import type { LucideIcon } from "lucide-react-native";
 import {
-    Bell,
-    CreditCard,
-    HelpCircle,
     MapPinned,
-    QrCode,
     Route,
     ScanLine,
     Ticket,

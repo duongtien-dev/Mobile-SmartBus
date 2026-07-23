@@ -34,18 +34,21 @@ const SEAT_OPTIONS = [
 export default function SingleTicketScreen() {
     const searchContext = useTripBookingStore((state) => state.searchContext);
     const pickupStopName = useTripBookingStore(
-        (state) => state.pickupStopName,
+        (state) => state.bookingSelection?.startStopName ?? "",
     );
     const formData = useTripBookingStore((state) => state.singleForm);
     const handleChangForm = useTripBookingStore(
         (state) => state.updateSingleForm,
     );
     const setTotalPrice = useTripBookingStore((state) => state.setTotalPrice);
+    const selectedTicketProduct = useTripBookingStore(
+        (state) => state.selectedTicketProduct,
+    );
 
     const originName = searchContext?.originName;
     const destinationName = searchContext?.destinationName;
 
-    const totalPrice = computeSingleTicketPrice();
+    const totalPrice = computeSingleTicketPrice(selectedTicketProduct?.unitPrice);
 
     const handleSubmit = () => {
         setTotalPrice(totalPrice);

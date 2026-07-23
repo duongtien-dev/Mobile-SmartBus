@@ -1,6 +1,7 @@
 import { PageHeader } from "@/components/PageHeader";
 import { Card } from "@/components/ui/Card";
 import { StatusPill } from "@/components/ui/StatusPill";
+import useFetch from "@/hooks/useFetch";
 import type { ITicket } from "@/models/ticket";
 import { ticketService } from "@/services/TicketService";
 import {
@@ -12,33 +13,21 @@ import {
 } from "@/utils/ticket";
 import { Image } from "expo-image";
 import { useLocalSearchParams } from "expo-router";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { ActivityIndicator, ScrollView, Text, View } from "react-native";
 
 export default function MyTicketDetailScreen() {
     const { id } = useLocalSearchParams<{ id: string }>();
-    const [ticket, setTicket] = useState<ITicket | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
+    const { data: ticket, isLoading, loadFetchFn, } = useFetch<ITicket>({
+        fetchFn: async () => {
+            const response = await ticketService.getTicketDetail({ id });
+            return response.data ?? null;
+        },
+    });
 
     useEffect(() => {
         if (!id) return;
-
-        const loadTicket = async () => {
-            setIsLoading(true);
-            setError(null);
-
-            try {
-                const response = await ticketService.getTicketDetail({ id });
-                setTicket(response.data ?? null);
-            } catch {
-                setError("Không thể tải thông tin vé");
-            } finally {
-                setIsLoading(false);
-            }
-        };
-
-        loadTicket();
+        loadFetchFn();
     }, [id]);
 
     if (isLoading) {
@@ -49,12 +38,12 @@ export default function MyTicketDetailScreen() {
         );
     }
 
-    if (!ticket || error) {
+    if (!ticket) {
         return (
             <View className="flex-1 bg-app-shell">
                 <PageHeader title="Chi tiết vé" isIconBack />
                 <Text className="px-5 py-10 text-center text-sm text-text-muted">
-                    {error ?? "Không tìm thấy vé"}
+                    Không tìm thấy vé
                 </Text>
             </View>
         );

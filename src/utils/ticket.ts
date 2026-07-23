@@ -1,4 +1,5 @@
 import type { ITicket, TicketStatus, TicketType } from "@/models/ticket";
+import { ITicketProduct } from "@/models/ticketProduct";
 
 const TICKET_TYPE_LABELS: Record<TicketType, string> = {
     single: "Vé lượt",
@@ -113,4 +114,26 @@ export function getTripHistoryStatusLabel(ticket: ITicket) {
     }
 
     return "Đã hoàn thành";
+}
+
+export function formatTicketPrice(product: ITicketProduct) {
+    const formatted = product.unitPrice.toLocaleString('vi-VN');
+    if (product.code === 'single') {
+        return `${formatted} đồng (1 lượt)`;
+    }
+    return `${formatted} đồng`;
+}
+
+export function getTicketDisplayCode(ticket: Pick<ITicket, "_id" | "qrCode">) {
+    const fromId = ticket._id.replace(/[^0-9a-f]/gi, "").slice(-8);
+    if (fromId.length === 8) {
+        return fromId
+            .split("")
+            .map((ch) => {
+                const n = parseInt(ch, 16);
+                return Number.isNaN(n) ? "0" : String(n % 10);
+            })
+            .join("");
+    }
+    return (ticket.qrCode || ticket._id).slice(-8).toUpperCase();
 }

@@ -22,6 +22,9 @@ export default function TripSearchScreen() {
 
     const { data: trips, isLoading, loadFetchFn } = useFetch<ITrip[]>({
         fetchFn: async () => {
+            if (!origin || !destination) {
+                return [];
+            }
             const response = await tripService.searchTrips({
                 origin,
                 destination,
@@ -40,7 +43,7 @@ export default function TripSearchScreen() {
 
             <ScrollView
                 className="flex-1"
-                contentContainerClassName="px-5 pb-8"
+                contentContainerClassName="gap-6 px-5 pb-10 pt-4"
                 showsVerticalScrollIndicator={false}
             >
                 <View className="gap-4">

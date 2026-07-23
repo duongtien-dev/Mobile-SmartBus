@@ -6,14 +6,14 @@ interface InputTextProps extends TextInputProps {
     disabled?: boolean;
 }
 
-const InputText: React.FC<InputTextProps> = ({...Props}: InputTextProps) => {
-    // Destructure props
-    const { className, disabled, ...props } = Props;
+const InputText: React.FC<InputTextProps> = ({ className, disabled, ...props }) => {
     return (
         <TextInput
             editable={!disabled}
             underlineColorAndroid="transparent"
-            className={`text-md rounded-lg px-3 py-2.5 text-text-primary placeholder:text-text-muted border border-border focus:border-primary focus:outline-none ${disabled ? "border-border bg-disabled-bg text-disabled opacity-80" : "bg-background"} ${className}`}
+            className={`text-md rounded-lg px-3 py-2.5 text-text-primary placeholder:text-text-muted border border-border focus:border-primary focus:outline-none ${
+                disabled ? "border-border bg-disabled-bg text-disabled opacity-80" : "bg-background"
+            } ${className}`}
             {...props}
         />
     );
