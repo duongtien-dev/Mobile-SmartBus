@@ -151,7 +151,7 @@ export function TripResultItem({ trip }: TripResultItemProps) {
                 onPress={handleToggleDetail}
             >
                 <Text className="text-sm font-medium text-accent">
-                    {expanded ? "^ Ẩn chi tiết" : "> Xem thêm chi tiết"}
+                    {expanded ? "Ẩn chi tiết" : "Xem thêm chi tiết"}
                 </Text>
             </Pressable>
 

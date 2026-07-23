@@ -40,7 +40,7 @@ export default function TripSearchScreen() {
 
             <ScrollView
                 className="flex-1"
-                contentContainerClassName="px-5 pb-8"
+                contentContainerClassName="gap-6 px-5 pb-10 pt-4"
                 showsVerticalScrollIndicator={false}
             >
                 <View className="gap-4">
