@@ -4,7 +4,6 @@ import { useToastify } from "@/hooks/useToastify";
 import { BankFormFields } from "@/screen/Payment/BankForm/BankFormFields";
 import {
     INITIAL_BANK_FORM,
-    isBankFormValid,
     parseBankFormData,
     type BankFormData,
 } from "@/screen/Payment/BankForm/types";
@@ -29,10 +28,9 @@ export default function AddBankFormScreen() {
         setFormData((prev) => ({ ...prev, [key]: value }));
     };
 
-    const canSubmit = isBankFormValid(formData);
 
     const handleSubmit = async () => {
-        if (!canSubmit || isSubmitting) {
+        if (isSubmitting) {
             return;
         }
 
@@ -52,7 +50,7 @@ export default function AddBankFormScreen() {
 
     return (
         <View className="flex-1 flex-col gap-5 bg-background">
-            <PageHeader title="Thêm phương thức thanh toán" />
+            <PageHeader title="Thêm phương thức thanh toán" isIconBack />
 
             <KeyboardAvoidingView
                 className="flex-1"
@@ -77,7 +75,7 @@ export default function AddBankFormScreen() {
                         type="primary"
                         variant="bold"
                         className="w-full rounded-lg"
-                        disabled={!canSubmit || isSubmitting}
+                        disabled={isSubmitting}
                         onPress={handleSubmit}
                     >
                         {isSubmitting ? (

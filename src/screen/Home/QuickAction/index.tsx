@@ -30,7 +30,7 @@ export function QuickActionButton({ action, onPress }: QuickActionButtonProps) {
             onPress={onPress}
         >
             <View
-                className={`mb-2 h-14 w-14 items-center justify-center rounded-full ${action.colorClass === "bg-highlight" ? "bg-highlight-light" : "bg-primary-light"}`}
+                className={`mb-2 h-14 w-14 items-center justify-center rounded-full bg-primary-light`}
             >
                 <Icon color="#005f8b" size={24} />
             </View>
