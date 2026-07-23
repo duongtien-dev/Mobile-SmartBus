@@ -2,32 +2,7 @@ import type { IPaymentMethod } from "@/models/paymentMethod";
 import { cn } from "@/lib/utils";
 import { Image } from "expo-image";
 import { Pressable, Text, View } from "react-native";
-
-const PROVIDER_LABELS: Record<IPaymentMethod["provider"], string> = {
-    momo: "MoMo",
-    zalopay: "Zalopay",
-    shopeepay: "ShopeePay",
-    visa: "Thẻ quốc tế",
-    napas: "Tài khoản / Thẻ ngân hàng",
-};
-
-function getPaymentLabel(method: IPaymentMethod) {
-    const base = PROVIDER_LABELS[method.provider] ?? method.provider;
-
-    if (method.cardNumber) {
-        return `${base} •••• ${method.cardNumber.slice(-4)}`;
-    }
-
-    if (method.accountNumber) {
-        return `${base} •••• ${method.accountNumber.slice(-4)}`;
-    }
-
-    if (method.phoneNumber) {
-        return `${base} - ${method.phoneNumber}`;
-    }
-
-    return base;
-}
+import { getPaymentSubtitle } from "@/utils/payment";
 
 type PayMethodItemProps = {
     method: IPaymentMethod;
@@ -62,7 +37,7 @@ export function PayMethodItem({
                 />
             </View>
             <Text className="flex-1 text-base font-medium text-text-primary">
-                {getPaymentLabel(method)}
+                {getPaymentSubtitle(method)}
             </Text>
         </Pressable>
     );

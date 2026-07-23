@@ -22,12 +22,7 @@ export default function TripSearchScreen() {
 
     const { data: trips, isLoading, loadFetchFn } = useFetch<ITrip[]>({
         fetchFn: async () => {
-            if (
-                origin?.lat == null ||
-                origin?.lng == null ||
-                destination?.lat == null ||
-                destination?.lng == null
-            ) {
+            if (!origin || !destination) {
                 return [];
             }
             const response = await tripService.searchTrips({
@@ -39,16 +34,8 @@ export default function TripSearchScreen() {
     });
 
     useEffect(() => {
-        if (
-            origin?.lat == null ||
-            origin?.lng == null ||
-            destination?.lat == null ||
-            destination?.lng == null
-        ) {
-            return;
-        }
         loadFetchFn();
-    }, [origin?.lat, origin?.lng, destination?.lat, destination?.lng]);
+    }, [origin, destination]);
 
     return (
         <View className="flex-1 bg-background">

@@ -12,7 +12,6 @@ export default function TicketQrSuccessScreen() {
     const displayCode = ticket ? getTicketDisplayCode(ticket) : "—";
 
     useEffect(() => {
-        // Dọn form booking sau khi đã vào màn QR (không đụng lastPurchasedTicket)
         resetBooking();
     }, [resetBooking]);
 

@@ -9,32 +9,7 @@ import { CreditCard } from "lucide-react-native";
 import { useRouter } from "expo-router";
 import { useEffect } from "react";
 import { ActivityIndicator, ScrollView, Text, View } from "react-native";
-
-const PROVIDER_LABELS: Record<IPaymentMethod["provider"], string> = {
-    momo: "MoMo",
-    zalopay: "Zalopay",
-    shopeepay: "ShopeePay",
-    visa: "Thẻ quốc tế",
-    napas: "Tài khoản / Thẻ ngân hàng",
-};
-
-function getPaymentLabel(method: IPaymentMethod) {
-    const base = PROVIDER_LABELS[method.provider] ?? method.provider;
-
-    if (method.cardNumber) {
-        return `${base} •••• ${method.cardNumber.slice(-4)}`;
-    }
-
-    if (method.accountNumber) {
-        return `${base} •••• ${method.accountNumber.slice(-4)}`;
-    }
-
-    if (method.phoneNumber) {
-        return `${base} - ${method.phoneNumber}`;
-    }
-
-    return base;
-}
+import { getPaymentSubtitle, getPaymentTitle } from "@/utils/payment";
 
 export default function PaymentScreen() {
     const router = useRouter();
@@ -73,8 +48,8 @@ export default function PaymentScreen() {
                         {paymentMethods.map((method, index) => (
                             <View key={method._id}>
                                 <ListRow
-                                    label={getPaymentLabel(method)}
-                                    description={PROVIDER_LABELS[method.provider]}
+                                    label={getPaymentSubtitle(method)}
+                                    description={getPaymentTitle(method)}
                                     icon={CreditCard}
                                     onPress={() =>
                                         router.push({
