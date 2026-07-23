@@ -5,11 +5,10 @@ import IconDetail from "./IconDetail";
 
 const TicketSummary = () => {
     const searchContext = useTripBookingStore((state) => state.searchContext);
-    const routeCode = useTripBookingStore((state) => state.routeCode);
+    const bookingSelection = useTripBookingStore((state) => state.bookingSelection);
     const ticketType = useTripBookingStore((state) => state.ticketType);
     const singleForm = useTripBookingStore((state) => state.singleForm);
     const monthlyForm = useTripBookingStore((state) => state.monthlyForm);
-    const pickupStopName = useTripBookingStore((state) => state.pickupStopName);
 
     const origin = searchContext?.originName ?? "Điểm đi";
     const dest = searchContext?.destinationName ?? "Điểm đến";
@@ -21,7 +20,7 @@ const TicketSummary = () => {
             primaryLabel: "Khởi hành",
             primaryValue: `${singleForm.departureTime} • ${singleForm.departureDate}`,
             countValue: `${(singleForm.seatCount || "0").padStart(2, "0")} ghế`,
-            pickupValue: pickupStopName || "—",
+            pickupValue: bookingSelection?.startStopName || "—",
         }
         : {
             badgeLabel:
@@ -38,7 +37,7 @@ const TicketSummary = () => {
         <View className="mb-6 overflow-hidden rounded-2xl border border-border bg-surface shadow-sm">
             <View className="bg-primary/5 p-4 border-b border-border border-dashed">
                 <Text className="text-xs font-medium text-primary mb-3">
-                    {config.badgeLabel} • {routeCode}
+                    {config.badgeLabel} • {bookingSelection?.routeCode || "—"}
                 </Text>
 
                 <View>

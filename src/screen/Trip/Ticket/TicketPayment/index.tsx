@@ -3,7 +3,7 @@ import { FormControls } from "@/screen/Trip/Ticket/Element/FormControls";
 import { ticketService } from "@/services/TicketService";
 import useAuthStore from "@/store/auth.store";
 import useTripBookingStore from "@/store/tripBooking.store";
-import { buildCreateTicketBody } from "@/utils/createTicketPayload";
+import { buildCreateTicketBody } from "@/utils/buildCreateTicketBody";
 import { router } from "expo-router";
 import { useState } from "react";
 import { ScrollView, View } from "react-native";
@@ -33,7 +33,14 @@ export default function TicketPaymentScreen() {
         }
 
         const state = useTripBookingStore.getState();
-        const { body, error } = buildCreateTicketBody(state, user);
+        const { body, error } = buildCreateTicketBody({
+            bookingSelection: state.bookingSelection,
+            ticketType: state.ticketType,
+            singleForm: state.singleForm,
+            monthlyForm: state.monthlyForm,
+            selectedPaymentMethodId: state.selectedPaymentMethodId,
+            user,
+        });
         if (error || !body) {
             Toast.show({ type: "error", text1: error || "Không thể tạo vé" });
             return;
@@ -57,27 +64,10 @@ export default function TicketPaymentScreen() {
             // Success screen sẽ dọn booking (giữ lastPurchasedTicket).
             router.replace("/trips/tickets/success" as never);
         } catch (err: unknown) {
-            let message = "Vui lòng thử lại";
-            if (
-                err &&
-                typeof err === "object" &&
-                "response" in err &&
-                err.response &&
-                typeof err.response === "object" &&
-                "data" in err.response &&
-                err.response.data &&
-                typeof err.response.data === "object" &&
-                "message" in err.response.data &&
-                typeof err.response.data.message === "string"
-            ) {
-                message = err.response.data.message;
-            } else if (err instanceof Error) {
-                message = err.message;
-            }
             Toast.show({
                 type: "error",
                 text1: "Thanh toán thất bại",
-                text2: message,
+                text2: (err as Error).message,
             });
         } finally {
             setPaying(false);

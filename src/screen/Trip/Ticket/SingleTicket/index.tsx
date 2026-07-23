@@ -34,7 +34,7 @@ const SEAT_OPTIONS = [
 export default function SingleTicketScreen() {
     const searchContext = useTripBookingStore((state) => state.searchContext);
     const pickupStopName = useTripBookingStore(
-        (state) => state.pickupStopName,
+        (state) => state.bookingSelection?.startStopName ?? "",
     );
     const formData = useTripBookingStore((state) => state.singleForm);
     const handleChangForm = useTripBookingStore(

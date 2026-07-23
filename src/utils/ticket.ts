@@ -123,3 +123,17 @@ export function formatTicketPrice(product: ITicketProduct) {
     }
     return `${formatted} đồng`;
 }
+
+export function getTicketDisplayCode(ticket: Pick<ITicket, "_id" | "qrCode">) {
+    const fromId = ticket._id.replace(/[^0-9a-f]/gi, "").slice(-8);
+    if (fromId.length === 8) {
+        return fromId
+            .split("")
+            .map((ch) => {
+                const n = parseInt(ch, 16);
+                return Number.isNaN(n) ? "0" : String(n % 10);
+            })
+            .join("");
+    }
+    return (ticket.qrCode || ticket._id).slice(-8).toUpperCase();
+}

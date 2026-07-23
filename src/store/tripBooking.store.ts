@@ -2,8 +2,14 @@ import type { ITicket, TicketType } from "@/models/ticket";
 import type { ITicketProduct } from "@/models/ticketProduct";
 import type { ISuggestLocation } from "@/models/suggestLocation";
 import type { ITrip, ITripLocation } from "@/models/trip";
+import {
+    resolveBookingSelection,
+    type IBookingSelection,
+} from "@/utils/resolveBookingSelection";
 import moment, { now } from "moment";
 import { create } from "zustand";
+
+export type { IBookingSelection };
 
 export interface ISearchContext {
     originName: string;
@@ -44,8 +50,7 @@ type TripBookingState = {
     searchContext: ISearchContext | null;
     prefillOrigin: ISuggestLocation | null;
     selectedTrip: ITrip | null;
-    pickupStopName: string;
-    routeCode: string;
+    bookingSelection: IBookingSelection | null;
     ticketType: TicketType | null;
     selectedTicketProduct: ITicketProduct | null;
     singleForm: ISingleTicketForm;
@@ -57,11 +62,7 @@ type TripBookingState = {
     setSearchContext: (context: ISearchContext) => void;
     setPrefillOrigin: (origin: ISuggestLocation) => void;
     clearPrefillOrigin: () => void;
-    setSelectedTrip: (
-        trip: ITrip,
-        pickupStopName: string,
-        routeCode: string,
-    ) => void;
+    setSelectedTrip: (trip: ITrip) => boolean;
     setTicketType: (product: ITicketProduct) => void;
     updateSingleForm: (data: Partial<ISingleTicketForm>) => void;
     updateMonthlyForm: (data: Partial<IMonthlyTicketForm>) => void;
@@ -72,12 +73,22 @@ type TripBookingState = {
     resetBooking: () => void;
 };
 
+const clearedSelection = {
+    selectedTrip: null as ITrip | null,
+    bookingSelection: null as IBookingSelection | null,
+    ticketType: null as TicketType | null,
+    selectedTicketProduct: null as ITicketProduct | null,
+    singleForm: initialSingleForm,
+    monthlyForm: initialMonthlyForm,
+    selectedPaymentMethodId: "",
+    totalPrice: 0,
+};
+
 const useTripBookingStore = create<TripBookingState>((set, get) => ({
     searchContext: null,
     prefillOrigin: null,
     selectedTrip: null,
-    pickupStopName: "",
-    routeCode: "",
+    bookingSelection: null,
     ticketType: null,
     selectedTicketProduct: null,
     singleForm: initialSingleForm,
@@ -89,33 +100,32 @@ const useTripBookingStore = create<TripBookingState>((set, get) => ({
     setSearchContext: (context) =>
         set({
             searchContext: context,
-            selectedTrip: null,
-            pickupStopName: "",
-            routeCode: "",
-            ticketType: null,
-            selectedTicketProduct: null,
-            singleForm: initialSingleForm,
-            monthlyForm: initialMonthlyForm,
-            selectedPaymentMethodId: "",
-            totalPrice: 0,
+            ...clearedSelection,
         }),
 
     setPrefillOrigin: (origin) => set({ prefillOrigin: origin }),
 
     clearPrefillOrigin: () => set({ prefillOrigin: null }),
 
-    setSelectedTrip: (trip, pickupStopName, routeCode) =>
+    setSelectedTrip: (trip) => {
+        const bookingSelection = resolveBookingSelection(
+            trip,
+            get().searchContext,
+        );
+        if (!bookingSelection) return false;
+
         set({
             selectedTrip: trip,
-            pickupStopName,
-            routeCode,
+            bookingSelection,
             ticketType: null,
             selectedTicketProduct: null,
             singleForm: initialSingleForm,
             monthlyForm: initialMonthlyForm,
             selectedPaymentMethodId: "",
             totalPrice: 0,
-        }),
+        });
+        return true;
+    },
 
     setTicketType: (product) =>
         set({
@@ -161,15 +171,7 @@ const useTripBookingStore = create<TripBookingState>((set, get) => ({
         set({
             searchContext: null,
             prefillOrigin: null,
-            selectedTrip: null,
-            pickupStopName: "",
-            routeCode: "",
-            ticketType: null,
-            selectedTicketProduct: null,
-            singleForm: initialSingleForm,
-            monthlyForm: initialMonthlyForm,
-            selectedPaymentMethodId: "",
-            totalPrice: 0,
+            ...clearedSelection,
         }),
 }));
 

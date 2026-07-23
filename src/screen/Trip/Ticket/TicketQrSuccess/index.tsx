@@ -1,6 +1,6 @@
 import { PageHeader } from "@/components/PageHeader";
 import useTripBookingStore from "@/store/tripBooking.store";
-import { getTicketDisplayCode } from "@/utils/createTicketPayload";
+import { getTicketDisplayCode } from "@/utils/ticket";
 import { Image } from "expo-image";
 import { router } from "expo-router";
 import { useEffect } from "react";

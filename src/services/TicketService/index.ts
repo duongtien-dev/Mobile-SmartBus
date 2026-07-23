@@ -4,7 +4,6 @@ import BaseService from "@/services/BaseService";
 
 export type CreateTicketBody = {
     routeId: string;
-    routeName: string;
     startStopName: string;
     endStopName: string;
     ticketType: TicketType;
