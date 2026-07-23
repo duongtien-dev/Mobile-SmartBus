@@ -1,9 +1,8 @@
 import { PageHeader } from "@/components/PageHeader";
 import { FormControls } from "@/screen/Trip/Ticket/Element/FormControls";
 import { ticketService } from "@/services/TicketService";
-import useAuthStore from "@/store/auth.store";
 import useTripBookingStore from "@/store/tripBooking.store";
-import { parseFormTicketBody } from "@/utils/pasreFormTicketBody";
+import { parseFormTicketBody } from "@/utils/parseFormTicketBody";
 import { router } from "expo-router";
 import { useState } from "react";
 import { ScrollView, View } from "react-native";
@@ -20,7 +19,6 @@ export default function TicketPaymentScreen() {
     const setLastPurchasedTicket = useTripBookingStore(
         (state) => state.setLastPurchasedTicket,
     );
-    const user = useAuthStore((state) => state.user);
     const [paying, setPaying] = useState(false);
 
     const handlePay = async () => {
@@ -39,7 +37,6 @@ export default function TicketPaymentScreen() {
             singleForm: state.singleForm,
             monthlyForm: state.monthlyForm,
             selectedPaymentMethodId: state.selectedPaymentMethodId,
-            user,
         });
         if (error || !body) {
             Toast.show({ type: "error", text1: error || "Không thể tạo vé" });
@@ -60,8 +57,6 @@ export default function TicketPaymentScreen() {
                 text1: "Thanh toán thành công",
                 text2: "Vé của bạn đã sẵn sàng",
             });
-            // Không resetBooking() ở đây — TripSearch còn trên stack sẽ search lại với origin undefined.
-            // Success screen sẽ dọn booking (giữ lastPurchasedTicket).
             router.replace("/trips/tickets/success" as never);
         } catch (err: unknown) {
             Toast.show({

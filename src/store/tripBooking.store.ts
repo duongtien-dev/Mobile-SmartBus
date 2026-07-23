@@ -1,15 +1,17 @@
 import type { ITicket, TicketType } from "@/models/ticket";
 import type { ITicketProduct } from "@/models/ticketProduct";
 import type { ISuggestLocation } from "@/models/suggestLocation";
-import type { ITrip, ITripLocation } from "@/models/trip";
-import {
-    resolveBookingSelection,
-    type IBookingSelection,
-} from "@/utils/resolveBookingSelection";
+import type { ITripLocation } from "@/models/trip";
 import moment, { now } from "moment";
 import { create } from "zustand";
 
-export type { IBookingSelection };
+/** Snapshot tuyến/điểm dừng lúc chọn chuyến — đủ để tạo vé. */
+export type IBookingSelection = {
+    routeId: string;
+    routeCode: string;
+    startStopName: string;
+    endStopName: string;
+};
 
 export interface ISearchContext {
     originName: string;
@@ -22,8 +24,6 @@ export interface ISingleTicketForm {
     departureDate: string;
     departureTime: string;
     seatCount: string;
-    fullName: string;
-    phoneNumber: string;
     acceptedTerms: boolean;
 }
 
@@ -36,8 +36,6 @@ const initialSingleForm: ISingleTicketForm = {
     departureDate: moment(now()).format("DD/MM/YYYY"),
     departureTime: "",
     seatCount: "1",
-    fullName: "",
-    phoneNumber: "",
     acceptedTerms: false,
 };
 
@@ -49,7 +47,6 @@ const initialMonthlyForm: IMonthlyTicketForm = {
 type TripBookingState = {
     searchContext: ISearchContext | null;
     prefillOrigin: ISuggestLocation | null;
-    selectedTrip: ITrip | null;
     bookingSelection: IBookingSelection | null;
     ticketType: TicketType | null;
     selectedTicketProduct: ITicketProduct | null;
@@ -62,7 +59,7 @@ type TripBookingState = {
     setSearchContext: (context: ISearchContext) => void;
     setPrefillOrigin: (origin: ISuggestLocation) => void;
     clearPrefillOrigin: () => void;
-    setSelectedTrip: (trip: ITrip) => boolean;
+    setBookingSelection: (selection: IBookingSelection) => void;
     setTicketType: (product: ITicketProduct) => void;
     updateSingleForm: (data: Partial<ISingleTicketForm>) => void;
     updateMonthlyForm: (data: Partial<IMonthlyTicketForm>) => void;
@@ -74,7 +71,6 @@ type TripBookingState = {
 };
 
 const clearedSelection = {
-    selectedTrip: null as ITrip | null,
     bookingSelection: null as IBookingSelection | null,
     ticketType: null as TicketType | null,
     selectedTicketProduct: null as ITicketProduct | null,
@@ -87,7 +83,6 @@ const clearedSelection = {
 const useTripBookingStore = create<TripBookingState>((set, get) => ({
     searchContext: null,
     prefillOrigin: null,
-    selectedTrip: null,
     bookingSelection: null,
     ticketType: null,
     selectedTicketProduct: null,
@@ -107,25 +102,16 @@ const useTripBookingStore = create<TripBookingState>((set, get) => ({
 
     clearPrefillOrigin: () => set({ prefillOrigin: null }),
 
-    setSelectedTrip: (trip) => {
-        const bookingSelection = resolveBookingSelection(
-            trip,
-            get().searchContext,
-        );
-        if (!bookingSelection) return false;
-
+    setBookingSelection: (selection) =>
         set({
-            selectedTrip: trip,
-            bookingSelection,
+            bookingSelection: selection,
             ticketType: null,
             selectedTicketProduct: null,
             singleForm: initialSingleForm,
             monthlyForm: initialMonthlyForm,
             selectedPaymentMethodId: "",
             totalPrice: 0,
-        });
-        return true;
-    },
+        }),
 
     setTicketType: (product) =>
         set({

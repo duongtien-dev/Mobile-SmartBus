@@ -29,8 +29,8 @@ type TripResultItemProps = {
 
 export function TripResultItem({ trip }: TripResultItemProps) {
     const searchContext = useTripBookingStore((state) => state.searchContext);
-    const setSelectedTrip = useTripBookingStore(
-        (state) => state.setSelectedTrip,
+    const setBookingSelection = useTripBookingStore(
+        (state) => state.setBookingSelection,
     );
 
     const [expanded, setExpanded] = useState(false);
@@ -92,14 +92,24 @@ export function TripResultItem({ trip }: TripResultItemProps) {
     };
 
     const handleBuyTicket = () => {
-        const ok = setSelectedTrip(trip);
-        if (!ok) {
+        const bus = trip.segments.find((s) => s.type === "bus");
+        const routeId = trip.meta?.routeId || bus?.routeId;
+        if (!routeId) {
             Toast.show({
                 type: "error",
                 text1: "Thiếu thông tin tuyến để mua vé",
             });
             return;
         }
+
+        setBookingSelection({
+            routeId,
+            routeCode: bus?.code || trip.meta?.code || "",
+            startStopName:
+                bus?.pickupStopName || searchContext?.originName || "",
+            endStopName:
+                bus?.dropoffStopName || searchContext?.destinationName || "",
+        });
 
         router.push("/trips/tickets" as never);
     };

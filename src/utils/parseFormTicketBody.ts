@@ -1,4 +1,3 @@
-import type { IUser } from "@/models/user";
 import type { CreateTicketBody } from "@/services/TicketService";
 import type {
     IBookingSelection,
@@ -6,7 +5,6 @@ import type {
     ISingleTicketForm,
 } from "@/store/tripBooking.store";
 import type { TicketType } from "@/models/ticket";
-import { parseDdMmYyyyToIso, parseMmYyyyToIso } from "@/utils/date";
 
 type ParseFormTicketBodyInput = {
     bookingSelection: IBookingSelection | null;
@@ -14,9 +12,9 @@ type ParseFormTicketBodyInput = {
     singleForm: ISingleTicketForm;
     monthlyForm: IMonthlyTicketForm;
     selectedPaymentMethodId: string;
-    user: IUser | null;
 };
 
+/** Map store → API body. Date/customer do backend xử lý. */
 export function parseFormTicketBody(
     input: ParseFormTicketBodyInput,
 ): { body?: CreateTicketBody; error?: string } {
@@ -26,7 +24,6 @@ export function parseFormTicketBody(
         singleForm,
         monthlyForm,
         selectedPaymentMethodId,
-        user,
     } = input;
 
     if (!ticketType) {
@@ -41,15 +38,6 @@ export function parseFormTicketBody(
         return { error: "Vui lòng chọn phương thức thanh toán" };
     }
 
-    const customerName =
-        singleForm.fullName?.trim() || user?.full_name?.trim() || "";
-    const customerPhone =
-        singleForm.phoneNumber?.trim() || user?.phone?.trim() || "";
-
-    if (!customerName || !customerPhone) {
-        return { error: "Thiếu thông tin hành khách (họ tên / SĐT)" };
-    }
-
     const { startStopName, endStopName, routeId } = bookingSelection;
     if (!startStopName || !endStopName) {
         return { error: "Thiếu điểm lên/xuống" };
@@ -57,14 +45,14 @@ export function parseFormTicketBody(
 
     const isSingle = ticketType === "single";
     const departureDate = isSingle
-        ? parseDdMmYyyyToIso(singleForm.departureDate)
-        : parseMmYyyyToIso(monthlyForm.usageMonth);
+        ? singleForm.departureDate.trim()
+        : monthlyForm.usageMonth.trim();
 
     if (!departureDate) {
         return {
             error: isSingle
-                ? "Ngày khởi hành không hợp lệ"
-                : "Tháng sử dụng không hợp lệ",
+                ? "Vui lòng chọn ngày khởi hành"
+                : "Vui lòng chọn tháng sử dụng",
         };
     }
 
@@ -83,10 +71,8 @@ export function parseFormTicketBody(
             endStopName,
             ticketType,
             departureDate,
-            departureTime: isSingle ? singleForm.departureTime : "00:00",
+            departureTime: isSingle ? singleForm.departureTime : undefined,
             seatQuantity,
-            customerName,
-            customerPhone,
             paymentMethodId: selectedPaymentMethodId,
         },
     };
