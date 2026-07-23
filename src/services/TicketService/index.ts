@@ -7,12 +7,14 @@ export type CreateTicketBody = {
     startStopName: string;
     endStopName: string;
     ticketType: TicketType;
+    /** DD/MM/YYYY | MM/YYYY | ISO — backend parse */
     departureDate: string;
     departureTime?: string;
     seatQuantity: number;
-    customerName: string;
-    customerPhone: string;
     paymentMethodId: string;
+    /** Optional — backend fallback User profile */
+    customerName?: string;
+    customerPhone?: string;
 };
 
 class TicketService extends BaseService {
