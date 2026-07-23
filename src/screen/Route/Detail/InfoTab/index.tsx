@@ -44,7 +44,7 @@ export function InfoTab({ route, stops }: InfoTabProps) {
 
     useEffect(() => {
         loadProducts();
-    }, [loadProducts]);
+    }, []);
 
     const single = products.find((item) => item.code === "single")?.unitPrice;
     const monthlySingle = products.find(
