@@ -1,4 +1,5 @@
 import type { ITicket, TicketStatus, TicketType } from "@/models/ticket";
+import { ITicketProduct } from "@/models/ticketProduct";
 
 const TICKET_TYPE_LABELS: Record<TicketType, string> = {
     single: "Vé lượt",
@@ -113,4 +114,12 @@ export function getTripHistoryStatusLabel(ticket: ITicket) {
     }
 
     return "Đã hoàn thành";
+}
+
+export function formatTicketPrice(product: ITicketProduct) {
+    const formatted = product.unitPrice.toLocaleString('vi-VN');
+    if (product.code === 'single') {
+        return `${formatted} đồng (1 lượt)`;
+    }
+    return `${formatted} đồng`;
 }

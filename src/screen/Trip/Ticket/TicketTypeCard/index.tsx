@@ -1,13 +1,14 @@
-import type { TicketTypeOption } from "@/constants/ticket";
+import type { ITicketProduct } from "@/models/ticketProduct";
+import { formatTicketPrice } from "@/utils/ticket";
 import { ChevronRight, Clock, DollarSign, Ticket } from "lucide-react-native";
 import { Pressable, Text, View } from "react-native";
 
 type TicketTypeCardProps = {
-    option: TicketTypeOption;
+    product: ITicketProduct;
     onPress: () => void;
 };
 
-export function TicketTypeCard({ option, onPress }: TicketTypeCardProps) {
+export function TicketTypeCard({ product, onPress }: TicketTypeCardProps) {
     return (
         <Pressable
             className="flex-row items-center gap-4 rounded-2xl border border-primary/10 bg-white px-4 py-4 shadow-sm active:opacity-80"
@@ -25,20 +26,20 @@ export function TicketTypeCard({ option, onPress }: TicketTypeCardProps) {
                 </View>
 
                 <Text className="text-lg font-bold text-primary">
-                    {option.title}
+                    {product.title}
                 </Text>
 
                 <View className="flex-row items-center gap-1.5">
                     <Clock color="#64748b" size={15} />
                     <Text className="text-sm text-text-muted">
-                        {option.validity}
+                        {product.validity}
                     </Text>
                 </View>
 
                 <View className="mt-1 flex-row items-center gap-1.5">
                     <DollarSign size={16} />
                     <Text className="text-base font-semibold text-text-primary">
-                        {option.priceLabel}
+                        {formatTicketPrice(product)}
                     </Text>
                 </View>
             </View>

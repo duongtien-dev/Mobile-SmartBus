@@ -41,11 +41,14 @@ export default function SingleTicketScreen() {
         (state) => state.updateSingleForm,
     );
     const setTotalPrice = useTripBookingStore((state) => state.setTotalPrice);
+    const selectedTicketProduct = useTripBookingStore(
+        (state) => state.selectedTicketProduct,
+    );
 
     const originName = searchContext?.originName;
     const destinationName = searchContext?.destinationName;
 
-    const totalPrice = computeSingleTicketPrice();
+    const totalPrice = computeSingleTicketPrice(selectedTicketProduct?.unitPrice);
 
     const handleSubmit = () => {
         setTotalPrice(totalPrice);

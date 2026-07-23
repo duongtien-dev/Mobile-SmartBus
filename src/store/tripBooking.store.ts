@@ -1,8 +1,5 @@
-import type { TicketTypeId } from "@/constants/ticket";
-import {
-    MONTHLY_TICKET_PRICE,
-    SINGLE_TICKET_PRICE,
-} from "@/constants/ticket";
+import type { TicketType } from "@/models/ticket";
+import type { ITicketProduct } from "@/models/ticketProduct";
 import type { ISuggestLocation } from "@/models/suggestLocation";
 import type { ITrip, ITripLocation } from "@/models/trip";
 import moment, { now } from "moment";
@@ -49,7 +46,8 @@ type TripBookingState = {
     selectedTrip: ITrip | null;
     pickupStopName: string;
     routeCode: string;
-    ticketType: TicketTypeId | null;
+    ticketType: TicketType | null;
+    selectedTicketProduct: ITicketProduct | null;
     singleForm: ISingleTicketForm;
     monthlyForm: IMonthlyTicketForm;
     selectedPaymentMethodId: string;
@@ -63,7 +61,7 @@ type TripBookingState = {
         pickupStopName: string,
         routeCode: string,
     ) => void;
-    setTicketType: (type: TicketTypeId) => void;
+    setTicketType: (product: ITicketProduct) => void;
     updateSingleForm: (data: Partial<ISingleTicketForm>) => void;
     updateMonthlyForm: (data: Partial<IMonthlyTicketForm>) => void;
     setSelectedPaymentMethodId: (id: string) => void;
@@ -79,6 +77,7 @@ const useTripBookingStore = create<TripBookingState>((set, get) => ({
     pickupStopName: "",
     routeCode: "",
     ticketType: null,
+    selectedTicketProduct: null,
     singleForm: initialSingleForm,
     monthlyForm: initialMonthlyForm,
     selectedPaymentMethodId: "",
@@ -91,6 +90,7 @@ const useTripBookingStore = create<TripBookingState>((set, get) => ({
             pickupStopName: "",
             routeCode: "",
             ticketType: null,
+            selectedTicketProduct: null,
             singleForm: initialSingleForm,
             monthlyForm: initialMonthlyForm,
             selectedPaymentMethodId: "",
@@ -107,15 +107,17 @@ const useTripBookingStore = create<TripBookingState>((set, get) => ({
             pickupStopName,
             routeCode,
             ticketType: null,
+            selectedTicketProduct: null,
             singleForm: initialSingleForm,
             monthlyForm: initialMonthlyForm,
             selectedPaymentMethodId: "",
             totalPrice: 0,
         }),
 
-    setTicketType: (type) =>
+    setTicketType: (product) =>
         set({
-            ticketType: type,
+            ticketType: product.code,
+            selectedTicketProduct: product,
             selectedPaymentMethodId: "",
             totalPrice: 0,
         }),
@@ -135,14 +137,15 @@ const useTripBookingStore = create<TripBookingState>((set, get) => ({
     setTotalPrice: (price) => set({ totalPrice: price }),
 
     getTicketLabel: () => {
-        const { ticketType } = get();
+        const { selectedTicketProduct, ticketType } = get();
+        if (selectedTicketProduct?.title) return selectedTicketProduct.title;
 
         switch (ticketType) {
             case "single":
                 return "Vé lượt";
-            case "monthly-single":
+            case "monthlySingleRoute":
                 return "Vé tháng đơn tuyến";
-            case "monthly-multi":
+            case "monthlyInterRoute":
                 return "Vé tháng liên tuyến";
             default:
                 return "Vé";
@@ -157,6 +160,7 @@ const useTripBookingStore = create<TripBookingState>((set, get) => ({
             pickupStopName: "",
             routeCode: "",
             ticketType: null,
+            selectedTicketProduct: null,
             singleForm: initialSingleForm,
             monthlyForm: initialMonthlyForm,
             selectedPaymentMethodId: "",
@@ -164,13 +168,13 @@ const useTripBookingStore = create<TripBookingState>((set, get) => ({
         }),
 }));
 
-export function computeSingleTicketPrice() {
-    return SINGLE_TICKET_PRICE;
+export function computeSingleTicketPrice(unitPrice?: number) {
+    return unitPrice ?? 0;
 }
 
-export function computeMonthlyTicketPrice(ticketCount: string) {
+export function computeMonthlyTicketPrice(ticketCount: string, unitPrice?: number) {
     const count = Number(ticketCount) || 1;
-    return MONTHLY_TICKET_PRICE * count;
+    return (unitPrice ?? 0) * count;
 }
 
 export default useTripBookingStore;

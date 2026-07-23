@@ -1,10 +1,9 @@
-import {
-    SINGLE_TICKET_PRICE,
-    TICKET_TYPE_OPTIONS,
-} from "@/constants/ticket";
 import type { IRoute } from "@/models/route";
-import { deriveOperatingHours } from "@/screen/Route/Detail/utils";
 import type { IStop } from "@/models/stop";
+import type { ITicketProduct } from "@/models/ticketProduct";
+import { ticketProductService } from "@/services";
+import { deriveOperatingHours } from "@/screen/Route/Detail/utils";
+import { useCallback, useEffect, useState } from "react";
 import { Text, View } from "react-native";
 
 type InfoTabProps = {
@@ -23,33 +22,51 @@ function InfoRow({ label, value }: { label: string; value: string }) {
     );
 }
 
+function formatPrice(amount?: number, suffix = "") {
+    if (amount == null) return "—";
+    return `${amount.toLocaleString("vi-VN")} VND${suffix}`;
+}
+
 export function InfoTab({ route, stops }: InfoTabProps) {
     const allTimes = stops.flatMap((stop) => stop.times ?? []);
     const operatingHours =
         route.operatingHours ?? deriveOperatingHours(allTimes) ?? "—";
-    const monthlySingle = TICKET_TYPE_OPTIONS.find(
-        (item) => item.id === "monthly-single",
-    )?.price;
-    const monthlyMulti = TICKET_TYPE_OPTIONS.find(
-        (item) => item.id === "monthly-multi",
-    )?.price;
+    const [products, setProducts] = useState<ITicketProduct[]>([]);
+
+    const loadProducts = useCallback(async () => {
+        try {
+            const res = await ticketProductService.list();
+            setProducts(res.data ?? []);
+        } catch {
+            setProducts([]);
+        }
+    }, []);
+
+    useEffect(() => {
+        loadProducts();
+    }, [loadProducts]);
+
+    const single = products.find((item) => item.code === "single")?.unitPrice;
+    const monthlySingle = products.find(
+        (item) => item.code === "monthlySingleRoute",
+    )?.unitPrice;
+    const monthlyMulti = products.find(
+        (item) => item.code === "monthlyInterRoute",
+    )?.unitPrice;
 
     return (
         <View className="px-5 py-4">
             <InfoRow label="Tuyến số" value={route.code} />
             <InfoRow label="Tên tuyến" value={route.name} />
             <InfoRow label="Thời gian hoạt động" value={operatingHours} />
-            <InfoRow
-                label="Giá vé lượt"
-                value={`${SINGLE_TICKET_PRICE.toLocaleString("vi-VN")} VND/lượt`}
-            />
+            <InfoRow label="Giá vé lượt" value={formatPrice(single, "/lượt")} />
             <InfoRow
                 label="Giá vé tháng (đơn tuyến)"
-                value={`${monthlySingle?.toLocaleString("vi-VN") ?? "—"} VND/tháng`}
+                value={formatPrice(monthlySingle, "/tháng")}
             />
             <InfoRow
                 label="Giá vé tháng (liên tuyến)"
-                value={`${monthlyMulti?.toLocaleString("vi-VN") ?? "—"} VND/tháng`}
+                value={formatPrice(monthlyMulti, "/tháng")}
             />
 
             {route.description ? (

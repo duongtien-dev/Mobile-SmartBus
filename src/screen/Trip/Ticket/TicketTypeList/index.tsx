@@ -1,18 +1,40 @@
-import type { TicketTypeId } from "@/constants/ticket";
-import { TICKET_TYPE_OPTIONS } from "@/constants/ticket";
 import { PageHeader } from "@/components/PageHeader";
+import type { ITicketProduct } from "@/models/ticketProduct";
 import { TicketTypeCard } from "@/screen/Trip/Ticket/TicketTypeCard";
+import { ticketProductService } from "@/services";
 import useTripBookingStore from "@/store/tripBooking.store";
 import { router } from "expo-router";
-import { ScrollView, Text, View } from "react-native";
+import { useCallback, useEffect, useState } from "react";
+import { ActivityIndicator, ScrollView, Text, View } from "react-native";
 
 export default function TicketTypeListScreen() {
     const setTicketType = useTripBookingStore((state) => state.setTicketType);
+    const [products, setProducts] = useState<ITicketProduct[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
-    const handleSelectTicket = (ticketId: TicketTypeId) => {
-        setTicketType(ticketId);
+    const loadProducts = useCallback(async () => {
+        setLoading(true);
+        setError(null);
+        try {
+            const res = await ticketProductService.list();
+            setProducts(res.data ?? []);
+        } catch {
+            setError("Không tải được danh sách loại vé");
+            setProducts([]);
+        } finally {
+            setLoading(false);
+        }
+    }, []);
 
-        if (ticketId === "single") {
+    useEffect(() => {
+        loadProducts();
+    }, [loadProducts]);
+
+    const handleSelectTicket = (product: ITicketProduct) => {
+        setTicketType(product);
+
+        if (product.code === "single") {
             router.push("/trips/tickets/single" as never);
             return;
         }
@@ -33,13 +55,27 @@ export default function TicketTypeListScreen() {
                     Bạn muốn mua loại vé nào?
                 </Text>
 
-                {TICKET_TYPE_OPTIONS.map((option) => (
-                    <TicketTypeCard
-                        key={option.id}
-                        option={option}
-                        onPress={() => handleSelectTicket(option.id)}
-                    />
-                ))}
+                {loading ? (
+                    <View className="items-center py-10">
+                        <ActivityIndicator color="#005F8B" />
+                    </View>
+                ) : error ? (
+                    <Text className="text-sm text-alert" onPress={loadProducts}>
+                        {error}. Nhấn để thử lại.
+                    </Text>
+                ) : products.length === 0 ? (
+                    <Text className="text-sm text-text-muted">
+                        Hiện chưa có loại vé nào.
+                    </Text>
+                ) : (
+                    products.map((product) => (
+                        <TicketTypeCard
+                            key={product._id}
+                            product={product}
+                            onPress={() => handleSelectTicket(product)}
+                        />
+                    ))
+                )}
             </ScrollView>
         </View>
     );

@@ -25,7 +25,7 @@ const TicketSummary = () => {
         }
         : {
             badgeLabel:
-                ticketType === "monthly-multi"
+                ticketType === "monthlyInterRoute"
                     ? "VÉ THÁNG LIÊN TUYẾN"
                     : "VÉ THÁNG ĐƠN TUYẾN",
             primaryLabel: "Tháng sử dụng",

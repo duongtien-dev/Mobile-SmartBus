@@ -27,20 +27,28 @@ export default function MonthlyTicketScreen() {
         (state) => state.updateMonthlyForm,
     );
     const setTotalPrice = useTripBookingStore((state) => state.setTotalPrice);
+    const selectedTicketProduct = useTripBookingStore(
+        (state) => state.selectedTicketProduct,
+    );
 
     const originName = searchContext?.originName;
     const destinationName = searchContext?.destinationName;
-    const isMultiRoute = ticketType === "monthly-multi";
+    const isMultiRoute = ticketType === "monthlyInterRoute";
 
     const pageTitle = useMemo(
         () =>
-            isMultiRoute ? "Vé tháng liên tuyến" : "Vé tháng đơn tuyến",
-        [isMultiRoute],
+            selectedTicketProduct?.title ||
+            (isMultiRoute ? "Vé tháng liên tuyến" : "Vé tháng đơn tuyến"),
+        [isMultiRoute, selectedTicketProduct?.title],
     );
 
     const totalPrice = useMemo(
-        () => computeMonthlyTicketPrice(formData.ticketCount),
-        [formData.ticketCount],
+        () =>
+            computeMonthlyTicketPrice(
+                formData.ticketCount,
+                selectedTicketProduct?.unitPrice,
+            ),
+        [formData.ticketCount, selectedTicketProduct?.unitPrice],
     );
 
     const handleSubmit = () => {
