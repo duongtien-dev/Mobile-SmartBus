@@ -34,7 +34,7 @@ export default function Login() {
         const response = await authService.login({ email, password });
         const { user, token } = response.data;
 
-        setUser(user);  
+        setUser(user);
         setToken(token);
         setIsAuthenticated(true);
 
