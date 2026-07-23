@@ -112,7 +112,7 @@ export function ReviewsTab({ routeId }: ReviewsTabProps) {
     } = useFetch<ReviewSummary>({
         fetchFn: async () => {
             const response = await reviewRouteService.getReviewSummary({
-                route: routeId,
+                routeId,
             });
             return response.data;
         },
@@ -130,7 +130,7 @@ export function ReviewsTab({ routeId }: ReviewsTabProps) {
             return response.data ?? [];
         },
         limit: 12,
-        params: { routeId: routeId, sort: "newest" },
+        params: { routeId, sort: "newest" },
     });
 
     useEffect(() => {

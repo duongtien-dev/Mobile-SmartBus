@@ -22,7 +22,7 @@ export type ReviewSummary = {
 };
 
 export type CreateReviewBody = {
-    route: string;
+    routeId: string;
     rating: number;
     content?: string;
 };

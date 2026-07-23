@@ -21,7 +21,7 @@ class ReviewRouteService extends BaseService {
         return this.post('/update', body);
     }
 
-    deleteReviewRoute(body: object) {
+    deleteReviewRoute(body: { id: string }) {
         return this.post('/delete', body);
     }
 }

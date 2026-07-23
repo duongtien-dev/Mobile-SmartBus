@@ -3,9 +3,9 @@ import type { IReview } from "@/models/review";
 import { ReviewCard } from "@/screen/Route/Reviews/ReviewCard";
 import { reviewRouteService } from "@/services/ReivewRouteService";
 import useAuthStore from "@/store/auth.store";
-import { router } from "expo-router";
+import { router, useFocusEffect } from "expo-router";
 import { ArrowLeft, Plus } from "lucide-react-native";
-import { useEffect } from "react";
+import { useCallback } from "react";
 import {
     ActivityIndicator,
     FlatList,
@@ -24,7 +24,7 @@ export default function MyReviewsScreen() {
         loadMore,
         isSkeletonLoading,
         isLoadingMore,
-    } = usePaginationList<IReview, {}>({
+    } = usePaginationList<IReview, { userId: string; sort: "newest" }>({
         fetchFn: async (payload) => {
             const response = await reviewRouteService.getReviewRoutes(payload);
             return response.data ?? [];
@@ -33,11 +33,12 @@ export default function MyReviewsScreen() {
         params: { userId: user?._id!, sort: "newest" },
     });
 
-    useEffect(() => {
-        if (user?._id) {
+    useFocusEffect(
+        useCallback(() => {
+            if (!user?._id) return;
             loadFirstPage();
-        }
-    }, [user?._id]);
+        }, [user?._id]),
+    );
 
     const handleDeleted = (reviewId: string) => {
         setList((prev) => prev.filter((item) => item._id !== reviewId));

@@ -1,9 +1,12 @@
+import { Button } from "@/components/Button";
+import ModalBlank from "@/components/ModalBlank";
 import type { IReview } from "@/models/review";
 import { StarRating } from "@/screen/Route/Reviews/StarRating";
 import { reviewRouteService } from "@/services/ReivewRouteService";
 import moment from "moment";
 import { Trash2 } from "lucide-react-native";
-import { Alert, Pressable, Text, View } from "react-native";
+import { useState } from "react";
+import { ActivityIndicator, Pressable, Text, View } from "react-native";
 import Toast from "react-native-toast-message";
 
 type ReviewCardProps = {
@@ -22,27 +25,27 @@ function getRouteLabel(review: IReview) {
 }
 
 export function ReviewCard({ review, onDeleted }: ReviewCardProps) {
-    const handleDelete = () => {
-        Alert.alert("Xóa đánh giá", "Bạn có chắc muốn xóa đánh giá này?", [
-            { text: "Hủy", style: "cancel" },
-            {
-                text: "Xóa",
-                style: "destructive",
-                onPress: async () => {
-                    try {
-                        await reviewRouteService.deleteReviewRoute({
-                            id: review._id,
-                        });
-                        onDeleted?.(review._id);
-                    } catch {
-                        Toast.show({
-                            type: "error",
-                            text1: "Không thể xóa đánh giá",
-                        });
-                    }
-                },
-            },
-        ]);
+    const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+    const [isDeleting, setIsDeleting] = useState(false);
+
+    const handleConfirmDelete = async () => {
+        if (isDeleting) return;
+
+        setIsDeleting(true);
+        try {
+            await reviewRouteService.deleteReviewRoute({
+                id: review._id,
+            });
+            setIsConfirmOpen(false);
+            onDeleted?.(review._id);
+        } catch {
+            Toast.show({
+                type: "error",
+                text1: "Không thể xóa đánh giá",
+            });
+        } finally {
+            setIsDeleting(false);
+        }
     };
 
     return (
@@ -71,12 +74,55 @@ export function ReviewCard({ review, onDeleted }: ReviewCardProps) {
                 <Pressable
                     accessibilityRole="button"
                     className="flex-row items-center gap-1 active:opacity-70"
-                    onPress={handleDelete}
+                    onPress={() => setIsConfirmOpen(true)}
                 >
                     <Trash2 color="#e50049" size={16} />
                     <Text className="text-sm font-medium text-alert">Xóa</Text>
                 </Pressable>
             </View>
+
+            <ModalBlank
+                className="gap-4"
+                isOpen={isConfirmOpen}
+                onClose={() => {
+                    if (!isDeleting) setIsConfirmOpen(false);
+                }}
+                closeButton={!isDeleting}
+            >
+                <Text className="text-lg font-bold text-text-primary">
+                    Xóa đánh giá
+                </Text>
+                <Text className="text-sm leading-5 text-text-secondary">
+                    Bạn có chắc muốn xóa đánh giá này? Hành động không thể hoàn
+                    tác.
+                </Text>
+                <View className="mt-1 flex-row gap-3">
+                    <Button
+                        type="secondary"
+                        variant="outline"
+                        size="sm"
+                        className="flex-1"
+                        disabled={isDeleting}
+                        onPress={() => setIsConfirmOpen(false)}
+                    >
+                        Hủy
+                    </Button>
+                    <Button
+                        type="danger"
+                        variant="bold"
+                        size="sm"
+                        className="flex-1"
+                        disabled={isDeleting}
+                        onPress={handleConfirmDelete}
+                    >
+                        {isDeleting ? (
+                            <ActivityIndicator color="#ffffff" size="small" />
+                        ) : (
+                            "Xóa"
+                        )}
+                    </Button>
+                </View>
+            </ModalBlank>
         </View>
     );
 }
