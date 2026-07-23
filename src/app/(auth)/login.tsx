@@ -1,5 +1,4 @@
 import { Button } from "@/components/Button";
-import { Card } from "@/components/ui/Card";
 import InputText from "@/components/Input/InputText";
 import { useToastify } from "@/hooks/useToastify";
 import { authService } from "@/services/AuthService";
@@ -35,7 +34,7 @@ export default function Login() {
         const response = await authService.login({ email, password });
         const { user, token } = response.data;
 
-        setUser(user);
+        setUser(user);  
         setToken(token);
         setIsAuthenticated(true);
 
