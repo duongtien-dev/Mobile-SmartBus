@@ -3,8 +3,9 @@ import type { IStop } from "@/models/stop";
 import type { ITicketProduct } from "@/models/ticketProduct";
 import { ticketProductService } from "@/services";
 import { deriveOperatingHours } from "@/screen/Route/Detail/utils";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Text, View } from "react-native";
+import useFetch from "@/hooks/useFetch";
 
 type InfoTabProps = {
     route: IRoute;
@@ -29,28 +30,24 @@ function formatPrice(amount?: number, suffix = "") {
 
 export function InfoTab({ route, stops }: InfoTabProps) {
     const allTimes = stops.flatMap((stop) => stop.times ?? []);
-    const operatingHours =
-        route.operatingHours ?? deriveOperatingHours(allTimes) ?? "—";
-    const [products, setProducts] = useState<ITicketProduct[]>([]);
+    const operatingHours = route.operatingHours ?? deriveOperatingHours(allTimes) ?? "—";
 
-    const loadProducts = useCallback(async () => {
-        try {
+    const { data: ticketProducts, loadFetchFn } = useFetch<ITicketProduct[]>({
+        fetchFn: async () => {
             const res = await ticketProductService.list();
-            setProducts(res.data ?? []);
-        } catch {
-            setProducts([]);
-        }
-    }, []);
+            return res.data ?? [];
+        },
+    });
 
     useEffect(() => {
-        loadProducts();
+        loadFetchFn();
     }, []);
 
-    const single = products.find((item) => item.code === "single")?.unitPrice;
-    const monthlySingle = products.find(
+    const single = ticketProducts?.find((item) => item.code === "single")?.unitPrice;
+    const monthlySingle = ticketProducts?.find(
         (item) => item.code === "monthlySingleRoute",
     )?.unitPrice;
-    const monthlyMulti = products.find(
+    const monthlyMulti = ticketProducts?.find(
         (item) => item.code === "monthlyInterRoute",
     )?.unitPrice;
 

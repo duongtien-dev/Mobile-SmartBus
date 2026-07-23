@@ -12,8 +12,11 @@ type ReviewCardProps = {
 };
 
 function getRouteLabel(review: IReview) {
-    if (typeof review.routeId === "object" && review.routeId?.name) {
-        return `Tuyến ${review.routeId.name}`;
+    if (review.route?.name) {
+        return `Tuyến ${review.route.name}`;
+    }
+    if (review.route?.code) {
+        return `Tuyến ${review.route.code}`;
     }
     return "Tuyến xe";
 }

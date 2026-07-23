@@ -1,4 +1,6 @@
 import BaseService from '@/services/BaseService';
+import type { ApiResponse } from '@/services/type';
+import type { CreateReviewBody, IReview, ReviewSummary } from '@/models/review';
 
 class ReviewRouteService extends BaseService {
     constructor() {
