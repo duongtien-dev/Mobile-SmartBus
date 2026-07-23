@@ -1,4 +1,4 @@
-import type { TicketType } from "@/models/ticket";
+import type { ITicket, TicketType } from "@/models/ticket";
 import type { ITicketProduct } from "@/models/ticketProduct";
 import type { ISuggestLocation } from "@/models/suggestLocation";
 import type { ITrip, ITripLocation } from "@/models/trip";
@@ -52,6 +52,7 @@ type TripBookingState = {
     monthlyForm: IMonthlyTicketForm;
     selectedPaymentMethodId: string;
     totalPrice: number;
+    lastPurchasedTicket: ITicket | null;
 
     setSearchContext: (context: ISearchContext) => void;
     setPrefillOrigin: (origin: ISuggestLocation) => void;
@@ -66,6 +67,7 @@ type TripBookingState = {
     updateMonthlyForm: (data: Partial<IMonthlyTicketForm>) => void;
     setSelectedPaymentMethodId: (id: string) => void;
     setTotalPrice: (price: number) => void;
+    setLastPurchasedTicket: (ticket: ITicket | null) => void;
     getTicketLabel: () => string;
     resetBooking: () => void;
 };
@@ -82,6 +84,7 @@ const useTripBookingStore = create<TripBookingState>((set, get) => ({
     monthlyForm: initialMonthlyForm,
     selectedPaymentMethodId: "",
     totalPrice: 0,
+    lastPurchasedTicket: null,
 
     setSearchContext: (context) =>
         set({
@@ -135,6 +138,8 @@ const useTripBookingStore = create<TripBookingState>((set, get) => ({
     setSelectedPaymentMethodId: (id) => set({ selectedPaymentMethodId: id }),
 
     setTotalPrice: (price) => set({ totalPrice: price }),
+
+    setLastPurchasedTicket: (ticket) => set({ lastPurchasedTicket: ticket }),
 
     getTicketLabel: () => {
         const { selectedTicketProduct, ticketType } = get();
