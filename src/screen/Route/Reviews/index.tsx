@@ -24,13 +24,13 @@ export default function MyReviewsScreen() {
         loadMore,
         isSkeletonLoading,
         isLoadingMore,
-    } = usePaginationList<IReview, { user: string; sort: "newest" }>({
+    } = usePaginationList<IReview, {}>({
         fetchFn: async (payload) => {
             const response = await reviewRouteService.getReviewRoutes(payload);
             return response.data ?? [];
         },
         limit: 12,
-        params: { user: user?._id ?? "", sort: "newest" },
+        params: { userId: user?._id!, sort: "newest" },
     });
 
     useEffect(() => {

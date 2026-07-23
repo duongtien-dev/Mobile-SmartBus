@@ -69,7 +69,7 @@ export default function CreateReviewScreen() {
         setIsSubmitting(true);
         try {
             await reviewRouteService.createReviewRoute({
-                route: selectedRouteId,
+                routeId: selectedRouteId,
                 rating,
                 content: content.trim(),
             });

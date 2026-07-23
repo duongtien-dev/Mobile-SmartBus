@@ -124,13 +124,13 @@ export function ReviewsTab({ routeId }: ReviewsTabProps) {
         loadMore,
         isSkeletonLoading,
         isLoadingMore,
-    } = usePaginationList<IReview, { route: string; sort: "newest" }>({
+    } = usePaginationList<IReview, { routeId: string; sort: "newest" }>({
         fetchFn: async (payload) => {
             const response = await reviewRouteService.getReviewRoutes(payload);
             return response.data ?? [];
         },
         limit: 12,
-        params: { route: routeId, sort: "newest" },
+        params: { routeId: routeId, sort: "newest" },
     });
 
     useEffect(() => {
