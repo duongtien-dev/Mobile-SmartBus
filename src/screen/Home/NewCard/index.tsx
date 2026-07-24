@@ -11,7 +11,7 @@ type NewsCardProps = {
 };
 
 export function NewsCard({ item }: NewsCardProps) {
-    const image = item.images?.[0] ?? DEFAULT_NEWS_IMAGE;
+    const imageUri = item.images?.[0];
 
     return (
         <Pressable
@@ -24,9 +24,12 @@ export function NewsCard({ item }: NewsCardProps) {
         >
             <View className="overflow-hidden rounded-xl border border-border bg-surface-elevated">
                 <Image
-                    className="h-28 w-full"
+                    source={
+                        imageUri ? { uri: imageUri } : DEFAULT_NEWS_IMAGE
+                    }
+                    style={{ width: "100%", height: 112 }}
                     contentFit="cover"
-                    source={image}
+                    transition={200}
                 />
                 <View className="gap-1 p-3">
                     <Text

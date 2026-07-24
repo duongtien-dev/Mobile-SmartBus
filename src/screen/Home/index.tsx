@@ -1,5 +1,4 @@
 import { Button } from "@/components/Button";
-import { PageHeader } from "@/components/PageHeader";
 import { Card } from "@/components/ui/Card";
 import { SearchPillContainer } from "@/components/ui/SearchPill";
 import { SectionTitle } from "@/components/ui/SectionTitle";
@@ -15,7 +14,6 @@ import { routeService } from "@/services/RouteService";
 import useAuthStore from "@/store/auth.store";
 import useTripBookingStore from "@/store/tripBooking.store";
 import { router, useFocusEffect } from "expo-router";
-import { UserRound } from "lucide-react-native";
 import { useCallback, useEffect, useState } from "react";
 import {
     ActivityIndicator,
@@ -31,6 +29,7 @@ import { NewsCard } from "./NewCard";
 import { QuickActionButton } from "./QuickAction";
 import { SuggestLocationInput } from "./SuggestLocationInput";
 import { TipCard } from "./TipCard";
+import { UserRound } from "lucide-react-native";
 
 const FEATURED_ROUTES_LIMIT = 6;
 
@@ -42,6 +41,9 @@ export default function HomeScreen() {
     const prefillOrigin = useTripBookingStore((state) => state.prefillOrigin);
     const clearPrefillOrigin = useTripBookingStore(
         (state) => state.clearPrefillOrigin,
+    );
+    const homeSearchResetKey = useTripBookingStore(
+        (state) => state.homeSearchResetKey,
     );
     const [origin, setOrigin] = useState("");
     const [destination, setDestination] = useState("");
@@ -83,6 +85,15 @@ export default function HomeScreen() {
         loadFeaturedRoutes();
     }, []);
 
+    // Sau mua vé (resetBooking) — xóa ô điểm đi/đến
+    useEffect(() => {
+        if (homeSearchResetKey === 0) return;
+        setOrigin("");
+        setDestination("");
+        setOriginLocation(null);
+        setDestinationLocation(null);
+    }, [homeSearchResetKey]);
+
     useFocusEffect(
         useCallback(() => {
             if (!prefillOrigin) return;
@@ -123,64 +134,80 @@ export default function HomeScreen() {
 
     return (
         <View className="flex-1 bg-app-shell">
-            <PageHeader
-                variant="immersive"
-                title={`Xin chào, ${greetingName}`}
-                subtitle="Bạn muốn đi đâu hôm nay?"
-            >
-                <Pressable
-                    accessibilityRole="button"
-                    className="absolute right-0 top-0 h-10 w-10 items-center justify-center rounded-full bg-primary-light active:opacity-80"
-                    onPress={() => router.push("/profile")}
-                >
-                    <UserRound color="#005f8b" size={22} />
-                </Pressable>
-            </PageHeader>
-
-            <View className="z-50 px-5 pb-2">
-                <SearchPillContainer>
-                    <SuggestLocationInput
-                        label="Điểm đi"
-                        placeholder="Địa chỉ hiện tại"
-                        value={origin}
-                        onChangeText={(text) => {
-                            setOrigin(text);
-                            setOriginLocation(null);
-                        }}
-                        onSelect={setOriginLocation}
-                        zIndex={30}
-                    />
-
-                    <SuggestLocationInput
-                        label="Điểm đến"
-                        placeholder="Bạn muốn đến đâu?"
-                        value={destination}
-                        onChangeText={(text) => {
-                            setDestination(text);
-                            setDestinationLocation(null);
-                        }}
-                        onSelect={setDestinationLocation}
-                        zIndex={20}
-                    />
-
-                    <Button
-                        type="primary"
-                        variant="bold"
-                        className="w-full rounded-xl"
-                        onPress={handleSearch}
-                    >
-                        Tìm chuyến
-                    </Button>
-                </SearchPillContainer>
-            </View>
-
             <ScrollView
                 className="flex-1"
-                contentContainerClassName="gap-6 px-5 pb-10 pt-4"
+                contentContainerStyle={{
+                    overflow: "visible",
+                    gap: 20,
+                    paddingHorizontal: 20,
+                    paddingTop: 12,
+                    paddingBottom: 40,
+                }}
                 keyboardShouldPersistTaps="handled"
                 showsVerticalScrollIndicator={false}
+                removeClippedSubviews={false}
             >
-                <Card padding="md" shadow>
+                <View className="w-full flex-row items-start justify-between gap-3">
+                    <View className="min-w-0 flex-1 gap-0.5">
+                        <Text className="text-xl font-bold text-text-primary">
+                            Xin chào, {greetingName}
+                        </Text>
+                        <Text className="text-sm text-text-muted">
+                            Bạn muốn đi đâu hôm nay?
+                        </Text>
+                    </View>
+
+                    <Pressable
+                        accessibilityRole="button"
+                        accessibilityLabel="Tài khoản"
+                        className="h-10 w-10 items-center justify-center rounded-full bg-primary-light active:opacity-80"
+                        onPress={() => router.push("/profile")}
+                    >
+                        <UserRound color="#005f8b" size={22} />
+                    </Pressable>
+                </View>
+
+                <View
+                    collapsable={false}
+                    style={{ zIndex: 50, elevation: 50, overflow: "visible" }}
+                >
+                    <SearchPillContainer>
+                        <SuggestLocationInput
+                            label="Điểm đi"
+                            placeholder="Địa chỉ hiện tại"
+                            value={origin}
+                            onChangeText={(text) => {
+                                setOrigin(text);
+                                setOriginLocation(null);
+                            }}
+                            onSelect={setOriginLocation}
+                            zIndex={60}
+                        />
+
+                        <SuggestLocationInput
+                            label="Điểm đến"
+                            placeholder="Bạn muốn đến đâu?"
+                            value={destination}
+                            onChangeText={(text) => {
+                                setDestination(text);
+                                setDestinationLocation(null);
+                            }}
+                            onSelect={setDestinationLocation}
+                            zIndex={40}
+                        />
+
+                        <Button
+                            type="primary"
+                            variant="bold"
+                            className="w-full rounded-xl"
+                            onPress={handleSearch}
+                        >
+                            Tìm chuyến
+                        </Button>
+                    </SearchPillContainer>
+                </View>
+
+                <Card padding="sm" shadow>
                     <View className="flex-row justify-between">
                         {QUICK_ACTIONS.map((action) => (
                             <QuickActionButton
@@ -192,7 +219,7 @@ export default function HomeScreen() {
                     </View>
                 </Card>
 
-                <View>
+                <View style={{ gap: 12 }}>
                     <SectionTitle
                         title="Tuyến xe nổi bật"
                         actionLabel="Xem tất cả"
@@ -208,7 +235,7 @@ export default function HomeScreen() {
                             horizontal
                             nestedScrollEnabled
                             showsHorizontalScrollIndicator={false}
-                            contentContainerClassName="gap-3 pr-2"
+                            contentContainerStyle={{ gap: 12, paddingRight: 8 }}
                         >
                             {routeList.map((route) => (
                                 <FeaturedRouteCard
@@ -226,13 +253,13 @@ export default function HomeScreen() {
                     )}
                 </View>
 
-                <View>
+                <View style={{ gap: 12 }}>
                     <SectionTitle title="Mẹo di chuyển" />
                     <ScrollView
                         horizontal
                         nestedScrollEnabled
                         showsHorizontalScrollIndicator={false}
-                        contentContainerClassName="gap-3 pr-2"
+                        contentContainerStyle={{ gap: 12, paddingRight: 8 }}
                     >
                         {HOME_TIPS.map((tip) => (
                             <TipCard key={tip.id} tip={tip} />
@@ -240,7 +267,7 @@ export default function HomeScreen() {
                     </ScrollView>
                 </View>
 
-                <View>
+                <View style={{ gap: 12 }}>
                     <SectionTitle
                         title="Khám phá tin tức"
                         actionLabel="Xem tất cả"
@@ -256,7 +283,7 @@ export default function HomeScreen() {
                             horizontal
                             nestedScrollEnabled
                             showsHorizontalScrollIndicator={false}
-                            contentContainerClassName="gap-3 pr-2"
+                            contentContainerStyle={{ gap: 12, paddingRight: 8 }}
                         >
                             {posts.length > 0 ? (
                                 posts.map((item) => (
@@ -273,7 +300,7 @@ export default function HomeScreen() {
                     )}
                 </View>
 
-                <View>
+                <View style={{ gap: 12 }}>
                     <SectionTitle
                         title="Hỏi đáp nhanh"
                         actionLabel="Xem thêm"

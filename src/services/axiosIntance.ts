@@ -1,8 +1,9 @@
 import useAuthStore from '@/store/auth.store';
 import axios, { AxiosError, AxiosInstance } from 'axios';
 
-const API_BASE = 'http://localhost:3000/api'; // Android Emulator
+const API_BASE = 'http://10.0.2.2:3000/api'; // Android Emulator
 // const API_BASE = 'http://localhost:3000/api'; // iOS Simulator
+// const API_BASE = 'http://10.103.162.22:3000/api'; // Device / Expo Go (LAN IP)
 
 export const createApi = (module: string): AxiosInstance => {
     const api = axios.create({

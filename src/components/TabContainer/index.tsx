@@ -1,59 +1,92 @@
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { cn } from '@/lib/utils';
+import { cn } from "@/lib/utils";
+import { Pressable, Text, View } from "react-native";
 
 export type TabItem = {
     key: string;
     label: string;
 };
 
+type TabVariant = "default" | "underline";
+
 type TabContainerProps = {
     tabs?: TabItem[];
     value?: string;
     onChange?: (value: string) => void;
-    variant?: 'default' | 'underline';
+    variant?: TabVariant;
     className?: string;
     tabListClassName?: string;
     triggerClassName?: string;
 };
 
+const variantStyles = {
+    default: {
+        list: "gap-1 rounded-lg bg-muted p-1",
+        trigger: "min-h-9 rounded-md px-10",
+        triggerActive: "bg-background shadow-sm",
+        triggerInactive: "bg-transparent",
+    },
+    underline: {
+        list: "gap-1 bg-transparent p-0",
+        trigger: "rounded-none border-b-2 bg-transparent px-0",
+        triggerActive: "border-primary",
+        triggerInactive: "border-transparent",
+    },
+} as const;
+
 export default function TabContainer({
     tabs = [],
     value,
     onChange,
-    variant = 'default',
+    variant = "default",
     className,
     tabListClassName,
     triggerClassName,
 }: TabContainerProps) {
-    const isUnderline = variant === 'underline';
-
     if (!tabs.length) return null;
 
+    const styles = variantStyles[variant];
+
     return (
-        <Tabs value={value} onValueChange={onChange} className={cn('w-full', className)}>
-            <TabsList
+        <View className={cn("w-full", className)}>
+            <View
                 className={cn(
-                    'h-auto w-full justify-start gap-1',
-                    isUnderline && 'rounded-none bg-transparent p-0',
-                    tabListClassName
+                    "flex-row items-center",
+                    styles.list,
+                    tabListClassName,
                 )}
             >
-                {tabs.map((tab) => (
-                    <TabsTrigger
-                        key={tab.key}
-                        value={tab.key}
-                        className={cn(
-                            'h-auto min-h-9 flex-none px-6 py-2 text-sm font-medium',
-                            isUnderline
-                                ? 'rounded-none border-b-2 border-transparent bg-transparent shadow-none data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none'
-                                : 'px-10',
-                            triggerClassName,
-                        )}
-                    >
-                        {tab.label}
-                    </TabsTrigger>
-                ))}
-            </TabsList>
-        </Tabs>
+                {tabs.map((tab) => {
+                    const isActive = value === tab.key;
+
+                    return (
+                        <Pressable
+                            key={tab.key}
+                            accessibilityRole="tab"
+                            accessibilityState={{ selected: isActive }}
+                            className={cn(
+                                "items-center justify-center px-6 py-2 active:opacity-80",
+                                styles.trigger,
+                                isActive
+                                    ? styles.triggerActive
+                                    : styles.triggerInactive,
+                                triggerClassName,
+                            )}
+                            onPress={() => onChange?.(tab.key)}
+                        >
+                            <Text
+                                className={cn(
+                                    "text-sm font-medium",
+                                    isActive
+                                        ? "text-primary"
+                                        : "text-text-muted",
+                                )}
+                            >
+                                {tab.label}
+                            </Text>
+                        </Pressable>
+                    );
+                })}
+            </View>
+        </View>
     );
 }
