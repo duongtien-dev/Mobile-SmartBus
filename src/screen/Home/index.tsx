@@ -123,21 +123,27 @@ export default function HomeScreen() {
 
     return (
         <View className="flex-1 bg-app-shell">
-            <PageHeader
-                variant="immersive"
-                title={`Xin chào, ${greetingName}`}
-                subtitle="Bạn muốn đi đâu hôm nay?"
+            <ScrollView
+                className="flex-1"
+                contentContainerClassName="gap-5 px-5 pb-10 pt-3"
+                keyboardShouldPersistTaps="handled"
+                showsVerticalScrollIndicator={false}
             >
-                <Pressable
-                    accessibilityRole="button"
-                    className="absolute right-0 top-0 h-10 w-10 items-center justify-center rounded-full bg-primary-light active:opacity-80"
-                    onPress={() => router.push("/profile")}
+                <PageHeader
+                    variant="immersive"
+                    title={`Xin chào, ${greetingName}`}
+                    subtitle="Bạn muốn đi đâu hôm nay?"
+                    className="px-0"
                 >
-                    <UserRound color="#005f8b" size={22} />
-                </Pressable>
-            </PageHeader>
+                    <Pressable
+                        accessibilityRole="button"
+                        className="absolute right-0 top-0 h-10 w-10 items-center justify-center rounded-full bg-primary-light active:opacity-80"
+                        onPress={() => router.push("/profile")}
+                    >
+                        <UserRound color="#005f8b" size={22} />
+                    </Pressable>
+                </PageHeader>
 
-            <View className="z-50 px-5 pb-2">
                 <SearchPillContainer>
                     <SuggestLocationInput
                         label="Điểm đi"
@@ -148,7 +154,6 @@ export default function HomeScreen() {
                             setOriginLocation(null);
                         }}
                         onSelect={setOriginLocation}
-                        zIndex={30}
                     />
 
                     <SuggestLocationInput
@@ -160,7 +165,6 @@ export default function HomeScreen() {
                             setDestinationLocation(null);
                         }}
                         onSelect={setDestinationLocation}
-                        zIndex={20}
                     />
 
                     <Button
@@ -172,14 +176,7 @@ export default function HomeScreen() {
                         Tìm chuyến
                     </Button>
                 </SearchPillContainer>
-            </View>
 
-            <ScrollView
-                className="flex-1"
-                contentContainerClassName="gap-6 px-5 pb-10 pt-4"
-                keyboardShouldPersistTaps="handled"
-                showsVerticalScrollIndicator={false}
-            >
                 <Card padding="md" shadow>
                     <View className="flex-row justify-between">
                         {QUICK_ACTIONS.map((action) => (
@@ -192,7 +189,7 @@ export default function HomeScreen() {
                     </View>
                 </Card>
 
-                <View>
+                <View className="gap-3">
                     <SectionTitle
                         title="Tuyến xe nổi bật"
                         actionLabel="Xem tất cả"
@@ -226,7 +223,7 @@ export default function HomeScreen() {
                     )}
                 </View>
 
-                <View>
+                <View className="gap-3">
                     <SectionTitle title="Mẹo di chuyển" />
                     <ScrollView
                         horizontal
@@ -240,7 +237,7 @@ export default function HomeScreen() {
                     </ScrollView>
                 </View>
 
-                <View>
+                <View className="gap-3">
                     <SectionTitle
                         title="Khám phá tin tức"
                         actionLabel="Xem tất cả"
@@ -273,7 +270,7 @@ export default function HomeScreen() {
                     )}
                 </View>
 
-                <View>
+                <View className="gap-3">
                     <SectionTitle
                         title="Hỏi đáp nhanh"
                         actionLabel="Xem thêm"

@@ -42,7 +42,8 @@ export default function SearchInput({
                 onChangeText={setKeyword}
                 placeholder={placeholder}
                 placeholderTextColor="#64748b"
-                className="h-12 rounded-full border-0 bg-surface pl-12 pr-4 text-base text-text-primary"
+                className="h-12 rounded-full border-0 bg-surface text-base text-text-primary"
+                style={{ paddingLeft: 48, paddingRight: 16 }}
             />
         </View>
     );

@@ -110,7 +110,8 @@ export default function ResetPasswordScreen() {
                                     onChangeText={setPassword}
                                     placeholder="Mật khẩu"
                                     secureTextEntry={!showPassword}
-                                    className="h-12 w-full rounded-xl border-0 bg-surface px-4 pr-12"
+                                    className="h-12 w-full rounded-xl border-0 bg-surface"
+                                    style={{ paddingRight: 48 }}
                                 />
                                 <Pressable
                                     className="absolute right-3 top-1/2 -translate-y-1/2"
@@ -135,7 +136,8 @@ export default function ResetPasswordScreen() {
                                     onChangeText={setConfirmPassword}
                                     placeholder="Xác nhận mật khẩu"
                                     secureTextEntry={!showConfirmPassword}
-                                    className="h-12 w-full rounded-xl border-0 bg-surface px-4 pr-12"
+                                    className="h-12 w-full rounded-xl border-0 bg-surface"
+                                    style={{ paddingRight: 48 }}
                                 />
                                 <Pressable
                                     className="absolute right-3 top-1/2 -translate-y-1/2"

@@ -103,7 +103,8 @@ export default function Login() {
                                         onChangeText={setPassword}
                                         placeholder="Mật khẩu"
                                         secureTextEntry={!showPassword}
-                                        className="w-full rounded-xl border-0 bg-surface pr-10"
+                                        className="w-full rounded-xl border-0 bg-surface"
+                                        style={{ paddingRight: 40 }}
                                     />
                                     <Pressable
                                         onPress={() => setShowPassword((v) => !v)}

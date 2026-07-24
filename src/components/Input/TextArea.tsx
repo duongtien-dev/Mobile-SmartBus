@@ -1,10 +1,11 @@
+import { cn } from "@/lib/utils";
 import React from "react";
 import type { TextInputProps } from "react-native";
 import { TextInput } from "react-native-css/components";
 
 interface TextAreaProps extends TextInputProps {}
 
-const TextArea: React.FC<TextAreaProps> = ({ className, ...props }) => {
+const TextArea: React.FC<TextAreaProps> = ({ className, style, ...props }) => {
     return (
         <TextInput
             multiline
@@ -12,7 +13,11 @@ const TextArea: React.FC<TextAreaProps> = ({ className, ...props }) => {
             placeholder="Nội dung"
             textAlignVertical="top"
             underlineColorAndroid="transparent"
-            className={`max-h-48 w-full rounded-lg px-3 py-2.5 text-md text-text-primary bg-background placeholder:text-text-muted border border-border focus:border-primary focus:outline-none ${className}`}
+            className={cn(
+                "max-h-48 w-full rounded-lg border border-border bg-background text-md text-text-primary placeholder:text-text-muted focus:border-primary focus:outline-none",
+                className,
+            )}
+            style={[{ paddingHorizontal: 12, paddingVertical: 10 }, style]}
             {...props}
         />
     );

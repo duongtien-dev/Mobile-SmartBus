@@ -27,13 +27,13 @@ export function PageHeader({
     return (
         <View
             className={cn(
-                "relative w-full px-5 py-3",
+                "relative w-full px-5",
                 isImmersive
-                    ? "bg-app-shell"
-                    : "border-b border-border bg-card shadow-sm",
+                    ? "bg-app-shell py-3"
+                    : "border-b border-border bg-card py-3 shadow-sm",
                 className,
             )}
-            style={[{ minHeight: isImmersive ? 48 : 56 }, style]}
+            style={[{ minHeight: isImmersive ? undefined : 56 }, style]}
             {...props}
         >
             {title && !isImmersive ? (

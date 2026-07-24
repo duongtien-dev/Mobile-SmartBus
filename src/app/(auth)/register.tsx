@@ -136,8 +136,9 @@ export default function Register() {
                                         setUser({ ...user, password: text })
                                     }
                                     placeholder="Mật khẩu"
+                                    className="w-full"
+                                    style={{ paddingRight: 40 }}
                                     secureTextEntry={!showPassword}
-                                    className="w-full pr-10"
                                 />
                                 <Pressable
                                     onPress={() => setShowPassword((v) => !v)}
@@ -167,7 +168,8 @@ export default function Register() {
                                     }
                                     placeholder="Xác nhận mật khẩu"
                                     secureTextEntry={!showPasswordConfirm}
-                                    className="w-full pr-10"
+                                    className="w-full"
+                                    style={{ paddingRight: 40 }}
                                 />
                                 <Pressable
                                     onPress={() =>
