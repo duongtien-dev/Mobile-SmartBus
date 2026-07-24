@@ -3,40 +3,31 @@ import { router } from "expo-router";
 import { ArrowLeft } from "lucide-react-native";
 import { Pressable, Text, View, type ViewProps } from "react-native";
 
-type PageHeaderVariant = "default" | "immersive";
-
 type PageHeaderProps = ViewProps & {
     title?: string;
     isIconBack?: boolean;
-    variant?: PageHeaderVariant;
-    subtitle?: string;
+    className?: string;
+    children?: React.ReactNode;
 };
 
 export function PageHeader({
     title,
-    subtitle,
     isIconBack = false,
-    variant = "default",
     className,
     style,
     children,
     ...props
 }: PageHeaderProps) {
-    const isImmersive = variant === "immersive";
-
     return (
         <View
             className={cn(
-                "relative w-full px-5",
-                isImmersive
-                    ? "bg-app-shell py-3"
-                    : "border-b border-border bg-card py-3 shadow-sm",
+                "relative w-full border-b border-border bg-card px-5 py-3 shadow-sm",
                 className,
             )}
-            style={[{ minHeight: isImmersive ? undefined : 56 }, style]}
+            style={[{ minHeight: 56 }, style]}
             {...props}
         >
-            {title && !isImmersive ? (
+            {title ? (
                 <View
                     className="absolute inset-x-5 inset-y-0 items-center justify-center"
                     style={{ pointerEvents: "none" }}
@@ -50,7 +41,7 @@ export function PageHeader({
                 </View>
             ) : null}
 
-            <View className="z-10 min-h-10 flex-1 flex-row items-center justify-between">
+            <View className="min-h-10 flex-1 flex-row items-center justify-between">
                 <View className="min-w-10 flex-row items-center justify-start">
                     {isIconBack ? (
                         <Pressable
@@ -64,19 +55,6 @@ export function PageHeader({
                         </Pressable>
                     ) : null}
                 </View>
-
-                {isImmersive && title ? (
-                    <View className="flex-1 gap-0.5 px-2">
-                        <Text className="text-xl font-bold text-text-primary">
-                            {title}
-                        </Text>
-                        {subtitle ? (
-                            <Text className="text-sm text-text-muted">
-                                {subtitle}
-                            </Text>
-                        ) : null}
-                    </View>
-                ) : null}
 
                 {children}
             </View>

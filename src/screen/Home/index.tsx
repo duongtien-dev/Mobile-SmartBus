@@ -1,5 +1,4 @@
 import { Button } from "@/components/Button";
-import { PageHeader } from "@/components/PageHeader";
 import { Card } from "@/components/ui/Card";
 import { SearchPillContainer } from "@/components/ui/SearchPill";
 import { SectionTitle } from "@/components/ui/SectionTitle";
@@ -15,7 +14,6 @@ import { routeService } from "@/services/RouteService";
 import useAuthStore from "@/store/auth.store";
 import useTripBookingStore from "@/store/tripBooking.store";
 import { router, useFocusEffect } from "expo-router";
-import { UserRound } from "lucide-react-native";
 import { useCallback, useEffect, useState } from "react";
 import {
     ActivityIndicator,
@@ -31,6 +29,7 @@ import { NewsCard } from "./NewCard";
 import { QuickActionButton } from "./QuickAction";
 import { SuggestLocationInput } from "./SuggestLocationInput";
 import { TipCard } from "./TipCard";
+import { UserRound } from "lucide-react-native";
 
 const FEATURED_ROUTES_LIMIT = 6;
 
@@ -129,20 +128,25 @@ export default function HomeScreen() {
                 keyboardShouldPersistTaps="handled"
                 showsVerticalScrollIndicator={false}
             >
-                <PageHeader
-                    variant="immersive"
-                    title={`Xin chào, ${greetingName}`}
-                    subtitle="Bạn muốn đi đâu hôm nay?"
-                    className="px-0"
-                >
+                <View className="w-full flex-row items-start justify-between gap-3">
+                    <View className="min-w-0 flex-1 gap-0.5">
+                        <Text className="text-xl font-bold text-text-primary">
+                            Xin chào, {greetingName}
+                        </Text>
+                        <Text className="text-sm text-text-muted">
+                            Bạn muốn đi đâu hôm nay?
+                        </Text>
+                    </View>
+
                     <Pressable
                         accessibilityRole="button"
-                        className="absolute right-0 top-0 h-10 w-10 items-center justify-center rounded-full bg-primary-light active:opacity-80"
+                        accessibilityLabel="Tài khoản"
+                        className="h-10 w-10 items-center justify-center rounded-full bg-primary-light active:opacity-80"
                         onPress={() => router.push("/profile")}
                     >
                         <UserRound color="#005f8b" size={22} />
                     </Pressable>
-                </PageHeader>
+                </View>
 
                 <SearchPillContainer>
                     <SuggestLocationInput
