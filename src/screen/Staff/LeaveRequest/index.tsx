@@ -3,7 +3,6 @@ import { DatePickerField } from "@/components/DatePickerField";
 import TextArea from "@/components/Input/TextArea";
 import { StaffHeader } from "@/components/StaffHeader";
 import { leaveRequestService } from "@/services/LeaveRequestService";
-import { getApiErrorMessage } from "@/utils/apiError";
 import { router, type Href } from "expo-router";
 import moment from "moment";
 import { useMemo, useState } from "react";
@@ -65,11 +64,7 @@ export default function StaffLeaveRequestScreen() {
 
             router.replace("/staff/activity-history" as Href);
         } catch (err) {
-            Toast.show({
-                type: "error",
-                text1: "Gửi đơn xin nghỉ thất bại",
-                text2: getApiErrorMessage(err),
-            });
+            Toast.show({ type: "error", text1: "Gửi đơn xin nghỉ thất bại" });
         } finally {
             setIsSubmitting(false);
         }

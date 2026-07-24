@@ -1,6 +1,16 @@
 import type { IStop } from "@/models/stop";
 import { create } from "zustand";
 
+export type StaffScanLogItem = {
+    id: string;
+    qrCode: string;
+    isValid: boolean;
+    reason: string;
+    scannedAt: string;
+    customerName?: string;
+    routeName?: string;
+};
+
 export type StaffShiftSession = {
     shiftStartAt: string;
     routeId?: string;
@@ -8,7 +18,7 @@ export type StaffShiftSession = {
     routeCode?: string;
     stopIndex: number;
     stops: IStop[];
-    scanCount: number;
+    scanLogs: StaffScanLogItem[];
 };
 
 type StaffShiftState = {
@@ -20,7 +30,9 @@ type StaffShiftState = {
     }) => void;
     setStops: (stops: IStop[]) => void;
     advanceStop: () => void;
-    incrementScanCount: () => void;
+    addScanLog: (
+        payload: Omit<StaffScanLogItem, "id" | "scannedAt">,
+    ) => void;
     endShift: () => void;
 };
 
@@ -36,7 +48,7 @@ const useStaffShiftStore = create<StaffShiftState>((set) => ({
                 routeCode,
                 stopIndex: 0,
                 stops: [],
-                scanCount: 0,
+                scanLogs: [],
             },
         }),
 
@@ -65,13 +77,18 @@ const useStaffShiftStore = create<StaffShiftState>((set) => ({
             };
         }),
 
-    incrementScanCount: () =>
+    addScanLog: (payload) =>
         set((state) => {
             if (!state.session) return state;
+            const item: StaffScanLogItem = {
+                ...payload,
+                id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+                scannedAt: new Date().toISOString(),
+            };
             return {
                 session: {
                     ...state.session,
-                    scanCount: state.session.scanCount + 1,
+                    scanLogs: [item, ...state.session.scanLogs],
                 },
             };
         }),

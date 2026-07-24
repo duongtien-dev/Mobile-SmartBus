@@ -6,19 +6,21 @@ import { shiftReportService } from "@/services/ShiftReportService";
 import { stopService } from "@/services/StopService";
 import { ticketService } from "@/services/TicketService";
 import useStaffShiftStore from "@/store/staffShift.store";
-import { getApiErrorMessage } from "@/utils/apiError";
 import * as Haptics from "expo-haptics";
 import { router, type Href } from "expo-router";
-import {
-    CheckCircle2,
-    ScanLine,
-    TriangleAlert,
-} from "lucide-react-native";
+import { CheckCircle2, ScanLine } from "lucide-react-native";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Pressable, Text, View } from "react-native";
+import {
+    Alert,
+    Pressable,
+    ScrollView,
+    Text,
+    View,
+} from "react-native";
 import Toast from "react-native-toast-message";
 import { ActiveShiftMap } from "./ActiveShiftMap";
 import { EndShiftModal } from "./EndShiftModal";
+import { ScanHistoryList } from "./ScanHistoryList";
 import { ScanQrModal } from "./ScanQrModal";
 
 function toLatLng(stopCoordinates?: [number, number]) {
@@ -32,9 +34,7 @@ export default function StaffActiveShiftScreen() {
     const session = useStaffShiftStore((state) => state.session);
     const setStops = useStaffShiftStore((state) => state.setStops);
     const advanceStop = useStaffShiftStore((state) => state.advanceStop);
-    const incrementScanCount = useStaffShiftStore(
-        (state) => state.incrementScanCount,
-    );
+    const addScanLog = useStaffShiftStore((state) => state.addScanLog);
     const endShift = useStaffShiftStore((state) => state.endShift);
 
     const [scanOpen, setScanOpen] = useState(false);
@@ -44,6 +44,7 @@ export default function StaffActiveShiftScreen() {
     const shiftEndAtRef = useRef("");
 
     const routeId = session?.routeId;
+    const scanCount = session?.scanLogs.length ?? 0;
 
     const {
         data: fetchedStops,
@@ -129,7 +130,6 @@ export default function StaffActiveShiftScreen() {
         Toast.show({
             type: "error",
             text1: "Không tải được điểm dừng",
-            text2: getApiErrorMessage(stopsError),
         });
     }, [stopsError]);
 
@@ -139,9 +139,12 @@ export default function StaffActiveShiftScreen() {
         Toast.show({
             type: "error",
             text1: "Không xem trước được báo cáo",
-            text2: getApiErrorMessage(previewError),
         });
     }, [previewError]);
+
+    const handleBackToDashboard = () => {
+        router.replace("/staff" as Href);
+    };
 
     const handleVerifyQr = async (qrCode: string) => {
         const code = qrCode.trim();
@@ -158,7 +161,13 @@ export default function StaffActiveShiftScreen() {
                 throw new Error(response.message || "Không có kết quả quét");
             }
 
-            incrementScanCount();
+            addScanLog({
+                qrCode: code,
+                isValid: result.isValid,
+                reason: result.reason,
+                customerName: result.ticket?.customerName || undefined,
+                routeName: result.ticket?.routeName || undefined,
+            });
 
             try {
                 await Haptics.notificationAsync(
@@ -183,7 +192,6 @@ export default function StaffActiveShiftScreen() {
             Toast.show({
                 type: "error",
                 text1: "Quét vé thất bại",
-                text2: getApiErrorMessage(err),
             });
         } finally {
             setScanLoading(false);
@@ -192,10 +200,23 @@ export default function StaffActiveShiftScreen() {
 
     const handleOpenEndShift = () => {
         if (!session) return;
-        shiftEndAtRef.current = new Date().toISOString();
-        resetPreview();
-        setEndOpen(true);
-        loadPreview();
+
+        Alert.alert(
+            "Kết thúc ca?",
+            "Hệ thống sẽ tổng hợp vé đã quét và gửi báo cáo ca. Bạn không thể tiếp tục quét sau khi gửi.",
+            [
+                { text: "Ở lại ca", style: "cancel" },
+                {
+                    text: "Xem báo cáo",
+                    onPress: () => {
+                        shiftEndAtRef.current = new Date().toISOString();
+                        resetPreview();
+                        setEndOpen(true);
+                        loadPreview();
+                    },
+                },
+            ],
+        );
     };
 
     const handleCloseEndShift = () => {
@@ -232,7 +253,6 @@ export default function StaffActiveShiftScreen() {
             Toast.show({
                 type: "error",
                 text1: "Gửi báo cáo thất bại",
-                text2: getApiErrorMessage(err),
             });
         } finally {
             setIsSubmitting(false);
@@ -275,23 +295,15 @@ export default function StaffActiveShiftScreen() {
         session.routeName ||
         "Chưa có trạm — chọn tuyến khi check-in";
 
+    const validCount = session.scanLogs.filter((item) => item.isValid).length;
+
     return (
         <View className="flex-1 bg-card">
             <StaffHeader
-                title="Ca lái đang diễn ra"
+                title="Ca đang chạy"
+                showBack
+                onBackPress={handleBackToDashboard}
                 actions={[
-                    {
-                        key: "alert",
-                        icon: TriangleAlert,
-                        color: "#ffc20e",
-                        accessibilityLabel: "Cảnh báo",
-                        onPress: () =>
-                            Toast.show({
-                                type: "success",
-                                text1: "Cảnh báo ca",
-                                text2: `Đã quét ${session.scanCount} vé trong ca`,
-                            }),
-                    },
                     {
                         key: "done",
                         icon: CheckCircle2,
@@ -302,39 +314,61 @@ export default function StaffActiveShiftScreen() {
                 ]}
             />
 
-            <View className="relative h-[38%]">
-                <ActiveShiftMap
-                    mapCenter={mapCenter}
-                    nextStopCoordinate={nextStopCoordinate}
-                />
+            <ScrollView
+                className="flex-1"
+                contentContainerClassName="pb-6"
+                showsVerticalScrollIndicator={false}
+                keyboardShouldPersistTaps="handled"
+            >
+                <View className="relative h-52">
+                    <ActiveShiftMap
+                        mapCenter={mapCenter}
+                        nextStopCoordinate={nextStopCoordinate}
+                    />
 
-                <View className="absolute bottom-0 left-0 right-0 rounded-t-3xl bg-accent-light px-4 py-3.5">
-                    <View className="flex-row items-start justify-between gap-3">
-                        <View className="min-w-0 flex-1">
-                            <Text className="text-[11px] font-semibold uppercase tracking-wide text-text-muted">
-                                Trạm tiếp theo
-                            </Text>
-                            <Text
-                                className="mt-1 text-[15px] font-bold text-text-primary"
-                                numberOfLines={2}
-                            >
-                                {nextStopName}
-                            </Text>
-                        </View>
-                        <View className="items-end">
-                            <Text className="text-[11px] font-semibold uppercase tracking-wide text-text-muted">
-                                Đã quét
-                            </Text>
-                            <Text className="mt-1 text-xl font-bold text-primary">
-                                {session.scanCount}
-                            </Text>
+                    <View className="absolute bottom-0 left-0 right-0 rounded-t-3xl bg-accent-light px-4 py-3">
+                        <View className="flex-row items-start justify-between gap-3">
+                            <View className="min-w-0 flex-1">
+                                <Text className="text-[11px] font-semibold uppercase tracking-wide text-text-muted">
+                                    Trạm tiếp theo
+                                </Text>
+                                <Text
+                                    className="mt-1 text-[15px] font-bold text-text-primary"
+                                    numberOfLines={2}
+                                >
+                                    {nextStopName}
+                                </Text>
+                            </View>
+                            <View className="items-end">
+                                <Text className="text-[11px] font-semibold uppercase tracking-wide text-text-muted">
+                                    Đã quét
+                                </Text>
+                                <Text className="mt-1 text-xl font-bold text-primary">
+                                    {scanCount}
+                                </Text>
+                                <Text className="text-[10px] text-text-muted">
+                                    {validCount} hợp lệ
+                                </Text>
+                            </View>
                         </View>
                     </View>
                 </View>
-            </View>
 
-            <View className="flex-1 justify-between px-4 pb-6 pt-5">
-                <View className="gap-5">
+                <View className="gap-4 px-4 pt-4">
+                    {session.routeName ? (
+                        <Text className="text-sm text-text-secondary">
+                            Tuyến:{" "}
+                            <Text className="font-semibold text-primary">
+                                {session.routeName}
+                            </Text>
+                        </Text>
+                    ) : null}
+
+                    <Text className="text-xs text-text-muted">
+                        Quay lại trang chủ vẫn giữ ca. Kết thúc ca (✓) khi hoàn
+                        tất để gửi báo cáo.
+                    </Text>
+
                     <Pressable
                         accessibilityRole="button"
                         className="flex-row items-center justify-center gap-2.5 rounded-2xl bg-primary px-4 py-4 shadow-sm active:opacity-90"
@@ -346,26 +380,24 @@ export default function StaffActiveShiftScreen() {
                         </Text>
                     </Pressable>
 
-                    <View className="gap-3">
-                        <Text className="text-sm font-bold uppercase tracking-wide text-primary">
-                            Khách xuống tại trạm (0)
+                    <View className="rounded-2xl border border-border bg-card px-4 py-3">
+                        <Text className="mb-1 text-sm font-bold uppercase tracking-wide text-primary">
+                            Vé đã quét ({scanCount})
                         </Text>
-                        <Text className="py-6 text-center text-sm text-text-muted">
-                            Không có khách xuống ở trạm này
-                        </Text>
+                        <ScanHistoryList items={session.scanLogs} />
                     </View>
-                </View>
 
-                <Pressable
-                    accessibilityRole="button"
-                    className="items-center rounded-2xl bg-primary px-4 py-4 shadow-sm active:opacity-90"
-                    onPress={handleConfirmPassStop}
-                >
-                    <Text className="text-sm font-bold uppercase tracking-wide text-on-primary">
-                        Xác nhận qua trạm
-                    </Text>
-                </Pressable>
-            </View>
+                    <Pressable
+                        accessibilityRole="button"
+                        className="items-center rounded-2xl border border-primary bg-primary-light px-4 py-3.5 active:opacity-90"
+                        onPress={handleConfirmPassStop}
+                    >
+                        <Text className="text-sm font-bold uppercase tracking-wide text-primary">
+                            Xác nhận qua trạm
+                        </Text>
+                    </Pressable>
+                </View>
+            </ScrollView>
 
             <ScanQrModal
                 open={scanOpen}

@@ -8,7 +8,6 @@ import type { IRoute } from "@/models/route";
 import { routeService } from "@/services/RouteService";
 import useAuthStore from "@/store/auth.store";
 import useStaffShiftStore from "@/store/staffShift.store";
-import { getApiErrorMessage } from "@/utils/apiError";
 import { router, type Href } from "expo-router";
 import {
     Bell,
@@ -206,7 +205,6 @@ export default function StaffDashboardScreen() {
         Toast.show({
             type: "error",
             text1: "Không tải được tuyến được giao",
-            text2: getApiErrorMessage(routesError),
         });
     }, [routesError]);
 
@@ -291,6 +289,31 @@ export default function StaffDashboardScreen() {
                 contentContainerClassName="gap-5 px-4 py-5 pb-10"
                 showsVerticalScrollIndicator={false}
             >
+                {session ? (
+                    <Pressable
+                        accessibilityRole="button"
+                        onPress={() => router.push("/staff/shift" as Href)}
+                        className="flex-row items-center gap-3 rounded-2xl bg-primary px-4 py-3.5 active:opacity-90"
+                    >
+                        <View className="h-10 w-10 items-center justify-center rounded-full bg-white/20">
+                            <Bus color="#ffffff" size={20} />
+                        </View>
+                        <View className="min-w-0 flex-1">
+                            <Text className="text-sm font-bold text-on-primary">
+                                Ca đang chạy
+                            </Text>
+                            <Text className="mt-0.5 text-xs text-white/80">
+                                Đã quét {session.scanLogs.length} vé
+                                {session.routeCode
+                                    ? ` · ${session.routeCode}`
+                                    : ""}
+                                {" · Chạm để tiếp tục"}
+                            </Text>
+                        </View>
+                        <ChevronRight color="#ffffff" size={18} />
+                    </Pressable>
+                ) : null}
+
                 <View className="gap-3">
                     <Text className="text-base font-bold text-text-primary">
                         Tiện ích
