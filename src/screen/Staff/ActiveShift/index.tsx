@@ -1,16 +1,21 @@
 import { StaffHeader } from "@/components/StaffHeader";
 import useFetch from "@/hooks/useFetch";
+import type { IActiveShift } from "@/models/activeShift";
+import type { IScanLogItem } from "@/models/scanLog";
 import type { IStop } from "@/models/stop";
 import type { ShiftReportPreview } from "@/models/shiftReport";
+import { scanLogService } from "@/services/ScanLogService";
 import { shiftReportService } from "@/services/ShiftReportService";
+import { staffShiftService } from "@/services/StaffShiftService";
 import { stopService } from "@/services/StopService";
 import { ticketService } from "@/services/TicketService";
 import useStaffShiftStore from "@/store/staffShift.store";
 import * as Haptics from "expo-haptics";
-import { router, type Href } from "expo-router";
+import { router, useFocusEffect, type Href } from "expo-router";
 import { CheckCircle2, ScanLine } from "lucide-react-native";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
+    ActivityIndicator,
     Alert,
     Pressable,
     ScrollView,
@@ -30,21 +35,56 @@ function toLatLng(stopCoordinates?: [number, number]) {
     return { latitude: lat, longitude: lng };
 }
 
+function getRouteId(shift: IActiveShift): string | undefined {
+    if (!shift.routeId) return undefined;
+    if (typeof shift.routeId === "string") return shift.routeId;
+    return shift.routeId._id;
+}
+
 export default function StaffActiveShiftScreen() {
-    const session = useStaffShiftStore((state) => state.session);
+    const ui = useStaffShiftStore((state) => state.ui);
     const setStops = useStaffShiftStore((state) => state.setStops);
     const advanceStop = useStaffShiftStore((state) => state.advanceStop);
-    const addScanLog = useStaffShiftStore((state) => state.addScanLog);
-    const endShift = useStaffShiftStore((state) => state.endShift);
+    const resetUi = useStaffShiftStore((state) => state.resetUi);
 
     const [scanOpen, setScanOpen] = useState(false);
     const [scanLoading, setScanLoading] = useState(false);
     const [endOpen, setEndOpen] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    /** Chờ load /active xong mới được redirect — tránh null ban đầu đá về Home. */
+    const [shiftReady, setShiftReady] = useState(false);
     const shiftEndAtRef = useRef("");
 
-    const routeId = session?.routeId;
-    const scanCount = session?.scanLogs.length ?? 0;
+    const {
+        data: activeShift,
+        isLoading: isShiftLoading,
+        error: shiftError,
+        loadFetchFn: loadActiveShift,
+    } = useFetch<IActiveShift | null>({
+        fetchFn: async () => {
+            const response = await staffShiftService.getActive();
+            return response.data ?? null;
+        },
+    });
+
+    const shiftStartAt = activeShift?.shiftStartAt;
+    const routeId = activeShift ? getRouteId(activeShift) : undefined;
+
+    const {
+        data: scanLogs,
+        isLoading: isScansLoading,
+        error: scansError,
+        loadFetchFn: loadScanLogs,
+    } = useFetch<IScanLogItem[]>({
+        fetchFn: async () => {
+            if (!shiftStartAt) return [];
+            const response = await scanLogService.getMyScans({
+                from: shiftStartAt,
+                limit: 100,
+            });
+            return response.data?.items ?? [];
+        },
+    });
 
     const {
         data: fetchedStops,
@@ -69,11 +109,11 @@ export default function StaffActiveShiftScreen() {
         reset: resetPreview,
     } = useFetch<ShiftReportPreview>({
         fetchFn: async () => {
-            if (!session) {
+            if (!shiftStartAt) {
                 throw new Error("Chưa có phiên ca đang chạy");
             }
             const response = await shiftReportService.preview({
-                shiftStartAt: session.shiftStartAt,
+                shiftStartAt,
                 shiftEndAt: shiftEndAtRef.current,
             });
             if (!response.data) {
@@ -85,9 +125,11 @@ export default function StaffActiveShiftScreen() {
         },
     });
 
-    const currentStop = session?.stops[session.stopIndex];
-    const nextStop =
-        session?.stops[session.stopIndex + 1] ?? currentStop ?? null;
+    const currentStop = ui.stops[ui.stopIndex];
+    const nextStop = ui.stops[ui.stopIndex + 1] ?? currentStop ?? null;
+    const scans = scanLogs ?? [];
+    const scanCount = scans.length;
+    const validCount = scans.filter((item) => item.isValid).length;
 
     const mapCenter = useMemo(() => {
         return (
@@ -108,11 +150,54 @@ export default function StaffActiveShiftScreen() {
         );
     }, [nextStop, mapCenter]);
 
+    useFocusEffect(
+        useCallback(() => {
+            let alive = true;
+            setShiftReady(false);
+
+            (async () => {
+                await loadActiveShift();
+                if (alive) setShiftReady(true);
+            })();
+
+            return () => {
+                alive = false;
+            };
+        }, [loadActiveShift]),
+    );
+
     useEffect(() => {
-        if (!session) {
+        if (!shiftReady || isShiftLoading) return;
+
+        if (shiftError) {
+            Toast.show({
+                type: "error",
+                text1: "Không tải được ca đang chạy",
+            });
+            router.replace("/staff" as Href);
+            return;
+        }
+
+        if (activeShift === null) {
+            Toast.show({
+                type: "error",
+                text1: "Không có ca đang chạy",
+            });
             router.replace("/staff" as Href);
         }
-    }, [session]);
+    }, [shiftReady, isShiftLoading, activeShift, shiftError]);
+
+    useEffect(() => {
+        if (!shiftStartAt) return;
+        loadScanLogs();
+    }, [shiftStartAt]);
+
+    useFocusEffect(
+        useCallback(() => {
+            if (!shiftReady || !shiftStartAt) return;
+            loadScanLogs();
+        }, [shiftReady, shiftStartAt, loadScanLogs]),
+    );
 
     useEffect(() => {
         if (!routeId) return;
@@ -132,6 +217,14 @@ export default function StaffActiveShiftScreen() {
             text1: "Không tải được điểm dừng",
         });
     }, [stopsError]);
+
+    useEffect(() => {
+        if (!scansError) return;
+        Toast.show({
+            type: "error",
+            text1: "Không tải được lịch sử quét",
+        });
+    }, [scansError]);
 
     useEffect(() => {
         if (!previewError) return;
@@ -161,13 +254,7 @@ export default function StaffActiveShiftScreen() {
                 throw new Error(response.message || "Không có kết quả quét");
             }
 
-            addScanLog({
-                qrCode: code,
-                isValid: result.isValid,
-                reason: result.reason,
-                customerName: result.ticket?.customerName || undefined,
-                routeName: result.ticket?.routeName || undefined,
-            });
+            await loadScanLogs();
 
             try {
                 await Haptics.notificationAsync(
@@ -176,7 +263,7 @@ export default function StaffActiveShiftScreen() {
                         : Haptics.NotificationFeedbackType.Error,
                 );
             } catch {
-                // ignore haptics errors (web / unsupported)
+                // ignore
             }
 
             Toast.show({
@@ -188,7 +275,7 @@ export default function StaffActiveShiftScreen() {
             if (result.isValid) {
                 setScanOpen(false);
             }
-        } catch (err) {
+        } catch {
             Toast.show({
                 type: "error",
                 text1: "Quét vé thất bại",
@@ -199,11 +286,11 @@ export default function StaffActiveShiftScreen() {
     };
 
     const handleOpenEndShift = () => {
-        if (!session) return;
+        if (!activeShift) return;
 
         Alert.alert(
             "Kết thúc ca?",
-            "Hệ thống sẽ tổng hợp vé đã quét và gửi báo cáo ca. Bạn không thể tiếp tục quét sau khi gửi.",
+            "Hệ thống sẽ tổng hợp vé đã quét và gửi báo cáo ca.",
             [
                 { text: "Ở lại ca", style: "cancel" },
                 {
@@ -226,12 +313,12 @@ export default function StaffActiveShiftScreen() {
     };
 
     const handleSubmitReport = async () => {
-        if (!session || !preview) return;
+        if (!activeShift || !preview) return;
 
         setIsSubmitting(true);
         try {
             const response = await shiftReportService.submit({
-                shiftStartAt: session.shiftStartAt,
+                shiftStartAt: activeShift.shiftStartAt,
                 shiftEndAt: preview.shiftEndAt,
             });
 
@@ -239,17 +326,19 @@ export default function StaffActiveShiftScreen() {
                 throw new Error(response.message || "Gửi báo cáo thất bại");
             }
 
+            await staffShiftService.end();
+            resetUi();
+
             Toast.show({
                 type: "success",
                 text1: "Đã gửi báo cáo ca",
                 text2: "Chờ admin duyệt",
             });
 
-            endShift();
             setEndOpen(false);
             resetPreview();
             router.replace("/staff" as Href);
-        } catch (err) {
+        } catch {
             Toast.show({
                 type: "error",
                 text1: "Gửi báo cáo thất bại",
@@ -260,7 +349,7 @@ export default function StaffActiveShiftScreen() {
     };
 
     const handleConfirmPassStop = () => {
-        if (!session?.stops.length) {
+        if (!ui.stops.length) {
             Toast.show({
                 type: "error",
                 text1: "Chưa có danh sách trạm",
@@ -269,7 +358,7 @@ export default function StaffActiveShiftScreen() {
             return;
         }
 
-        if (session.stopIndex >= session.stops.length - 1) {
+        if (ui.stopIndex >= ui.stops.length - 1) {
             Toast.show({
                 type: "success",
                 text1: "Đã hết trạm trên tuyến",
@@ -286,16 +375,18 @@ export default function StaffActiveShiftScreen() {
         });
     };
 
-    if (!session) {
-        return null;
+    if (!shiftReady || isShiftLoading || !activeShift) {
+        return (
+            <View className="flex-1 items-center justify-center bg-card">
+                <ActivityIndicator color="#005f8b" />
+            </View>
+        );
     }
 
     const nextStopName =
         nextStop?.name ||
-        session.routeName ||
+        activeShift.routeName ||
         "Chưa có trạm — chọn tuyến khi check-in";
-
-    const validCount = session.scanLogs.filter((item) => item.isValid).length;
 
     return (
         <View className="flex-1 bg-card">
@@ -344,7 +435,7 @@ export default function StaffActiveShiftScreen() {
                                     Đã quét
                                 </Text>
                                 <Text className="mt-1 text-xl font-bold text-primary">
-                                    {scanCount}
+                                    {isScansLoading ? "…" : scanCount}
                                 </Text>
                                 <Text className="text-[10px] text-text-muted">
                                     {validCount} hợp lệ
@@ -355,18 +446,18 @@ export default function StaffActiveShiftScreen() {
                 </View>
 
                 <View className="gap-4 px-4 pt-4">
-                    {session.routeName ? (
+                    {activeShift.routeName ? (
                         <Text className="text-sm text-text-secondary">
                             Tuyến:{" "}
                             <Text className="font-semibold text-primary">
-                                {session.routeName}
+                                {activeShift.routeName}
                             </Text>
                         </Text>
                     ) : null}
 
                     <Text className="text-xs text-text-muted">
-                        Quay lại trang chủ vẫn giữ ca. Kết thúc ca (✓) khi hoàn
-                        tất để gửi báo cáo.
+                        Quay lại trang chủ vẫn giữ ca (server). Kết thúc ca (✓)
+                        để gửi báo cáo.
                     </Text>
 
                     <Pressable
@@ -384,7 +475,13 @@ export default function StaffActiveShiftScreen() {
                         <Text className="mb-1 text-sm font-bold uppercase tracking-wide text-primary">
                             Vé đã quét ({scanCount})
                         </Text>
-                        <ScanHistoryList items={session.scanLogs} />
+                        {isScansLoading ? (
+                            <View className="items-center py-6">
+                                <ActivityIndicator color="#005f8b" />
+                            </View>
+                        ) : (
+                            <ScanHistoryList items={scans} />
+                        )}
                     </View>
 
                     <Pressable

@@ -1,13 +1,13 @@
-import type { StaffScanLogItem } from "@/store/staffShift.store";
+import type { IScanLogItem } from "@/models/scanLog";
 import { CheckCircle2, XCircle } from "lucide-react-native";
 import moment from "moment";
 import { FlatList, Text, View } from "react-native";
 
 type ScanHistoryListProps = {
-    items: StaffScanLogItem[];
+    items: IScanLogItem[];
 };
 
-function ScanHistoryRow({ item }: { item: StaffScanLogItem }) {
+function ScanHistoryRow({ item }: { item: IScanLogItem }) {
     const Icon = item.isValid ? CheckCircle2 : XCircle;
     const iconColor = item.isValid ? "#16a34a" : "#e50049";
 
@@ -54,7 +54,7 @@ export function ScanHistoryList({ items }: ScanHistoryListProps) {
     return (
         <FlatList
             data={items}
-            keyExtractor={(item) => item.id}
+            keyExtractor={(item) => item._id}
             renderItem={({ item }) => <ScanHistoryRow item={item} />}
             scrollEnabled={false}
         />
