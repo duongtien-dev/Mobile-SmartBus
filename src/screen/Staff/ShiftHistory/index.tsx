@@ -1,12 +1,9 @@
 import { StaffHeader } from "@/components/StaffHeader";
 import { StatusPill } from "@/components/ui/StatusPill";
-import {
-    STAFF_SHIFT_STATUS_LABEL,
-} from "@/constants/staff";
+import { STAFF_SHIFT_STATUS_LABEL } from "@/constants/staff";
 import usePaginationList from "@/hooks/usePaginationList";
 import type { IShiftReport, ShiftReportStatus } from "@/models/shiftReport";
 import { shiftReportService } from "@/services/ShiftReportService";
-import { getApiErrorMessage } from "@/utils/apiError";
 import moment from "moment";
 import { useEffect } from "react";
 import {
@@ -15,18 +12,11 @@ import {
     Text,
     View,
 } from "react-native";
-import Toast from "react-native-toast-message";
 
-function statusVariant(
-    status: ShiftReportStatus,
-): "warning" | "success" | "danger" {
+const statusVariant = (status: ShiftReportStatus): "warning" | "success" | "danger" => {
     if (status === "approved") return "success";
     if (status === "rejected") return "danger";
     return "warning";
-}
-
-function formatShiftDate(iso: string) {
-    return moment(iso).format("DD/MM/YYYY");
 }
 
 function formatShiftWindow(start: string, end: string) {
@@ -38,7 +28,7 @@ function ShiftHistoryCard({ item }: { item: IShiftReport }) {
         <View className="border-b border-border px-5 py-4">
             <View className="mb-3 flex-row items-center justify-between gap-3">
                 <Text className="text-base font-bold text-text-primary">
-                    {formatShiftDate(item.shiftStartAt)}
+                    {moment(item.shiftStartAt).format("DD/MM/YYYY")}
                 </Text>
                 <StatusPill
                     label={STAFF_SHIFT_STATUS_LABEL[item.status]}
@@ -88,20 +78,11 @@ export default function StaffShiftHistoryScreen() {
         limit: 15,
         params: {},
         fetchFn: async (payload) => {
-            try {
-                const response = await shiftReportService.getMyReports({
-                    page: payload.page,
-                    limit: payload.limit,
-                });
-                return response.data?.items ?? [];
-            } catch (err) {
-                Toast.show({
-                    type: "error",
-                    text1: "Không tải được lịch sử ca",
-                    text2: getApiErrorMessage(err),
-                });
-                return [];
-            }
+            const response = await shiftReportService.getMyReports({
+                page: payload.page,
+                limit: payload.limit,
+            });
+            return response.data?.items ?? [];
         },
     });
 

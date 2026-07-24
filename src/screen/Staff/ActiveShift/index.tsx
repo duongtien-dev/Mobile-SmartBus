@@ -1,4 +1,6 @@
 import { StaffHeader } from "@/components/StaffHeader";
+import useFetch from "@/hooks/useFetch";
+import type { IStop } from "@/models/stop";
 import type { ShiftReportPreview } from "@/models/shiftReport";
 import { shiftReportService } from "@/services/ShiftReportService";
 import { stopService } from "@/services/StopService";
@@ -12,7 +14,7 @@ import {
     ScanLine,
     TriangleAlert,
 } from "lucide-react-native";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Pressable, Text, View } from "react-native";
 import Toast from "react-native-toast-message";
 import { ActiveShiftMap } from "./ActiveShiftMap";
@@ -38,8 +40,49 @@ export default function StaffActiveShiftScreen() {
     const [scanOpen, setScanOpen] = useState(false);
     const [scanLoading, setScanLoading] = useState(false);
     const [endOpen, setEndOpen] = useState(false);
-    const [endLoading, setEndLoading] = useState(false);
-    const [preview, setPreview] = useState<ShiftReportPreview | null>(null);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const shiftEndAtRef = useRef("");
+
+    const routeId = session?.routeId;
+
+    const {
+        data: fetchedStops,
+        error: stopsError,
+        loadFetchFn: loadStops,
+    } = useFetch<IStop[]>({
+        fetchFn: async () => {
+            if (!routeId) return [];
+            const response = await stopService.listStopsByRoute({
+                routeId,
+                limit: 200,
+            });
+            return response.data ?? [];
+        },
+    });
+
+    const {
+        data: preview,
+        isLoading: isPreviewLoading,
+        error: previewError,
+        loadFetchFn: loadPreview,
+        reset: resetPreview,
+    } = useFetch<ShiftReportPreview>({
+        fetchFn: async () => {
+            if (!session) {
+                throw new Error("Chưa có phiên ca đang chạy");
+            }
+            const response = await shiftReportService.preview({
+                shiftStartAt: session.shiftStartAt,
+                shiftEndAt: shiftEndAtRef.current,
+            });
+            if (!response.data) {
+                throw new Error(
+                    response.message || "Không nhận được thống kê ca",
+                );
+            }
+            return response.data;
+        },
+    });
 
     const currentStop = session?.stops[session.stopIndex];
     const nextStop =
@@ -71,35 +114,34 @@ export default function StaffActiveShiftScreen() {
     }, [session]);
 
     useEffect(() => {
-        const routeId = session?.routeId;
         if (!routeId) return;
+        loadStops();
+    }, [routeId]);
 
-        let cancelled = false;
+    useEffect(() => {
+        if (fetchedStops) {
+            setStops(fetchedStops);
+        }
+    }, [fetchedStops, setStops]);
 
-        (async () => {
-            try {
-                const response = await stopService.listStopsByRoute({
-                    routeId,
-                    limit: 200,
-                });
-                if (cancelled) return;
-                const stops = Array.isArray(response.data)
-                    ? response.data
-                    : [];
-                setStops(stops);
-            } catch (err) {
-                Toast.show({
-                    type: "error",
-                    text1: "Không tải được điểm dừng",
-                    text2: getApiErrorMessage(err),
-                });
-            }
-        })();
+    useEffect(() => {
+        if (!stopsError) return;
+        Toast.show({
+            type: "error",
+            text1: "Không tải được điểm dừng",
+            text2: getApiErrorMessage(stopsError),
+        });
+    }, [stopsError]);
 
-        return () => {
-            cancelled = true;
-        };
-    }, [session?.routeId]);
+    useEffect(() => {
+        if (!previewError) return;
+        setEndOpen(false);
+        Toast.show({
+            type: "error",
+            text1: "Không xem trước được báo cáo",
+            text2: getApiErrorMessage(previewError),
+        });
+    }, [previewError]);
 
     const handleVerifyQr = async (qrCode: string) => {
         const code = qrCode.trim();
@@ -148,36 +190,24 @@ export default function StaffActiveShiftScreen() {
         }
     };
 
-    const handleOpenEndShift = async () => {
+    const handleOpenEndShift = () => {
         if (!session) return;
-
+        shiftEndAtRef.current = new Date().toISOString();
+        resetPreview();
         setEndOpen(true);
-        setPreview(null);
-        setEndLoading(true);
+        loadPreview();
+    };
 
-        try {
-            const shiftEndAt = new Date().toISOString();
-            const response = await shiftReportService.preview({
-                shiftStartAt: session.shiftStartAt,
-                shiftEndAt,
-            });
-            setPreview(response.data ?? null);
-        } catch (err) {
-            setEndOpen(false);
-            Toast.show({
-                type: "error",
-                text1: "Không xem trước được báo cáo",
-                text2: getApiErrorMessage(err),
-            });
-        } finally {
-            setEndLoading(false);
-        }
+    const handleCloseEndShift = () => {
+        if (isPreviewLoading || isSubmitting) return;
+        setEndOpen(false);
+        resetPreview();
     };
 
     const handleSubmitReport = async () => {
         if (!session || !preview) return;
 
-        setEndLoading(true);
+        setIsSubmitting(true);
         try {
             const response = await shiftReportService.submit({
                 shiftStartAt: session.shiftStartAt,
@@ -196,6 +226,7 @@ export default function StaffActiveShiftScreen() {
 
             endShift();
             setEndOpen(false);
+            resetPreview();
             router.replace("/staff" as Href);
         } catch (err) {
             Toast.show({
@@ -204,7 +235,7 @@ export default function StaffActiveShiftScreen() {
                 text2: getApiErrorMessage(err),
             });
         } finally {
-            setEndLoading(false);
+            setIsSubmitting(false);
         }
     };
 
@@ -345,9 +376,9 @@ export default function StaffActiveShiftScreen() {
 
             <EndShiftModal
                 open={endOpen}
-                loading={endLoading}
+                loading={isPreviewLoading || isSubmitting}
                 preview={preview}
-                onClose={() => setEndOpen(false)}
+                onClose={handleCloseEndShift}
                 onConfirm={handleSubmitReport}
             />
         </View>

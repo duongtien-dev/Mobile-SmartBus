@@ -3,6 +3,7 @@ import {
     STAFF_SCHEDULE_MOCK,
     type StaffScheduleShift,
 } from "@/constants/staff";
+import useFetch from "@/hooks/useFetch";
 import type { IRoute } from "@/models/route";
 import { routeService } from "@/services/RouteService";
 import useAuthStore from "@/store/auth.store";
@@ -28,12 +29,6 @@ import {
     View,
 } from "react-native";
 import Toast from "react-native-toast-message";
-
-function getRouteStaffId(route: IRoute): string | undefined {
-    if (!route.staffId) return undefined;
-    if (typeof route.staffId === "string") return route.staffId;
-    return route.staffId._id;
-}
 
 function UtilityCard({
     label,
@@ -164,53 +159,40 @@ export default function StaffDashboardScreen() {
     const [expandedId, setExpandedId] = useState<string>(
         STAFF_SCHEDULE_MOCK[0]?.id ?? "",
     );
-    const [assignedRoutes, setAssignedRoutes] = useState<IRoute[]>([]);
-    const [loadingRoutes, setLoadingRoutes] = useState(true);
+
+    const {
+        data: assignedRoutes,
+        isLoading: loadingRoutes,
+        error: routesError,
+        loadFetchFn: loadAssignedRoutes,
+    } = useFetch<IRoute[]>({
+        fetchFn: async () => {
+            const response = await routeService.getRoutes({
+                page: 1,
+                limit: 20,
+                sort: "newest",
+                userId: user?._id,
+            });
+            return response.data ?? [];
+        },
+    });
 
     const displayName = user?.full_name?.trim() || "Nhân viên";
-
-    const primaryRoute = useMemo(
-        () => assignedRoutes[0] ?? null,
-        [assignedRoutes],
-    );
+    const routes = assignedRoutes ?? [];
+    const primaryRoute = useMemo(() => routes[0] ?? null, [routes]);
 
     useEffect(() => {
-        let cancelled = false;
-
-        (async () => {
-            setLoadingRoutes(true);
-            try {
-                const response = await routeService.getRoutes({
-                    page: 1,
-                    limit: 20,
-                    sort: "newest",
-                });
-                const routes = Array.isArray(response.data)
-                    ? (response.data as IRoute[])
-                    : [];
-                const mine = routes.filter(
-                    (route) => getRouteStaffId(route) === user?._id,
-                );
-                if (!cancelled) {
-                    setAssignedRoutes(mine);
-                }
-            } catch (err) {
-                if (!cancelled) {
-                    Toast.show({
-                        type: "error",
-                        text1: "Không tải được tuyến được giao",
-                        text2: getApiErrorMessage(err),
-                    });
-                }
-            } finally {
-                if (!cancelled) setLoadingRoutes(false);
-            }
-        })();
-
-        return () => {
-            cancelled = true;
-        };
+        loadAssignedRoutes();
     }, [user?._id]);
+
+    useEffect(() => {
+        if (!routesError) return;
+        Toast.show({
+            type: "error",
+            text1: "Không tải được tuyến được giao",
+            text2: getApiErrorMessage(routesError),
+        });
+    }, [routesError]);
 
     const handleLogout = () => {
         logout();
@@ -327,7 +309,7 @@ export default function StaffDashboardScreen() {
                         <View className="items-center rounded-2xl bg-card py-6 shadow-sm">
                             <ActivityIndicator color="#005f8b" />
                         </View>
-                    ) : assignedRoutes.length === 0 ? (
+                    ) : routes.length === 0 ? (
                         <View className="rounded-2xl bg-card px-4 py-5 shadow-sm">
                             <Text className="text-sm text-text-muted">
                                 Chưa được gán tuyến. Vẫn có thể check-in và quét
@@ -336,7 +318,7 @@ export default function StaffDashboardScreen() {
                         </View>
                     ) : (
                         <View className="gap-2">
-                            {assignedRoutes.map((route) => (
+                            {routes.map((route) => (
                                 <View
                                     key={route._id}
                                     className="rounded-2xl bg-card px-4 py-3.5 shadow-sm"
