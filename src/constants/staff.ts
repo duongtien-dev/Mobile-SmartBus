@@ -1,3 +1,5 @@
+import type { ShiftReportStatus } from "@/models/shiftReport";
+
 export type StaffShiftStatus = "pending_checkin" | "checked_in" | "completed";
 
 export type StaffScheduleShift = {
@@ -12,26 +14,13 @@ export type StaffScheduleShift = {
     status: StaffShiftStatus;
 };
 
-export type StaffShiftReportStatus = "submitted" | "approved" | "rejected";
-
-export type StaffShiftHistoryItem = {
-    id: string;
-    date: string;
-    status: StaffShiftReportStatus;
-    routeName: string;
-    passengerCount: number;
-};
-
 export type StaffNotificationItem = {
     id: string;
     title: string;
     datetime: string;
 };
 
-export const STAFF_SHIFT_STATUS_LABEL: Record<
-    StaffShiftReportStatus,
-    string
-> = {
+export const STAFF_SHIFT_STATUS_LABEL: Record<ShiftReportStatus, string> = {
     submitted: "Chờ duyệt",
     approved: "Đã duyệt",
     rejected: "Từ chối",
@@ -101,30 +90,6 @@ export const STAFF_SCHEDULE_MOCK: StaffScheduleShift[] = [
     },
 ];
 
-export const STAFF_SHIFT_HISTORY_MOCK: StaffShiftHistoryItem[] = [
-    {
-        id: "hist-1",
-        date: "01/04/2026",
-        status: "submitted",
-        routeName: "Tuyến R01",
-        passengerCount: 20,
-    },
-    {
-        id: "hist-2",
-        date: "31/03/2026",
-        status: "approved",
-        routeName: "Tuyến R16",
-        passengerCount: 48,
-    },
-    {
-        id: "hist-3",
-        date: "30/03/2026",
-        status: "rejected",
-        routeName: "Tuyến R05",
-        passengerCount: 12,
-    },
-];
-
 export const STAFF_NOTIFICATIONS_MOCK: StaffNotificationItem[] = [
     {
         id: "noti-1",
@@ -137,17 +102,3 @@ export const STAFF_NOTIFICATIONS_MOCK: StaffNotificationItem[] = [
         datetime: "04:52 03/11/2025",
     },
 ];
-
-export const STAFF_ACTIVE_SHIFT_MOCK = {
-    nextStopName: "Đối diện nhà thuốc Vũ Thương Trần Đại Nghĩa",
-    eta: "04:50",
-    alightingCount: 0,
-    mapCenter: {
-        latitude: 16.0544,
-        longitude: 108.2022,
-    },
-    nextStopCoordinate: {
-        latitude: 16.0558,
-        longitude: 108.205,
-    },
-};

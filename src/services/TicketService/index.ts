@@ -1,4 +1,8 @@
 import type { ITicket, TicketType } from "@/models/ticket";
+import type {
+    VerifyScannedQrBody,
+    VerifyScannedQrResult,
+} from "@/models/shiftReport";
 import type { ApiResponse } from "@/services/type";
 import BaseService from "@/services/BaseService";
 
@@ -26,8 +30,12 @@ class TicketService extends BaseService {
         return this.post<ApiResponse<ITicket>>("/create", body);
     }
 
-    verifyScanQRCode(body: object) {
-        return this.post("/verify-scanned-qr", body);
+    /** Staff: POST /tickets/verify-scanned-qr — body `{ qrCode }` */
+    verifyScanQRCode(body: VerifyScannedQrBody) {
+        return this.post<ApiResponse<VerifyScannedQrResult>>(
+            "/verify-scanned-qr",
+            body,
+        );
     }
 
     getMyTickets(body: object) {

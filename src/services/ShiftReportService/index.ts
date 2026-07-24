@@ -1,30 +1,38 @@
-import BaseService from '@/services/BaseService';
+import type {
+    MyShiftReportsBody,
+    PreviewShiftReportBody,
+    ShiftReportListResult,
+    ShiftReportPreview,
+    IShiftReport,
+    SubmitShiftReportBody,
+} from "@/models/shiftReport";
+import type { ApiResponse } from "@/services/type";
+import BaseService from "@/services/BaseService";
 
+/**
+ * Staff shift reports — Backend-SmartBus `/api/shift-reports/*`
+ * Auth + role `staff` required.
+ *
+ * - POST /preview  — thống kê ca trước khi gửi
+ * - POST /submit   — gửi báo cáo ca (server tự tính stats)
+ * - POST /my       — lịch sử báo cáo của staff hiện tại
+ */
 class ShiftReportService extends BaseService {
     constructor() {
-        super('');
+        super("/shift-reports");
     }
 
-    previewReportStaff(body: object) {
-        return this.post('/shift-reports/preview', body);
+    preview(body: PreviewShiftReportBody) {
+        return this.post<ApiResponse<ShiftReportPreview>>("/preview", body);
     }
 
-    submitShiftReportStaff(body: object) {
-        return this.post('/shift-reports/submit', body);
+    submit(body: SubmitShiftReportBody) {
+        return this.post<ApiResponse<IShiftReport>>("/submit", body);
     }
 
-    getShiftReportStaff(body: object) {
-        return this.post('/shift-reports/get', body);
+    getMyReports(body: MyShiftReportsBody = {}) {
+        return this.post<ApiResponse<ShiftReportListResult>>("/my", body);
     }
-
-    getShiftReportAdmin(body: object) {
-        return this.post('/admin/shift-reports', body);
-    }
-
-    updateShiftReportAdmin(body: object) {
-        return this.post('/admin/shift-reports/review', body);
-    }
-
 }
 
-export default ShiftReportService;
+export const shiftReportService = new ShiftReportService();

@@ -1,16 +1,27 @@
-import BaseService from '@/services/BaseService';
+import type { IStop } from "@/models/stop";
+import type { ApiResponse } from "@/services/type";
+import BaseService from "@/services/BaseService";
 
+/**
+ * Stops — Backend-SmartBus `/api/stops/*`
+ * - POST /listByRoute `{ routeId, page?, limit? }` → Stop[]
+ * - POST /detail `{ id }` → Stop
+ */
 class StopService extends BaseService {
     constructor() {
-        super('/stops');
+        super("/stops");
     }
 
-    listStopsByRoute(body: object) {
-        return this.post('/listByRoute', body);
+    listStopsByRoute(body: {
+        routeId: string;
+        page?: number;
+        limit?: number;
+    }) {
+        return this.post<ApiResponse<IStop[]>>("/listByRoute", body);
     }
 
-    getStopById(body: object) {
-        return this.post('/detail', body);
+    getStopById(body: { id: string }) {
+        return this.post<ApiResponse<IStop>>("/detail", body);
     }
 }
 

@@ -25,7 +25,8 @@
             "predictiveBackGestureEnabled": false,
             "permissions": [
                 "ACCESS_COARSE_LOCATION",
-                "ACCESS_FINE_LOCATION"
+                "ACCESS_FINE_LOCATION",
+                "CAMERA"
             ]
         },
         "web": {
@@ -38,6 +39,13 @@
                 "expo-location",
                 {
                     "locationWhenInUsePermission": "DanaBus cần quyền vị trí để hiển thị trạm xung quanh và tìm đường."
+                }
+            ],
+            [
+                "expo-camera",
+                {
+                    "cameraPermission": "DanaBus cần quyền camera để quét mã QR vé khách.",
+                    "recordAudioAndroid": false
                 }
             ],
             [

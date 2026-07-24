@@ -10,3 +10,4 @@ export { ticketProductService } from './TicketProductService';
 export { paymentService } from './PaymentService';
 export { tripService } from './TripService';
 export { favoriteRouteService } from './FavoriteRouteService';
+export { shiftReportService } from './ShiftReportService';

@@ -1,20 +1,35 @@
-import { STAFF_ACTIVE_SHIFT_MOCK } from "@/constants/staff";
-import { useRef } from "react";
-import MapView, { Circle, Marker } from "react-native-maps";
+import { useEffect, useRef } from "react";
+import MapView, { Circle, Marker, type Region } from "react-native-maps";
+import type { MapPoint } from "./mapTypes";
 
-export function ActiveShiftMap() {
+type ActiveShiftMapProps = {
+    mapCenter: MapPoint;
+    nextStopCoordinate: MapPoint;
+};
+
+function toRegion(point: MapPoint): Region {
+    return {
+        ...point,
+        latitudeDelta: 0.012,
+        longitudeDelta: 0.012,
+    };
+}
+
+export function ActiveShiftMap({
+    mapCenter,
+    nextStopCoordinate,
+}: ActiveShiftMapProps) {
     const mapRef = useRef<MapView>(null);
-    const { mapCenter, nextStopCoordinate } = STAFF_ACTIVE_SHIFT_MOCK;
+
+    useEffect(() => {
+        mapRef.current?.animateToRegion(toRegion(mapCenter), 400);
+    }, [mapCenter.latitude, mapCenter.longitude]);
 
     return (
         <MapView
             ref={mapRef}
             style={{ flex: 1 }}
-            initialRegion={{
-                ...mapCenter,
-                latitudeDelta: 0.012,
-                longitudeDelta: 0.012,
-            }}
+            initialRegion={toRegion(mapCenter)}
             mapType="satellite"
             showsMyLocationButton={false}
             showsCompass={false}
