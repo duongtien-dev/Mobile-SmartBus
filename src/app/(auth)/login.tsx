@@ -1,7 +1,7 @@
 import { Button } from "@/components/Button";
 import InputText from "@/components/Input/InputText";
 import { useToastify } from "@/hooks/useToastify";
-import { getHomeHrefByRole } from "@/lib/auth-navigation";
+import { navigateAuth } from "@/lib/auth-navigation";
 import { authService } from "@/services/AuthService";
 import useAuthStore from "@/store/auth.store";
 import { LinearGradient } from "expo-linear-gradient";
@@ -46,7 +46,7 @@ export default function Login() {
                 : "Đăng nhập thất bại",
         });
         if (response.success) {
-            router.replace(getHomeHrefByRole(user?.role));
+            router.replace(navigateAuth(user?.role));
         }
         setIsSubmitting(false);
     };

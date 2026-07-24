@@ -2,6 +2,11 @@ import useAuthStore from "@/store/auth.store";
 import { Redirect, Stack } from "expo-router";
 import { ActivityIndicator, View } from "react-native";
 
+/**
+ * Staff = Hub + Stack (không bottom tabs).
+ * Home `/staff` là hub; các màn phụ push: shift, leave-request,
+ * activity-history, notifications. Ca đang chạy full-screen, không tab bar.
+ */
 export default function StaffLayout() {
     const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
     const isLoading = useAuthStore((state) => state.isLoading);
@@ -23,5 +28,14 @@ export default function StaffLayout() {
         return <Redirect href="/" />;
     }
 
-    return <Stack screenOptions={{ headerShown: false }} />;
+    return (
+        <Stack screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="index" />
+            <Stack.Screen name="shift" />
+            <Stack.Screen name="leave-request" />
+            <Stack.Screen name="activity-history" />
+            <Stack.Screen name="notifications" />
+            <Stack.Screen name="shift-history" />
+        </Stack>
+    );
 }

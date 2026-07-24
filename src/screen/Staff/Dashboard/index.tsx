@@ -312,12 +312,38 @@ export default function StaffDashboardScreen() {
                         </View>
                         <ChevronRight color="#ffffff" size={18} />
                     </Pressable>
-                ) : null}
+                ) : (
+                    <Pressable
+                        accessibilityRole="button"
+                        onPress={handleCheckIn}
+                        className="flex-row items-center gap-3 rounded-2xl bg-[#22c55e] px-4 py-3.5 active:opacity-90"
+                    >
+                        <View className="h-10 w-10 items-center justify-center rounded-full bg-white/25">
+                            <Bus color="#ffffff" size={20} />
+                        </View>
+                        <View className="min-w-0 flex-1">
+                            <Text className="text-sm font-bold text-white">
+                                Nhận ca hôm nay
+                            </Text>
+                            <Text className="mt-0.5 text-xs text-white/90">
+                                {primaryRoute
+                                    ? `Tuyến ${primaryRoute.code} · Check-in để bắt đầu`
+                                    : "Check-in để quét vé và chạy ca"}
+                            </Text>
+                        </View>
+                        <ChevronRight color="#ffffff" size={18} />
+                    </Pressable>
+                )}
 
                 <View className="gap-3">
-                    <Text className="text-base font-bold text-text-primary">
-                        Tiện ích
-                    </Text>
+                    <View>
+                        <Text className="text-base font-bold text-text-primary">
+                            Tiện ích
+                        </Text>
+                        <Text className="mt-0.5 text-xs text-text-muted">
+                            Các chức năng phụ — mở từ trang chủ này
+                        </Text>
+                    </View>
                     <View className="overflow-hidden rounded-2xl bg-card shadow-sm">
                         <UtilityRow
                             title="Xin nghỉ"
@@ -331,7 +357,7 @@ export default function StaffDashboardScreen() {
                         />
                         <UtilityRow
                             title="Lịch sử hoạt động"
-                            subtitle="Ca làm việc và đơn xin nghỉ"
+                            subtitle="Báo cáo ca và đơn xin nghỉ"
                             Icon={ClipboardList}
                             iconColor="#005f8b"
                             iconBgClass="bg-primary-light"
@@ -356,7 +382,7 @@ export default function StaffDashboardScreen() {
                     ) : routes.length === 0 ? (
                         <View className="rounded-2xl bg-card px-4 py-5 shadow-sm">
                             <Text className="text-sm text-text-muted">
-                                Chưa được gán tuyến. Vẫn có thể check-in và quét
+                                Chưa được gán tuyến. Vẫn có thể nhận ca và quét
                                 vé; điểm dừng sẽ trống.
                             </Text>
                         </View>
@@ -387,13 +413,15 @@ export default function StaffDashboardScreen() {
                 </View>
 
                 <View className="gap-3">
-                    <Text className="text-base font-bold text-text-primary">
-                        Lịch làm việc tuần này
-                    </Text>
-                    <Text className="text-xs text-text-muted">
-                        Lịch ca chưa có API — UI tạm. Check-in lưu phiên local và
-                        gọi báo cáo ca khi kết thúc.
-                    </Text>
+                    <View>
+                        <Text className="text-base font-bold text-text-primary">
+                            Lịch tham khảo tuần này
+                        </Text>
+                        <Text className="mt-0.5 text-xs text-text-muted">
+                            Tham khảo nhanh — nhận / tiếp tục ca dùng nút phía
+                            trên.
+                        </Text>
+                    </View>
                     <View className="gap-2.5">
                         {STAFF_SCHEDULE_MOCK.map((shift) => (
                             <ExpandableShiftCard

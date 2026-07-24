@@ -1,6 +1,6 @@
 import { NavigationTabs } from "@/components/navigation";
 import { TAB_CONFIG, TAB_ROUTES } from "@/constants/tabs";
-import { getHomeHrefByRole } from "@/lib/auth-navigation";
+import { navigateAuth } from "@/lib/auth-navigation";
 import useAuthStore from "@/store/auth.store";
 import { Redirect, Tabs } from "expo-router";
 import { ActivityIndicator, View } from "react-native";
@@ -23,7 +23,7 @@ export default function TabLayout() {
     }
 
     if (user?.role === "staff") {
-        return <Redirect href={getHomeHrefByRole("staff")} />;
+        return <Redirect href={navigateAuth("staff")} />;
     }
 
     return (
