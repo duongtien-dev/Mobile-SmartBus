@@ -23,7 +23,11 @@ const PaymentMethodItem = ({ method, isSelected, onSelect }: ItemProps) => (
         )}
     >
         <View className="h-10 w-10 items-center justify-center rounded-full bg-white shadow-sm border border-border/50">
-            <Image source={require("../../../../../assets/images/bank.png")} className="h-6 w-6" />
+            <Image
+                source={require("../../../../../assets/images/bank.png")}
+                style={{ width: 24, height: 24 }}
+                contentFit="contain"
+            />
         </View>
 
         <View className="flex-1">

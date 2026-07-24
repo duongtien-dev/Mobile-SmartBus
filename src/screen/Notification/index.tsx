@@ -73,9 +73,9 @@ export default function NotificationsScreen() {
                 <Card padding="none" className="overflow-hidden">
                     <View className="relative h-55 overflow-hidden">
                         <Image
-                            className="absolute inset-0 h-full w-full"
-                            contentFit="cover"
                             source={require("../../../assets/images/banner-news.png")}
+                            style={{ width: "100%", height: "100%" }}
+                            contentFit="cover"
                         />
                     </View>
 

@@ -33,7 +33,8 @@ export function PayMethodItem({
             >
                 <Image
                     source={require("../../../../assets/images/bank.png")}
-                    className="h-6 w-6"
+                    style={{ width: 24, height: 24 }}
+                    contentFit="contain"
                 />
             </View>
             <Text className="flex-1 text-base font-medium text-text-primary">
