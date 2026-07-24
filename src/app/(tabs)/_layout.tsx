@@ -1,13 +1,14 @@
-import useAuthStore from "@/store/auth.store";
-import { Redirect, Tabs } from "expo-router";
-
 import { NavigationTabs } from "@/components/navigation";
 import { TAB_CONFIG, TAB_ROUTES } from "@/constants/tabs";
+import { getHomeHrefByRole } from "@/lib/auth-navigation";
+import useAuthStore from "@/store/auth.store";
+import { Redirect, Tabs } from "expo-router";
 import { ActivityIndicator, View } from "react-native";
 
 export default function TabLayout() {
     const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
     const isLoading = useAuthStore((state) => state.isLoading);
+    const user = useAuthStore((state) => state.user);
 
     if (isLoading) {
         return (
@@ -19,6 +20,10 @@ export default function TabLayout() {
 
     if (!isAuthenticated) {
         return <Redirect href="/login" />;
+    }
+
+    if (user?.role === "staff") {
+        return <Redirect href={getHomeHrefByRole("staff")} />;
     }
 
     return (
