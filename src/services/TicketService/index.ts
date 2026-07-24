@@ -1,31 +1,15 @@
-import type { ITicket, TicketType } from "@/models/ticket";
-import type { ApiResponse } from "@/services/type";
 import BaseService from "@/services/BaseService";
-
-export type CreateTicketBody = {
-    routeId: string;
-    startStopName: string;
-    endStopName: string;
-    ticketType: TicketType;
-    /** DD/MM/YYYY | MM/YYYY | ISO — backend parse */
-    departureDate: string;
-    departureTime?: string;
-    seatQuantity: number;
-    paymentMethodId: string;
-    /** Optional — backend fallback User profile */
-    customerName?: string;
-    customerPhone?: string;
-};
 
 class TicketService extends BaseService {
     constructor() {
         super("/tickets");
     }
 
-    createTicket(body: CreateTicketBody) {
-        return this.post<ApiResponse<ITicket>>("/create", body);
+    createTicket(body: object) {
+        return this.post("/create", body);
     }
 
+    /** Staff: POST /tickets/verify-scanned-qr — body `{ qrCode }` */
     verifyScanQRCode(body: object) {
         return this.post("/verify-scanned-qr", body);
     }

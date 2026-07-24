@@ -1,6 +1,4 @@
 import BaseService from '@/services/BaseService';
-import type { ApiResponse } from '@/services/type';
-import type { ITicketProduct } from '@/models/ticketProduct';
 
 class TicketProductService extends BaseService {
     constructor() {
@@ -8,7 +6,7 @@ class TicketProductService extends BaseService {
     }
 
     list() {
-        return this.post<ApiResponse<ITicketProduct[]>>('/list', {});
+        return this.post('/list', {});
     }
 }
 

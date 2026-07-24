@@ -10,3 +10,8 @@ export { ticketProductService } from './TicketProductService';
 export { paymentService } from './PaymentService';
 export { tripService } from './TripService';
 export { favoriteRouteService } from './FavoriteRouteService';
+export { shiftReportService } from './ShiftReportService';
+export { leaveRequestService } from './LeaveRequestService';
+export { staffShiftService } from './StaffShiftService';
+export { staffScheduleService } from './StaffScheduleService';
+export { scanLogService } from './ScanLogService';
