@@ -21,7 +21,7 @@ export default function HelpScreen() {
                 <Card className="items-center" padding="md">
                     <Image
                         source={require("../../../assets/images/FAQ.png")}
-                        className="h-40 w-full"
+                        style={{ width: "100%", height: 160 }}
                         contentFit="contain"
                     />
                 </Card>

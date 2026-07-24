@@ -11,6 +11,7 @@ import {
     KeyboardAvoidingView,
     Platform,
     Pressable,
+    ScrollView,
     Text,
     View,
 } from "react-native";
@@ -52,7 +53,7 @@ export default function Register() {
             Toast.show({
                 type: "error",
                 text1: "Đăng ký thất bại",
-                text2: 'Vui lòng kiểm tra lại thông tin và thử lại',
+                text2: "Vui lòng kiểm tra lại thông tin và thử lại",
             });
         } finally {
             setIsSubmitting(false);
@@ -64,21 +65,32 @@ export default function Register() {
             colors={["#004a6e", "#0082ba", "#ffe082"]}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
-            className="flex-1"
+            style={{ flex: 1 }}
         >
             <KeyboardAvoidingView
                 behavior={Platform.OS === "ios" ? "padding" : "height"}
+                style={{ flex: 1 }}
             >
-                <View className="flex-1 justify-center px-5">
+                <ScrollView
+                    style={{ flex: 1 }}
+                    contentContainerStyle={{
+                        flexGrow: 1,
+                        justifyContent: "center",
+                        paddingHorizontal: 20,
+                        paddingVertical: 24,
+                    }}
+                    keyboardShouldPersistTaps="handled"
+                    showsVerticalScrollIndicator={false}
+                >
                     <View className="items-center">
                         <Image
                             source={require("../../../assets/images/logo.png")}
-                            style={{ width: 255, height: 290 }}
+                            style={{ width: 200, height: 160 }}
                             resizeMode="contain"
                         />
                     </View>
 
-                    <View className="gap-4">
+                    <View className="mt-2 gap-4">
                         <View className="gap-2">
                             <Text className="text-sm font-medium text-on-primary">
                                 Họ và tên
@@ -90,7 +102,7 @@ export default function Register() {
                                 }
                                 placeholder="Họ và tên"
                                 autoCapitalize="words"
-                                className="w-full text"
+                                className="w-full rounded-xl border-0 bg-surface"
                             />
                         </View>
 
@@ -106,7 +118,7 @@ export default function Register() {
                                 placeholder="Email"
                                 autoCapitalize="none"
                                 keyboardType="email-address"
-                                className="w-full text"
+                                className="w-full rounded-xl border-0 bg-surface"
                             />
                         </View>
 
@@ -121,7 +133,7 @@ export default function Register() {
                                 }
                                 placeholder="Số điện thoại"
                                 keyboardType="phone-pad"
-                                className="w-full text"
+                                className="w-full rounded-xl border-0 bg-surface"
                             />
                         </View>
 
@@ -136,13 +148,14 @@ export default function Register() {
                                         setUser({ ...user, password: text })
                                     }
                                     placeholder="Mật khẩu"
-                                    className="w-full"
+                                    className="w-full rounded-xl border-0 bg-surface"
                                     style={{ paddingRight: 40 }}
                                     secureTextEntry={!showPassword}
                                 />
                                 <Pressable
                                     onPress={() => setShowPassword((v) => !v)}
                                     className="absolute right-3 top-1/2 -translate-y-1/2"
+                                    hitSlop={8}
                                 >
                                     {showPassword ? (
                                         <EyeOff size={18} color="#64748b" />
@@ -168,7 +181,7 @@ export default function Register() {
                                     }
                                     placeholder="Xác nhận mật khẩu"
                                     secureTextEntry={!showPasswordConfirm}
-                                    className="w-full"
+                                    className="w-full rounded-xl border-0 bg-surface"
                                     style={{ paddingRight: 40 }}
                                 />
                                 <Pressable
@@ -176,6 +189,7 @@ export default function Register() {
                                         setShowPasswordConfirm((v) => !v)
                                     }
                                     className="absolute right-3 top-1/2 -translate-y-1/2"
+                                    hitSlop={8}
                                 >
                                     {showPasswordConfirm ? (
                                         <EyeOff size={18} color="#64748b" />
@@ -189,6 +203,7 @@ export default function Register() {
                         <Button
                             type="accent"
                             variant="bold"
+                            className="w-full rounded-xl"
                             disabled={isSubmitting}
                             onPress={handleRegister}
                         >
@@ -198,8 +213,20 @@ export default function Register() {
                                 "Đăng ký"
                             )}
                         </Button>
+
+                        <View className="mt-2 items-center">
+                            <Text className="text-sm text-on-primary">
+                                Đã có tài khoản?{" "}
+                                <Text
+                                    className="font-semibold text-on-primary"
+                                    onPress={() => router.back()}
+                                >
+                                    Đăng nhập
+                                </Text>
+                            </Text>
+                        </View>
                     </View>
-                </View>
+                </ScrollView>
             </KeyboardAvoidingView>
         </LinearGradient>
     );

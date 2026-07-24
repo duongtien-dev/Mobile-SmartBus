@@ -1,7 +1,6 @@
 import { Button } from "@/components/Button";
 import { Card } from "@/components/ui/Card";
 import { SearchPillContainer } from "@/components/ui/SearchPill";
-import { SectionTitle } from "@/components/ui/SectionTitle";
 import { QUICK_ACTIONS } from "@/constants/home";
 import { HOME_TIPS } from "@/constants/homeSections";
 import useFetch from "@/hooks/useFetch";
@@ -14,6 +13,7 @@ import { routeService } from "@/services/RouteService";
 import useAuthStore from "@/store/auth.store";
 import useTripBookingStore from "@/store/tripBooking.store";
 import { router, useFocusEffect } from "expo-router";
+import { UserRound } from "lucide-react-native";
 import { useCallback, useEffect, useState } from "react";
 import {
     ActivityIndicator,
@@ -27,9 +27,9 @@ import { FaqPreview } from "./FaqPreview";
 import { FeaturedRouteCard } from "./FeaturedRouteCard";
 import { NewsCard } from "./NewCard";
 import { QuickActionButton } from "./QuickAction";
+import { SectionHeader } from "./SectionHeader";
 import { SuggestLocationInput } from "./SuggestLocationInput";
 import { TipCard } from "./TipCard";
-import { UserRound } from "lucide-react-native";
 
 const FEATURED_ROUTES_LIMIT = 6;
 
@@ -138,7 +138,7 @@ export default function HomeScreen() {
                 className="flex-1"
                 contentContainerStyle={{
                     overflow: "visible",
-                    gap: 20,
+                    gap: 28,
                     paddingHorizontal: 20,
                     paddingTop: 12,
                     paddingBottom: 40,
@@ -219,15 +219,17 @@ export default function HomeScreen() {
                     </View>
                 </Card>
 
-                <View style={{ gap: 12 }}>
-                    <SectionTitle
+                <View style={{ gap: 14 }}>
+                    <SectionHeader
+                        variant="hero"
                         title="Tuyến xe nổi bật"
-                        actionLabel="Xem tất cả"
+                        subtitle="Gợi ý lộ trình đi lại mỗi ngày"
+                        actionLabel="Tất cả"
                         onActionPress={() => router.push("/routes/lookup")}
                     />
 
                     {isFeaturedRoutesLoading ? (
-                        <Card className="h-36 items-center justify-center">
+                        <Card className="h-44 items-center justify-center">
                             <ActivityIndicator color="#005f8b" />
                         </Card>
                     ) : routeList.length > 0 ? (
@@ -235,7 +237,7 @@ export default function HomeScreen() {
                             horizontal
                             nestedScrollEnabled
                             showsHorizontalScrollIndicator={false}
-                            contentContainerStyle={{ gap: 12, paddingRight: 8 }}
+                            contentContainerStyle={{ gap: 14, paddingRight: 8 }}
                         >
                             {routeList.map((route) => (
                                 <FeaturedRouteCard
@@ -253,8 +255,12 @@ export default function HomeScreen() {
                     )}
                 </View>
 
-                <View style={{ gap: 12 }}>
-                    <SectionTitle title="Mẹo di chuyển" />
+                <View style={{ gap: 14 }}>
+                    <SectionHeader
+                        variant="rail"
+                        title="Mẹo di chuyển"
+                        subtitle="Dùng app nhanh hơn mỗi ngày"
+                    />
                     <ScrollView
                         horizontal
                         nestedScrollEnabled
@@ -267,15 +273,17 @@ export default function HomeScreen() {
                     </ScrollView>
                 </View>
 
-                <View style={{ gap: 12 }}>
-                    <SectionTitle
-                        title="Khám phá tin tức"
-                        actionLabel="Xem tất cả"
+                <View style={{ gap: 14 }}>
+                    <SectionHeader
+                        variant="story"
+                        title="Tin tức & cập nhật"
+                        subtitle="Mới nhất"
+                        actionLabel="Tất cả"
                         onActionPress={() => router.push("/notice/list")}
                     />
 
                     {isSkeletonLoading ? (
-                        <Card className="h-40 items-center justify-center">
+                        <Card className="h-52 items-center justify-center">
                             <ActivityIndicator color="#005f8b" />
                         </Card>
                     ) : (
@@ -283,7 +291,7 @@ export default function HomeScreen() {
                             horizontal
                             nestedScrollEnabled
                             showsHorizontalScrollIndicator={false}
-                            contentContainerStyle={{ gap: 12, paddingRight: 8 }}
+                            contentContainerStyle={{ gap: 14, paddingRight: 8 }}
                         >
                             {posts.length > 0 ? (
                                 posts.map((item) => (
@@ -300,9 +308,11 @@ export default function HomeScreen() {
                     )}
                 </View>
 
-                <View style={{ gap: 12 }}>
-                    <SectionTitle
+                <View style={{ gap: 14 }}>
+                    <SectionHeader
+                        variant="story"
                         title="Hỏi đáp nhanh"
+                        subtitle="Hỗ trợ"
                         actionLabel="Xem thêm"
                         onActionPress={() => router.push("/help")}
                     />
