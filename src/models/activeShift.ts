@@ -11,10 +11,3 @@ export type IActiveShift = {
     createdAt?: string;
     updatedAt?: string;
 };
-
-export type CheckInShiftBody = {
-    scheduleId?: string;
-    routeId?: string;
-    routeName?: string;
-    routeCode?: string;
-};

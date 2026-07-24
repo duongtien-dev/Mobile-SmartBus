@@ -1,5 +1,3 @@
-import type { IRoute, RouteSort } from "@/models/route";
-import type { ApiResponse } from "@/services/type";
 import BaseService from "@/services/BaseService";
 
 /**
@@ -16,19 +14,12 @@ class RouteService extends BaseService {
         return this.post("/create", body);
     }
 
-    getRoutes(body: {
-        page?: number;
-        limit?: number;
-        search?: string;
-        sort?: RouteSort;
-        userId?: string;
-        unreviewedOnly?: boolean;
-    } = {}) {
-        return this.post<ApiResponse<IRoute[]>>("/listRoutes", body);
+    getRoutes(body: object = {}) {
+        return this.post("/listRoutes", body);
     }
 
-    getRouteById(body: { id: string }) {
-        return this.post<ApiResponse<IRoute>>("/detail", body);
+    getRouteById(body: object) {
+        return this.post("/detail", body);
     }
 
     updateRoute(body: object) {

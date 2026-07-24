@@ -1,5 +1,3 @@
-import type { IStop } from "@/models/stop";
-import type { ApiResponse } from "@/services/type";
 import BaseService from "@/services/BaseService";
 
 /**
@@ -12,16 +10,12 @@ class StopService extends BaseService {
         super("/stops");
     }
 
-    listStopsByRoute(body: {
-        routeId: string;
-        page?: number;
-        limit?: number;
-    }) {
-        return this.post<ApiResponse<IStop[]>>("/listByRoute", body);
+    listStopsByRoute(body: object) {
+        return this.post("/listByRoute", body);
     }
 
-    getStopById(body: { id: string }) {
-        return this.post<ApiResponse<IStop>>("/detail", body);
+    getStopById(body: object) {
+        return this.post("/detail", body);
     }
 }
 

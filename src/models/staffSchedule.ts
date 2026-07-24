@@ -26,14 +26,3 @@ export type IStaffScheduleItem = {
     createdAt?: string;
     updatedAt?: string;
 };
-
-export type StaffScheduleListResult = {
-    items: IStaffScheduleItem[];
-    from: string;
-    to: string;
-};
-
-export type MyStaffScheduleBody = {
-    from?: string;
-    to?: string;
-};

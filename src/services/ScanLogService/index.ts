@@ -1,5 +1,3 @@
-import type { MyScanLogsBody, ScanLogListResult } from "@/models/scanLog";
-import type { ApiResponse } from "@/services/type";
 import BaseService from "@/services/BaseService";
 
 /**
@@ -11,8 +9,8 @@ class ScanLogService extends BaseService {
         super("/scan-logs");
     }
 
-    getMyScans(body: MyScanLogsBody) {
-        return this.post<ApiResponse<ScanLogListResult>>("/my", body);
+    getMyScans(body: object) {
+        return this.post("/my", body);
     }
 }
 

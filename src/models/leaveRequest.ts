@@ -13,23 +13,3 @@ export interface ILeaveRequest {
     createdAt?: string;
     updatedAt?: string;
 }
-
-export type LeaveRequestListResult = {
-    items: ILeaveRequest[];
-    page: number;
-    limit: number;
-    total: number;
-};
-
-export type SubmitLeaveRequestBody = {
-    /** DD/MM/YYYY hoặc ISO8601 */
-    startDate: string;
-    endDate: string;
-    reason: string;
-};
-
-export type MyLeaveRequestsBody = {
-    page?: number;
-    limit?: number;
-    status?: LeaveRequestStatus;
-};

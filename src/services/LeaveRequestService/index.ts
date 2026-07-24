@@ -1,10 +1,3 @@
-import type {
-    ILeaveRequest,
-    LeaveRequestListResult,
-    MyLeaveRequestsBody,
-    SubmitLeaveRequestBody,
-} from "@/models/leaveRequest";
-import type { ApiResponse } from "@/services/type";
 import BaseService from "@/services/BaseService";
 
 /**
@@ -17,12 +10,12 @@ class LeaveRequestService extends BaseService {
         super("/leave-requests");
     }
 
-    submit(body: SubmitLeaveRequestBody) {
-        return this.post<ApiResponse<ILeaveRequest>>("/submit", body);
+    submit(body: object) {
+        return this.post("/submit", body);
     }
 
-    getMyRequests(body: MyLeaveRequestsBody = {}) {
-        return this.post<ApiResponse<LeaveRequestListResult>>("/my", body);
+    getMyRequests(body: object = {}) {
+        return this.post("/my", body);
     }
 }
 

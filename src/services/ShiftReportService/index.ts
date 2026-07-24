@@ -1,12 +1,3 @@
-import type {
-    MyShiftReportsBody,
-    PreviewShiftReportBody,
-    ShiftReportListResult,
-    ShiftReportPreview,
-    IShiftReport,
-    SubmitShiftReportBody,
-} from "@/models/shiftReport";
-import type { ApiResponse } from "@/services/type";
 import BaseService from "@/services/BaseService";
 
 /**
@@ -22,16 +13,16 @@ class ShiftReportService extends BaseService {
         super("/shift-reports");
     }
 
-    preview(body: PreviewShiftReportBody) {
-        return this.post<ApiResponse<ShiftReportPreview>>("/preview", body);
+    preview(body: object) {
+        return this.post("/preview", body);
     }
 
-    submit(body: SubmitShiftReportBody) {
-        return this.post<ApiResponse<IShiftReport>>("/submit", body);
+    submit(body: object) {
+        return this.post("/submit", body);
     }
 
-    getMyReports(body: MyShiftReportsBody = {}) {
-        return this.post<ApiResponse<ShiftReportListResult>>("/my", body);
+    getMyReports(body: object = {}) {
+        return this.post("/my", body);
     }
 }
 

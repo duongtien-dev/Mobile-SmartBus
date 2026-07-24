@@ -1,8 +1,3 @@
-import type {
-    MyStaffScheduleBody,
-    StaffScheduleListResult,
-} from "@/models/staffSchedule";
-import type { ApiResponse } from "@/services/type";
 import BaseService from "@/services/BaseService";
 
 /**
@@ -14,8 +9,8 @@ class StaffScheduleService extends BaseService {
         super("/staff-schedules");
     }
 
-    getMySchedule(body: MyStaffScheduleBody = {}) {
-        return this.post<ApiResponse<StaffScheduleListResult>>("/my", body);
+    getMySchedule(body: object = {}) {
+        return this.post("/my", body);
     }
 }
 

@@ -1,5 +1,3 @@
-import type { CheckInShiftBody, IActiveShift } from "@/models/activeShift";
-import type { ApiResponse } from "@/services/type";
 import BaseService from "@/services/BaseService";
 
 /**
@@ -13,16 +11,16 @@ class StaffShiftService extends BaseService {
         super("/staff-shifts");
     }
 
-    checkIn(body: CheckInShiftBody = {}) {
-        return this.post<ApiResponse<IActiveShift>>("/check-in", body);
+    checkIn(body: object = {}) {
+        return this.post("/check-in", body);
     }
 
     getActive() {
-        return this.post<ApiResponse<IActiveShift | null>>("/active", {});
+        return this.post("/active", {});
     }
 
     end() {
-        return this.post<ApiResponse<IActiveShift | null>>("/end", {});
+        return this.post("/end", {});
     }
 }
 
