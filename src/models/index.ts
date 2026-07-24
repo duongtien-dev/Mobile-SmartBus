@@ -11,5 +11,10 @@ export type {
     ShiftReportListResult,
     VerifyScannedQrResult,
 } from './shiftReport';
+export type {
+    ILeaveRequest,
+    LeaveRequestStatus,
+    LeaveRequestListResult,
+} from './leaveRequest';
 export type { ITrip, ITripSegment, TripSegmentType } from './trip';
 export type { IUser, UserRole } from './user';

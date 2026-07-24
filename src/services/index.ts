@@ -11,3 +11,4 @@ export { paymentService } from './PaymentService';
 export { tripService } from './TripService';
 export { favoriteRouteService } from './FavoriteRouteService';
 export { shiftReportService } from './ShiftReportService';
+export { leaveRequestService } from './LeaveRequestService';

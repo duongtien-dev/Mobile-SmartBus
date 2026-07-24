@@ -1,5 +1,6 @@
-import StaffShiftHistoryScreen from "@/screen/Staff/ShiftHistory";
+import { Redirect } from "expo-router";
 
-export default function StaffShiftHistoryRoute() {
-    return <StaffShiftHistoryScreen />;
+/** Alias cũ → Lịch sử hoạt động */
+export default function StaffShiftHistoryRedirect() {
+    return <Redirect href={"/staff/activity-history" as never} />;
 }

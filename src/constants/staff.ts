@@ -1,3 +1,4 @@
+import type { LeaveRequestStatus } from "@/models/leaveRequest";
 import type { ShiftReportStatus } from "@/models/shiftReport";
 
 export type StaffShiftStatus = "pending_checkin" | "checked_in" | "completed";
@@ -21,6 +22,12 @@ export type StaffNotificationItem = {
 };
 
 export const STAFF_SHIFT_STATUS_LABEL: Record<ShiftReportStatus, string> = {
+    submitted: "Chờ duyệt",
+    approved: "Đã duyệt",
+    rejected: "Từ chối",
+};
+
+export const STAFF_LEAVE_STATUS_LABEL: Record<LeaveRequestStatus, string> = {
     submitted: "Chờ duyệt",
     approved: "Đã duyệt",
     rejected: "Từ chối",
