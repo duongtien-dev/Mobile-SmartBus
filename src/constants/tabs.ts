@@ -2,7 +2,6 @@ import {
     Bell,
     CreditCard,
     Home,
-    QrCode,
     User,
     type LucideIcon,
 } from "lucide-react-native";
@@ -10,14 +9,12 @@ import {
 export type TabRouteName =
     | "index"
     | "notifications"
-    | "scan"
     | "payment"
     | "profile";
 
 export type TabConfig = {
     label: string;
     icon: LucideIcon;
-    isCenter?: boolean;
     activeColor: string;
     inactiveColor: string;
     screenIconColor: string;
@@ -40,15 +37,6 @@ export const TAB_CONFIG: Record<TabRouteName, TabConfig> = {
         inactiveColor: "#94a3b8",
         screenIconColor: "#00a2e8",
         screenIconBgClass: "bg-accent-light",
-    },
-    scan: {
-        label: "Quét mã",
-        icon: QrCode,
-        isCenter: true,
-        activeColor: "#ffffff",
-        inactiveColor: "#ffffff",
-        screenIconColor: "#ffffff",
-        screenIconBgClass: "bg-accent",
     },
     payment: {
         label: "Thanh toán",
