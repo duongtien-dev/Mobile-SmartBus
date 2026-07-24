@@ -201,8 +201,7 @@ export function ScanQrModal({
                     ) : (
                         <View className="gap-4 rounded-2xl bg-card p-4 shadow-sm">
                             <Text className="text-sm text-text-secondary">
-                                Nhập mã QR in trên vé (vd. TICKET-…). Cùng API
-                                kiểm tra với quét camera.
+                                Nhập mã QR in trên vé (TICKET-xxxxxx)
                             </Text>
                             <InputText
                                 value={qrCode}
