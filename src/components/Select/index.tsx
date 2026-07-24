@@ -1,71 +1,164 @@
+import { cn } from "@/lib/utils";
+import { Check, ChevronDown } from "lucide-react-native";
+import { useMemo, useRef, useState } from "react";
 import {
-    Select as BaseSelect,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from '@/components/ui/select';
-import { cn } from '@/lib/utils';
-import * as React from 'react';
+    FlatList,
+    Modal,
+    Pressable,
+    Text,
+    View,
+    type LayoutRectangle,
+} from "react-native";
 
 type SelectOptionType = {
     value: string;
     label: string;
 };
 
-type SelectProps = React.ComponentPropsWithoutRef<typeof BaseSelect> & {
+type SelectProps = {
+    value?: string;
+    onValueChange?: (value: string) => void;
     placeholder?: string;
-    children?: React.ReactNode; // Đổi thành optional vì bạn có thể chỉ truyền options
+    options?: SelectOptionType[];
     className?: string;
     triggerClassName?: string;
     contentClassName?: string;
-    options?: SelectOptionType[]; // Thêm prop options
+    disabled?: boolean;
 };
 
-type SelectOptionProps = React.ComponentPropsWithoutRef<typeof SelectItem>;
+type TriggerLayout = LayoutRectangle & { pageX: number; pageY: number };
 
-type SelectComponent = React.FC<SelectProps> & {
-    Option: React.FC<SelectOptionProps>;
-};
-
-const Select: SelectComponent = ({
-    placeholder = 'Chọn',
-    children,
+export function Select({
+    value,
+    onValueChange,
+    placeholder = "Chọn",
+    options = [],
     className,
     triggerClassName,
     contentClassName,
-    options = [], // Gán default bằng mảng rỗng
-    ...props
-}) => {
-    return (
-        <BaseSelect {...props}>
-            <SelectTrigger className={cn(className, triggerClassName)}>
-                <SelectValue
-                    className="text-sm text-foreground native:text-lg"
-                    placeholder={placeholder}
-                />
-            </SelectTrigger>
-            <SelectContent className={contentClassName}>
-                {/* Ưu tiên render options nếu có truyền vào, ngược lại fallback về children */}
-                {options.length > 0
-                    ? options.map((option) => (
-                        <Select.Option key={option.value} value={option.value}>
-                            {option.label}
-                        </Select.Option>
-                    ))
-                    : children}
-            </SelectContent>
-        </BaseSelect>
+    disabled = false,
+}: SelectProps) {
+    const [open, setOpen] = useState(false);
+    const [triggerLayout, setTriggerLayout] = useState<TriggerLayout | null>(
+        null,
     );
-};
+    const triggerRef = useRef<View>(null);
 
-Select.Option = ({ children, className, ...props }) => {
-    return (
-        <SelectItem className={className} {...props}>
-            {children}
-        </SelectItem>
+    const selectedOption = useMemo(
+        () => options.find((option) => option.value === value),
+        [options, value],
     );
-};
-Select.Option.displayName = 'Select.Option';
 
-export { Select };
+    const openDropdown = () => {
+        triggerRef.current?.measureInWindow((x, y, width, height) => {
+            setTriggerLayout({ x: 0, y: 0, width, height, pageX: x, pageY: y });
+            setOpen(true);
+        });
+    };
+
+    const handleSelect = (nextValue: string) => {
+        onValueChange?.(nextValue);
+        setOpen(false);
+    };
+
+    return (
+        <>
+            <View ref={triggerRef} collapsable={false} className="w-full">
+                <Pressable
+                    accessibilityRole="button"
+                    disabled={disabled}
+                    className={cn(
+                        "h-10 w-full flex-row items-center justify-between rounded-md border border-border bg-background px-3 active:opacity-80",
+                        disabled && "opacity-50",
+                        className,
+                        triggerClassName,
+                    )}
+                    onPress={openDropdown}
+                >
+                    <Text
+                        className={cn(
+                            "flex-1 text-sm",
+                            selectedOption
+                                ? "text-text-primary"
+                                : "text-text-muted",
+                        )}
+                        numberOfLines={1}
+                    >
+                        {selectedOption?.label ?? placeholder}
+                    </Text>
+                    <ChevronDown color="#6b7280" size={18} />
+                </Pressable>
+            </View>
+
+            <Modal
+                transparent
+                visible={open}
+                animationType="fade"
+                onRequestClose={() => setOpen(false)}
+            >
+                <View className="flex-1">
+                    <Pressable
+                        className="absolute inset-0 bg-black/40"
+                        onPress={() => setOpen(false)}
+                    />
+
+                    {triggerLayout ? (
+                        <View
+                            className={cn(
+                                "absolute max-h-60 overflow-hidden rounded-xl border border-border bg-background",
+                                contentClassName,
+                            )}
+                            style={{
+                                top: triggerLayout.pageY + triggerLayout.height + 4,
+                                left: triggerLayout.pageX,
+                                width: triggerLayout.width,
+                            }}
+                        >
+                            <FlatList
+                                data={options}
+                                keyExtractor={(item) => item.value}
+                                keyboardShouldPersistTaps="handled"
+                                nestedScrollEnabled
+                                renderItem={({ item }) => {
+                                    const isSelected = item.value === value;
+
+                                    return (
+                                        <Pressable
+                                            className="w-full flex-row items-center gap-3 border-b border-border px-4 py-3.5 active:bg-surface"
+                                            onPress={() =>
+                                                handleSelect(item.value)
+                                            }
+                                        >
+                                            <Text
+                                                className={cn(
+                                                    "min-w-0 flex-1 text-base",
+                                                    isSelected
+                                                        ? "font-semibold text-primary"
+                                                        : "text-text-primary",
+                                                )}
+                                                numberOfLines={2}
+                                            >
+                                                {item.label}
+                                            </Text>
+                                            {isSelected ? (
+                                                <Check
+                                                    color="#005f8b"
+                                                    size={18}
+                                                />
+                                            ) : null}
+                                        </Pressable>
+                                    );
+                                }}
+                                ListEmptyComponent={
+                                    <Text className="px-4 py-6 text-center text-sm text-text-muted">
+                                        Không có lựa chọn
+                                    </Text>
+                                }
+                            />
+                        </View>
+                    ) : null}
+                </View>
+            </Modal>
+        </>
+    );
+}
