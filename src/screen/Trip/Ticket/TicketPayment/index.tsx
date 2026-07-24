@@ -11,6 +11,17 @@ import Passenger from "./Passenger";
 import PaymentMethods from "./PaymentMethods";
 import TicketSummary from "./TicketSummary";
 
+function goToTicketSuccess() {
+    // dismissAll rồi replace — tránh race (dismiss bị nuốt nếu navigate ngay)
+    // Stack mua vé bị xóa; success đứng một mình → back không về form
+    if (router.canDismiss()) {
+        router.dismissAll();
+    }
+    setTimeout(() => {
+        router.replace("/trips/tickets/success" as never);
+    }, 0);
+}
+
 export default function TicketPaymentScreen() {
     const totalPrice = useTripBookingStore((state) => state.totalPrice);
     const selectedMethodId = useTripBookingStore(
@@ -52,12 +63,13 @@ export default function TicketPaymentScreen() {
             }
 
             setLastPurchasedTicket(ticket);
+
             Toast.show({
                 type: "success",
                 text1: "Thanh toán thành công",
                 text2: "Vé của bạn đã sẵn sàng",
             });
-            router.replace("/trips/tickets/success" as never);
+            goToTicketSuccess();
         } catch (err: unknown) {
             Toast.show({
                 type: "error",

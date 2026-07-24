@@ -51,6 +51,9 @@ export default function SingleTicketScreen() {
     const totalPrice = computeSingleTicketPrice(selectedTicketProduct?.unitPrice);
 
     const handleSubmit = () => {
+        if (!formData.seatCount) {
+            handleChangForm({ seatCount: "1" });
+        }
         setTotalPrice(totalPrice);
         router.push("/trips/tickets/payment" as never);
     };

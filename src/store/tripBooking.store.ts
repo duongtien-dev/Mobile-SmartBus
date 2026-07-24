@@ -41,7 +41,7 @@ const initialSingleForm: ISingleTicketForm = {
 
 const initialMonthlyForm: IMonthlyTicketForm = {
     usageMonth: moment(now()).format("MM/YYYY"),
-    ticketCount: "",
+    ticketCount: "1",
 };
 
 type TripBookingState = {
@@ -55,6 +55,8 @@ type TripBookingState = {
     selectedPaymentMethodId: string;
     totalPrice: number;
     lastPurchasedTicket: ITicket | null;
+    /** Tăng khi reset booking — Home clear ô điểm đi/đến */
+    homeSearchResetKey: number;
 
     setSearchContext: (context: ISearchContext) => void;
     setPrefillOrigin: (origin: ISuggestLocation) => void;
@@ -91,6 +93,7 @@ const useTripBookingStore = create<TripBookingState>((set, get) => ({
     selectedPaymentMethodId: "",
     totalPrice: 0,
     lastPurchasedTicket: null,
+    homeSearchResetKey: 0,
 
     setSearchContext: (context) =>
         set({
@@ -154,11 +157,12 @@ const useTripBookingStore = create<TripBookingState>((set, get) => ({
     },
 
     resetBooking: () =>
-        set({
+        set((state) => ({
             searchContext: null,
             prefillOrigin: null,
             ...clearedSelection,
-        }),
+            homeSearchResetKey: state.homeSearchResetKey + 1,
+        })),
 }));
 
 export function computeSingleTicketPrice(unitPrice?: number) {

@@ -42,6 +42,9 @@ export default function HomeScreen() {
     const clearPrefillOrigin = useTripBookingStore(
         (state) => state.clearPrefillOrigin,
     );
+    const homeSearchResetKey = useTripBookingStore(
+        (state) => state.homeSearchResetKey,
+    );
     const [origin, setOrigin] = useState("");
     const [destination, setDestination] = useState("");
     const [originLocation, setOriginLocation] =
@@ -81,6 +84,15 @@ export default function HomeScreen() {
         loadFirstPage();
         loadFeaturedRoutes();
     }, []);
+
+    // Sau mua vé (resetBooking) — xóa ô điểm đi/đến
+    useEffect(() => {
+        if (homeSearchResetKey === 0) return;
+        setOrigin("");
+        setDestination("");
+        setOriginLocation(null);
+        setDestinationLocation(null);
+    }, [homeSearchResetKey]);
 
     useFocusEffect(
         useCallback(() => {

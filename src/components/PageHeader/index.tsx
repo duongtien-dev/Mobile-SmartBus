@@ -8,6 +8,8 @@ type PageHeaderProps = ViewProps & {
     isIconBack?: boolean;
     className?: string;
     children?: React.ReactNode;
+    /** Mặc định router.back(); truyền để override (vd. về Home sau mua vé) */
+    onBackPress?: () => void;
 };
 
 export function PageHeader({
@@ -16,6 +18,7 @@ export function PageHeader({
     className,
     style,
     children,
+    onBackPress,
     ...props
 }: PageHeaderProps) {
     return (
@@ -48,7 +51,9 @@ export function PageHeader({
                             accessibilityRole="button"
                             accessibilityLabel="Quay lại"
                             className="h-10 w-10 items-center justify-center active:opacity-80"
-                            onPress={() => router.back()}
+                            onPress={() =>
+                                onBackPress ? onBackPress() : router.back()
+                            }
                             hitSlop={8}
                         >
                             <ArrowLeft color="#005f8b" size={24} />

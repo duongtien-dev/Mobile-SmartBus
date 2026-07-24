@@ -13,13 +13,19 @@ const TicketSummary = () => {
     const origin = searchContext?.originName ?? "Điểm đi";
     const dest = searchContext?.destinationName ?? "Điểm đến";
     const isSingleTicket = ticketType === "single";
+    const quantity = Math.max(
+        Number(
+            isSingleTicket ? singleForm.seatCount : monthlyForm.ticketCount,
+        ) || 1,
+        1,
+    );
 
     const config = isSingleTicket
         ? {
             badgeLabel: "VÉ LƯỢT ĐI",
             primaryLabel: "Khởi hành",
             primaryValue: `${singleForm.departureTime} • ${singleForm.departureDate}`,
-            countValue: `${(singleForm.seatCount || "0").padStart(2, "0")} ghế`,
+            countValue: `${quantity} ghế`,
             pickupValue: bookingSelection?.startStopName || "—",
         }
         : {
@@ -29,7 +35,7 @@ const TicketSummary = () => {
                     : "VÉ THÁNG ĐƠN TUYẾN",
             primaryLabel: "Tháng sử dụng",
             primaryValue: monthlyForm.usageMonth || "—",
-            countValue: `${(monthlyForm.ticketCount || "0").padStart(2, "0")} vé`,
+            countValue: `${quantity} vé`,
             pickupValue: "Không giới hạn",
         };
 

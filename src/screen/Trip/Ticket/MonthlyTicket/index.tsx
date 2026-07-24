@@ -52,7 +52,16 @@ export default function MonthlyTicketScreen() {
     );
 
     const handleSubmit = () => {
-        setTotalPrice(totalPrice);
+        const ticketCount = formData.ticketCount || "1";
+        if (!formData.ticketCount) {
+            handleChangForm({ ticketCount });
+        }
+        setTotalPrice(
+            computeMonthlyTicketPrice(
+                ticketCount,
+                selectedTicketProduct?.unitPrice,
+            ),
+        );
         router.push("/trips/tickets/payment" as never);
     };
 
