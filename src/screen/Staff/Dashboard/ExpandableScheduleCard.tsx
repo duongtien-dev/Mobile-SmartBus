@@ -2,7 +2,7 @@ import type { IStaffScheduleItem } from "@/models/staffSchedule";
 import { Bus, ChevronDown, ChevronUp } from "lucide-react-native";
 import { Pressable, Text, View } from "react-native";
 
-type ExpandableScheduleCardProps = {
+type Props = {
     item: IStaffScheduleItem;
     expanded: boolean;
     onToggle: () => void;
@@ -22,14 +22,10 @@ function DetailRow({ label, value }: { label: string; value: string }) {
     );
 }
 
-export function ExpandableScheduleCard({
-    item,
-    expanded,
-    onToggle,
-    onCheckIn,
-    checkInLabel,
-    checkInDisabled = false,
-}: ExpandableScheduleCardProps) {
+export function ExpandableScheduleCard(props: Props) {
+    // destructuring props
+    const { item, expanded, onToggle, onCheckIn, checkInLabel, checkInDisabled } = props;
+
     const Chevron = expanded ? ChevronUp : ChevronDown;
 
     return (

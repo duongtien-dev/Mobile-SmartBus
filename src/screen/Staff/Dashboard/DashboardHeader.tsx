@@ -2,16 +2,11 @@ import { StaffHeader } from "@/components/StaffHeader";
 import { router, type Href } from "expo-router";
 import { Bell, LogOut, UserRound } from "lucide-react-native";
 import { Pressable, Text, View } from "react-native";
+import { useDashboardHeader } from "./hooks/useDashboardHeader";
 
-type DashboardHeaderProps = {
-    displayName: string;
-    onLogout: () => void;
-};
+export function DashboardHeader() {
+    const { displayName, handleLogout } = useDashboardHeader();
 
-export function DashboardHeader({
-    displayName,
-    onLogout,
-}: DashboardHeaderProps) {
     return (
         <StaffHeader>
             <View className="flex-row items-center justify-between gap-3">
@@ -46,7 +41,7 @@ export function DashboardHeader({
                         accessibilityRole="button"
                         accessibilityLabel="Đăng xuất"
                         className="h-10 w-10 items-center justify-center active:opacity-80"
-                        onPress={onLogout}
+                        onPress={handleLogout}
                         hitSlop={6}
                     >
                         <LogOut color="#ffffff" size={22} />

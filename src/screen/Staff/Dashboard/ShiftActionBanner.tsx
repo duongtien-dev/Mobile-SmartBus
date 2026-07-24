@@ -1,28 +1,19 @@
-import type { IActiveShift } from "@/models/activeShift";
-import type { IRoute } from "@/models/route";
 import { router, type Href } from "expo-router";
 import { Bus, ChevronRight } from "lucide-react-native";
 import { ActivityIndicator, Pressable, Text, View } from "react-native";
+import { useActiveShiftBanner } from "./hooks/useActiveShiftBanner";
 
-type ShiftActionBannerProps = {
-    loading: boolean;
-    hasActiveShift: boolean;
-    activeShift: IActiveShift | null;
-    scanTotal: number;
-    primaryRoute: IRoute | null;
-    isCheckingIn: boolean;
-    onCheckIn: () => void;
-};
+export function ShiftActionBanner() {
+    const {
+        loading,
+        hasActiveShift,
+        activeShift,
+        scanTotal,
+        primaryRoute,
+        isCheckingIn,
+        handleCheckIn,
+    } = useActiveShiftBanner();
 
-export function ShiftActionBanner({
-    loading,
-    hasActiveShift,
-    activeShift,
-    scanTotal,
-    primaryRoute,
-    isCheckingIn,
-    onCheckIn,
-}: ShiftActionBannerProps) {
     if (loading) {
         return (
             <View className="items-center rounded-2xl bg-card py-5 shadow-sm">
@@ -61,7 +52,7 @@ export function ShiftActionBanner({
     return (
         <Pressable
             accessibilityRole="button"
-            onPress={onCheckIn}
+            onPress={handleCheckIn}
             disabled={isCheckingIn}
             className="flex-row items-center gap-3 rounded-2xl bg-[#22c55e] px-4 py-3.5 active:opacity-90"
         >

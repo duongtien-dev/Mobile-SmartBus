@@ -1,26 +1,18 @@
-import type { IStaffScheduleItem } from "@/models/staffSchedule";
 import { ActivityIndicator, Text, View } from "react-native";
 import { ExpandableScheduleCard } from "./ExpandableScheduleCard";
+import { useStaffWeekSchedule } from "./hooks/useStaffWeekSchedule";
 
-type ScheduleSectionProps = {
-    items: IStaffScheduleItem[];
-    loading: boolean;
-    expandedId: string;
-    checkInLabel: string;
-    isCheckingIn: boolean;
-    onToggle: (id: string) => void;
-    onCheckIn: (item: IStaffScheduleItem) => void;
-};
+export function ScheduleSection() {
+    const {
+        items,
+        loading,
+        expandedId,
+        checkInLabel,
+        isCheckingIn,
+        toggleExpanded,
+        handleCheckIn,
+    } = useStaffWeekSchedule();
 
-export function ScheduleSection({
-    items,
-    loading,
-    expandedId,
-    checkInLabel,
-    isCheckingIn,
-    onToggle,
-    onCheckIn,
-}: ScheduleSectionProps) {
     return (
         <View className="gap-3">
             <View>
@@ -51,8 +43,8 @@ export function ScheduleSection({
                             key={item._id}
                             item={item}
                             expanded={expandedId === item._id}
-                            onToggle={() => onToggle(item._id)}
-                            onCheckIn={() => onCheckIn(item)}
+                            onToggle={() => toggleExpanded(item._id)}
+                            onCheckIn={() => handleCheckIn(item)}
                             checkInLabel={checkInLabel}
                             checkInDisabled={isCheckingIn}
                         />

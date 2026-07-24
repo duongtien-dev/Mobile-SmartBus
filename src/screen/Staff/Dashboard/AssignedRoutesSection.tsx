@@ -1,15 +1,9 @@
-import type { IRoute } from "@/models/route";
 import { ActivityIndicator, Text, View } from "react-native";
+import { useAssignedRoutes } from "./hooks/useAssignedRoutes";
 
-type AssignedRoutesSectionProps = {
-    routes: IRoute[];
-    loading: boolean;
-};
+export function AssignedRoutesSection() {
+    const { routes, loading } = useAssignedRoutes();
 
-export function AssignedRoutesSection({
-    routes,
-    loading,
-}: AssignedRoutesSectionProps) {
     return (
         <View className="gap-3">
             <Text className="text-base font-bold text-text-primary">
