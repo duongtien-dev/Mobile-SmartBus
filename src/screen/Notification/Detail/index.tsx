@@ -86,12 +86,13 @@ export default function NoticeDetailScreen({ id }: Props) {
                     </Text>
                 </View>
 
-                {post.images ? (
-                    <View className="mt-5 overflow-hidden rounded-xl">
+                {post.images?.[0] ? (
+                    <View className="mt-5 overflow-hidden rounded-xl bg-surface">
                         <Image
-                            className="h-48 w-full"
+                            source={{ uri: post.images[0] }}
+                            style={{ width: "100%", height: 192 }}
                             contentFit="cover"
-                            source={post.images?.[0]}
+                            transition={200}
                         />
                     </View>
                 ) : null}

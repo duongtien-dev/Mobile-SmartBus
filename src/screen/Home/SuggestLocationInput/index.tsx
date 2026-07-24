@@ -17,14 +17,18 @@ type Props = {
     value: string;
     onChangeText: (value: string) => void;
     onSelect?: (item: ISuggestLocation) => void;
+    /** Cao hơn các block phía dưới trong ScrollView (Android cần elevation) */
     zIndex?: number;
 };
 
-export function SuggestLocationInput({ ...Props }: Props) {
-    // Destructure props
-    const { label, placeholder, value, onChangeText, onSelect, zIndex = 10 } = Props;
-    // Destructure props
-
+export function SuggestLocationInput({
+    label,
+    placeholder,
+    value,
+    onChangeText,
+    onSelect,
+    zIndex = 30,
+}: Props) {
     const [isFocused, setIsFocused] = useState(false);
     const keyword = value.trim();
 
@@ -34,7 +38,6 @@ export function SuggestLocationInput({ ...Props }: Props) {
         loadFetchFn,
     } = useFetch<ISuggestLocation[]>({
         fetchFn: async () => {
-
             const response = await tripService.suggestLocations({
                 keyword,
             });
@@ -65,10 +68,19 @@ export function SuggestLocationInput({ ...Props }: Props) {
     };
 
     return (
-        <View style={{ zIndex, elevation: zIndex }}>
-            <Text className="text-sm font-semibold text-text-primary">{label}</Text>
+        <View
+            collapsable={false}
+            style={{ zIndex, elevation: zIndex, overflow: "visible" }}
+        >
+            <Text className="text-sm font-semibold text-text-primary">
+                {label}
+            </Text>
 
-            <View className="relative mt-1.5">
+            <View
+                className="relative mt-1.5"
+                style={{ overflow: "visible", zIndex }}
+                collapsable={false}
+            >
                 <InputText
                     placeholder={placeholder}
                     value={value}
@@ -82,12 +94,24 @@ export function SuggestLocationInput({ ...Props }: Props) {
 
                 {showSuggestions ? (
                     <View
-                        className="absolute inset-x-0 top-full mt-1 overflow-hidden rounded-lg border border-border bg-background shadow-sm"
-                        style={{ zIndex: zIndex + 1, elevation: zIndex + 1 }}
+                        className="absolute inset-x-0 top-full mt-1 rounded-lg border border-border bg-white"
+                        style={{
+                            zIndex: zIndex + 10,
+                            elevation: zIndex + 10,
+                            maxHeight: 192,
+                            shadowColor: "#000",
+                            shadowOffset: { width: 0, height: 4 },
+                            shadowOpacity: 0.15,
+                            shadowRadius: 8,
+                        }}
+                        collapsable={false}
                     >
                         {isLoading ? (
                             <View className="items-center py-3">
-                                <ActivityIndicator color="#005f8b" size="small" />
+                                <ActivityIndicator
+                                    color="#005f8b"
+                                    size="small"
+                                />
                             </View>
                         ) : (
                             <ScrollView

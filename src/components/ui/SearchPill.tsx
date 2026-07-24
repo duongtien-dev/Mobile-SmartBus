@@ -55,6 +55,8 @@ export function SearchPillContainer({
                 "gap-3 rounded-2xl bg-card p-4 shadow-sm",
                 className,
             )}
+            style={{ overflow: "visible", zIndex: 20, elevation: 20 }}
+            collapsable={false}
         >
             {children}
         </View>

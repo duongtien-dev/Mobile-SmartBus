@@ -124,9 +124,16 @@ export default function HomeScreen() {
         <View className="flex-1 bg-app-shell">
             <ScrollView
                 className="flex-1"
-                contentContainerClassName="gap-5 px-5 pb-10 pt-3"
+                contentContainerStyle={{
+                    overflow: "visible",
+                    gap: 20,
+                    paddingHorizontal: 20,
+                    paddingTop: 12,
+                    paddingBottom: 40,
+                }}
                 keyboardShouldPersistTaps="handled"
                 showsVerticalScrollIndicator={false}
+                removeClippedSubviews={false}
             >
                 <View className="w-full flex-row items-start justify-between gap-3">
                     <View className="min-w-0 flex-1 gap-0.5">
@@ -148,40 +155,47 @@ export default function HomeScreen() {
                     </Pressable>
                 </View>
 
-                <SearchPillContainer>
-                    <SuggestLocationInput
-                        label="Điểm đi"
-                        placeholder="Địa chỉ hiện tại"
-                        value={origin}
-                        onChangeText={(text) => {
-                            setOrigin(text);
-                            setOriginLocation(null);
-                        }}
-                        onSelect={setOriginLocation}
-                    />
+                <View
+                    collapsable={false}
+                    style={{ zIndex: 50, elevation: 50, overflow: "visible" }}
+                >
+                    <SearchPillContainer>
+                        <SuggestLocationInput
+                            label="Điểm đi"
+                            placeholder="Địa chỉ hiện tại"
+                            value={origin}
+                            onChangeText={(text) => {
+                                setOrigin(text);
+                                setOriginLocation(null);
+                            }}
+                            onSelect={setOriginLocation}
+                            zIndex={60}
+                        />
 
-                    <SuggestLocationInput
-                        label="Điểm đến"
-                        placeholder="Bạn muốn đến đâu?"
-                        value={destination}
-                        onChangeText={(text) => {
-                            setDestination(text);
-                            setDestinationLocation(null);
-                        }}
-                        onSelect={setDestinationLocation}
-                    />
+                        <SuggestLocationInput
+                            label="Điểm đến"
+                            placeholder="Bạn muốn đến đâu?"
+                            value={destination}
+                            onChangeText={(text) => {
+                                setDestination(text);
+                                setDestinationLocation(null);
+                            }}
+                            onSelect={setDestinationLocation}
+                            zIndex={40}
+                        />
 
-                    <Button
-                        type="primary"
-                        variant="bold"
-                        className="w-full rounded-xl"
-                        onPress={handleSearch}
-                    >
-                        Tìm chuyến
-                    </Button>
-                </SearchPillContainer>
+                        <Button
+                            type="primary"
+                            variant="bold"
+                            className="w-full rounded-xl"
+                            onPress={handleSearch}
+                        >
+                            Tìm chuyến
+                        </Button>
+                    </SearchPillContainer>
+                </View>
 
-                <Card padding="md" shadow>
+                <Card padding="sm" shadow>
                     <View className="flex-row justify-between">
                         {QUICK_ACTIONS.map((action) => (
                             <QuickActionButton
@@ -193,7 +207,7 @@ export default function HomeScreen() {
                     </View>
                 </Card>
 
-                <View className="gap-3">
+                <View style={{ gap: 12 }}>
                     <SectionTitle
                         title="Tuyến xe nổi bật"
                         actionLabel="Xem tất cả"
@@ -209,7 +223,7 @@ export default function HomeScreen() {
                             horizontal
                             nestedScrollEnabled
                             showsHorizontalScrollIndicator={false}
-                            contentContainerClassName="gap-3 pr-2"
+                            contentContainerStyle={{ gap: 12, paddingRight: 8 }}
                         >
                             {routeList.map((route) => (
                                 <FeaturedRouteCard
@@ -227,13 +241,13 @@ export default function HomeScreen() {
                     )}
                 </View>
 
-                <View className="gap-3">
+                <View style={{ gap: 12 }}>
                     <SectionTitle title="Mẹo di chuyển" />
                     <ScrollView
                         horizontal
                         nestedScrollEnabled
                         showsHorizontalScrollIndicator={false}
-                        contentContainerClassName="gap-3 pr-2"
+                        contentContainerStyle={{ gap: 12, paddingRight: 8 }}
                     >
                         {HOME_TIPS.map((tip) => (
                             <TipCard key={tip.id} tip={tip} />
@@ -241,7 +255,7 @@ export default function HomeScreen() {
                     </ScrollView>
                 </View>
 
-                <View className="gap-3">
+                <View style={{ gap: 12 }}>
                     <SectionTitle
                         title="Khám phá tin tức"
                         actionLabel="Xem tất cả"
@@ -257,7 +271,7 @@ export default function HomeScreen() {
                             horizontal
                             nestedScrollEnabled
                             showsHorizontalScrollIndicator={false}
-                            contentContainerClassName="gap-3 pr-2"
+                            contentContainerStyle={{ gap: 12, paddingRight: 8 }}
                         >
                             {posts.length > 0 ? (
                                 posts.map((item) => (
@@ -274,7 +288,7 @@ export default function HomeScreen() {
                     )}
                 </View>
 
-                <View className="gap-3">
+                <View style={{ gap: 12 }}>
                     <SectionTitle
                         title="Hỏi đáp nhanh"
                         actionLabel="Xem thêm"

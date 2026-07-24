@@ -17,7 +17,7 @@ export function SectionTitle({
     return (
         <View
             className={cn(
-                "mb-3 flex-row items-center justify-between px-1",
+                "mb-1 flex-row items-center justify-between px-1",
                 className,
             )}
         >
