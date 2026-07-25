@@ -1,17 +1,18 @@
 import { StaffHeader } from "@/components/StaffHeader";
-import { StatusPill } from "@/components/ui/StatusPill";
 import TabContainer from "@/components/TabContainer";
+import { StatusPill } from "@/components/ui/StatusPill";
 import {
-    STAFF_LEAVE_STATUS_LABEL,
-    STAFF_SHIFT_STATUS_LABEL,
+    getStaffLeaveStatusLabel,
+    getStaffShiftStatusLabel,
 } from "@/constants/staff";
 import usePaginationList from "@/hooks/usePaginationList";
+import { useTranslation } from "@/i18n";
 import type { ILeaveRequest, LeaveRequestStatus } from "@/models/leaveRequest";
 import type { IShiftReport, ShiftReportStatus } from "@/models/shiftReport";
 import { leaveRequestService } from "@/services/LeaveRequestService";
 import { shiftReportService } from "@/services/ShiftReportService";
 import moment from "moment";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
     ActivityIndicator,
     FlatList,
@@ -19,12 +20,9 @@ import {
     View,
 } from "react-native";
 
-const ACTIVITY_TABS = [
-    { key: "shifts", label: "Lịch sử ca" },
-    { key: "activities", label: "Hoạt động" },
-] as const;
+const ACTIVITY_TAB_KEYS = ["shifts", "activities"] as const;
 
-type ActivityTab = (typeof ACTIVITY_TABS)[number]["key"];
+type ActivityTab = (typeof ACTIVITY_TAB_KEYS)[number];
 
 function statusVariant(
     status: ShiftReportStatus | LeaveRequestStatus,
@@ -39,6 +37,8 @@ function formatShiftWindow(start: string, end: string) {
 }
 
 function ShiftHistoryCard({ item }: { item: IShiftReport }) {
+    const { t, locale } = useTranslation();
+
     return (
         <View className="border-b border-border px-5 py-4">
             <View className="mb-3 flex-row items-center justify-between gap-3">
@@ -46,7 +46,7 @@ function ShiftHistoryCard({ item }: { item: IShiftReport }) {
                     {moment(item.shiftStartAt).format("DD/MM/YYYY")}
                 </Text>
                 <StatusPill
-                    label={STAFF_SHIFT_STATUS_LABEL[item.status]}
+                    label={getStaffShiftStatusLabel(item.status)}
                     variant={statusVariant(item.status)}
                     className="rounded-md"
                 />
@@ -56,26 +56,39 @@ function ShiftHistoryCard({ item }: { item: IShiftReport }) {
 
             <View className="flex-row">
                 <View className="flex-1 gap-1">
-                    <Text className="text-xs text-text-muted">Thời gian ca</Text>
+                    <Text className="text-xs text-text-muted">
+                        {t("staff.activity.shiftTime")}
+                    </Text>
                     <Text className="text-sm font-semibold text-primary">
                         {formatShiftWindow(item.shiftStartAt, item.shiftEndAt)}
                     </Text>
                 </View>
                 <View className="flex-1 items-end gap-1">
-                    <Text className="text-xs text-text-muted">Đã phục vụ</Text>
+                    <Text className="text-xs text-text-muted">
+                        {t("staff.activity.served")}
+                    </Text>
                     <Text className="text-sm font-semibold text-primary">
-                        {item.successfulScans} hành khách
+                        {t("staff.activity.passengers", {
+                            n: item.successfulScans,
+                        })}
                     </Text>
                 </View>
             </View>
 
             <View className="mt-3 flex-row justify-between">
                 <Text className="text-xs text-text-muted">
-                    Quét: {item.totalScans} (OK {item.successfulScans} / lỗi{" "}
-                    {item.failedScans})
+                    {t("staff.activity.scanSummary", {
+                        total: item.totalScans,
+                        ok: item.successfulScans,
+                        failed: item.failedScans,
+                    })}
                 </Text>
                 <Text className="text-xs font-medium text-text-secondary">
-                    {item.totalRevenue.toLocaleString("vi-VN")} đ
+                    {t("staff.end.currency", {
+                        amount: item.totalRevenue.toLocaleString(
+                            locale === "en" ? "en-US" : "vi-VN",
+                        ),
+                    })}
                 </Text>
             </View>
         </View>
@@ -83,6 +96,7 @@ function ShiftHistoryCard({ item }: { item: IShiftReport }) {
 }
 
 function LeaveActivityCard({ item }: { item: ILeaveRequest }) {
+    const { t } = useTranslation();
     const dateRange =
         moment(item.startDate).format("DD/MM/YYYY") ===
         moment(item.endDate).format("DD/MM/YYYY")
@@ -94,14 +108,14 @@ function LeaveActivityCard({ item }: { item: ILeaveRequest }) {
             <View className="mb-3 flex-row items-center justify-between gap-3">
                 <View className="min-w-0 flex-1">
                     <Text className="text-xs font-semibold uppercase tracking-wide text-accent">
-                        Xin nghỉ
+                        {t("staff.activity.leaveBadge")}
                     </Text>
                     <Text className="mt-1 text-base font-bold text-text-primary">
                         {dateRange}
                     </Text>
                 </View>
                 <StatusPill
-                    label={STAFF_LEAVE_STATUS_LABEL[item.status]}
+                    label={getStaffLeaveStatusLabel(item.status)}
                     variant={statusVariant(item.status)}
                     className="rounded-md"
                 />
@@ -114,7 +128,11 @@ function LeaveActivityCard({ item }: { item: ILeaveRequest }) {
             </Text>
             {item.createdAt ? (
                 <Text className="mt-2 text-xs text-text-muted">
-                    Gửi lúc {moment(item.createdAt).format("HH:mm DD/MM/YYYY")}
+                    {t("staff.activity.sentAt", {
+                        datetime: moment(item.createdAt).format(
+                            "HH:mm DD/MM/YYYY",
+                        ),
+                    })}
                 </Text>
             ) : null}
         </View>
@@ -122,6 +140,7 @@ function LeaveActivityCard({ item }: { item: ILeaveRequest }) {
 }
 
 function ShiftHistoryTab() {
+    const { t } = useTranslation();
     const {
         list,
         loadFirstPage,
@@ -158,7 +177,7 @@ function ShiftHistoryTab() {
                     </View>
                 ) : (
                     <Text className="px-5 py-10 text-center text-sm text-text-muted">
-                        Chưa có lịch sử ca làm
+                        {t("staff.activity.emptyShifts")}
                     </Text>
                 )
             }
@@ -174,6 +193,7 @@ function ShiftHistoryTab() {
 }
 
 function LeaveActivityTab() {
+    const { t } = useTranslation();
     const {
         list,
         loadFirstPage,
@@ -210,7 +230,7 @@ function LeaveActivityTab() {
                     </View>
                 ) : (
                     <Text className="px-5 py-10 text-center text-sm text-text-muted">
-                        Chưa có hoạt động xin nghỉ
+                        {t("staff.activity.emptyLeave")}
                     </Text>
                 )
             }
@@ -226,18 +246,27 @@ function LeaveActivityTab() {
 }
 
 export default function StaffActivityHistoryScreen() {
+    const { t } = useTranslation();
     const [activeTab, setActiveTab] = useState<ActivityTab>("shifts");
+
+    const tabs = useMemo(
+        () => [
+            { key: "shifts" as const, label: t("staff.activity.tabShifts") },
+            {
+                key: "activities" as const,
+                label: t("staff.activity.tabLeave"),
+            },
+        ],
+        [t],
+    );
 
     return (
         <View className="flex-1 bg-card">
-            <StaffHeader title="Lịch sử hoạt động" showBack />
+            <StaffHeader title={t("staff.activity.title")} showBack />
 
             <View className="border-b border-border px-4 pt-2">
                 <TabContainer
-                    tabs={ACTIVITY_TABS.map((tab) => ({
-                        key: tab.key,
-                        label: tab.label,
-                    }))}
+                    tabs={tabs}
                     value={activeTab}
                     onChange={(value) => setActiveTab(value as ActivityTab)}
                     variant="underline"

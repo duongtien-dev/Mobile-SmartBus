@@ -1,3 +1,4 @@
+import { useTranslation } from "@/i18n";
 import { useEffect, useRef } from "react";
 import MapView, { Circle, Marker, type Region } from "react-native-maps";
 import type { MapPoint } from "./mapTypes";
@@ -19,6 +20,7 @@ export function ActiveShiftMap({
     mapCenter,
     nextStopCoordinate,
 }: ActiveShiftMapProps) {
+    const { t } = useTranslation();
     const mapRef = useRef<MapView>(null);
 
     useEffect(() => {
@@ -44,12 +46,12 @@ export function ActiveShiftMap({
             />
             <Marker
                 coordinate={mapCenter}
-                title="Vị trí hiện tại"
+                title={t("staff.shift.mapCurrent")}
                 pinColor="#ffffff"
             />
             <Marker
                 coordinate={nextStopCoordinate}
-                title="Trạm tiếp theo"
+                title={t("staff.shift.mapNext")}
                 pinColor="#e50049"
             />
         </MapView>

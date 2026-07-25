@@ -1,5 +1,6 @@
 import { Button } from "@/components/Button";
 import ModalBlank from "@/components/ModalBlank";
+import { useTranslation } from "@/i18n";
 import type { ShiftReportPreview } from "@/models/shiftReport";
 import { ActivityIndicator, Text, View } from "react-native";
 
@@ -29,6 +30,8 @@ export function EndShiftModal({
     onClose,
     onConfirm,
 }: EndShiftModalProps) {
+    const { t, locale } = useTranslation();
+
     return (
         <ModalBlank
             isOpen={open}
@@ -37,33 +40,37 @@ export function EndShiftModal({
             className="gap-4"
         >
             <Text className="text-lg font-bold text-text-primary">
-                Kết thúc ca & gửi báo cáo
+                {t("staff.end.title")}
             </Text>
 
             {preview ? (
                 <View className="rounded-xl bg-surface px-3 py-2">
                     <StatRow
-                        label="Tổng quét"
+                        label={t("staff.end.total")}
                         value={String(preview.totalScans)}
                     />
                     <StatRow
-                        label="Hợp lệ"
+                        label={t("staff.end.valid")}
                         value={String(preview.successfulScans)}
                     />
                     <StatRow
-                        label="Không hợp lệ"
+                        label={t("staff.end.invalid")}
                         value={String(preview.failedScans)}
                     />
                     <StatRow
-                        label="Doanh thu"
-                        value={`${preview.totalRevenue.toLocaleString("vi-VN")} đ`}
+                        label={t("staff.end.revenue")}
+                        value={t("staff.end.currency", {
+                            amount: preview.totalRevenue.toLocaleString(
+                                locale === "en" ? "en-US" : "vi-VN",
+                            ),
+                        })}
                     />
                 </View>
             ) : (
                 <View className="items-center py-6">
                     <ActivityIndicator color="#005f8b" />
                     <Text className="mt-2 text-sm text-text-muted">
-                        Đang tải thống kê ca...
+                        {t("staff.end.loading")}
                     </Text>
                 </View>
             )}
@@ -76,7 +83,7 @@ export function EndShiftModal({
                     disabled={loading}
                     onPress={onClose}
                 >
-                    Hủy
+                    {t("common.cancel")}
                 </Button>
                 <Button
                     className="flex-1"
@@ -86,7 +93,7 @@ export function EndShiftModal({
                     {loading ? (
                         <ActivityIndicator color="#ffffff" />
                     ) : (
-                        "Gửi báo cáo"
+                        t("staff.end.submit")
                     )}
                 </Button>
             </View>

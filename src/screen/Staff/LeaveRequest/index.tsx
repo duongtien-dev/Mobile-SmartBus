@@ -2,6 +2,7 @@ import { Button } from "@/components/Button";
 import { DatePickerField } from "@/components/DatePickerField";
 import TextArea from "@/components/Input/TextArea";
 import { StaffHeader } from "@/components/StaffHeader";
+import { useTranslation } from "@/i18n";
 import { leaveRequestService } from "@/services/LeaveRequestService";
 import { router, type Href } from "expo-router";
 import moment from "moment";
@@ -21,6 +22,7 @@ function startOfToday() {
 }
 
 export default function StaffLeaveRequestScreen() {
+    const { t } = useTranslation();
     const [fromDate, setFromDate] = useState<Date | null>(null);
     const [toDate, setToDate] = useState<Date | null>(null);
     const [reason, setReason] = useState("");
@@ -53,18 +55,21 @@ export default function StaffLeaveRequestScreen() {
             });
 
             if (!response.success) {
-                throw new Error(response.message || "Gửi đơn thất bại");
+                throw new Error(response.message || t("staff.leave.fail"));
             }
 
             Toast.show({
                 type: "success",
-                text1: "Đã gửi đơn xin nghỉ",
-                text2: "Chờ duyệt trong Lịch sử hoạt động",
+                text1: t("staff.leave.success"),
+                text2: t("staff.leave.successDesc"),
             });
 
             router.replace("/staff/activity-history" as Href);
-        } catch (err) {
-            Toast.show({ type: "error", text1: "Gửi đơn xin nghỉ thất bại" });
+        } catch {
+            Toast.show({
+                type: "error",
+                text1: t("staff.leave.fail"),
+            });
         } finally {
             setIsSubmitting(false);
         }
@@ -72,7 +77,7 @@ export default function StaffLeaveRequestScreen() {
 
     return (
         <View className="flex-1 bg-app-shell">
-            <StaffHeader title="Xin nghỉ" showBack />
+            <StaffHeader title={t("staff.leave.title")} showBack />
 
             <ScrollView
                 className="flex-1"
@@ -80,36 +85,36 @@ export default function StaffLeaveRequestScreen() {
                 keyboardShouldPersistTaps="handled"
             >
                 <Text className="text-sm text-text-secondary">
-                    Chọn khoảng ngày nghỉ và nhập lý do để gửi yêu cầu.
+                    {t("staff.leave.intro")}
                 </Text>
 
                 <View className="gap-3 rounded-2xl bg-card p-4 shadow-sm">
                     <DatePickerField
-                        label="Từ ngày"
+                        label={t("staff.leave.from")}
                         value={fromDate}
                         onChange={handleFromChange}
-                        placeholder="Chọn ngày bắt đầu"
+                        placeholder={t("staff.leave.fromPlaceholder")}
                         minimumDate={minFrom}
                         disabled={isSubmitting}
                     />
 
                     <DatePickerField
-                        label="Đến ngày"
+                        label={t("staff.leave.to")}
                         value={toDate}
                         onChange={setToDate}
-                        placeholder="Chọn ngày kết thúc"
+                        placeholder={t("staff.leave.toPlaceholder")}
                         minimumDate={fromDate ?? minFrom}
                         disabled={isSubmitting}
                     />
 
                     <View className="gap-1.5">
                         <Text className="text-sm font-semibold text-text-primary">
-                            Lý do
+                            {t("staff.leave.reason")}
                         </Text>
                         <TextArea
                             value={reason}
                             onChangeText={setReason}
-                            placeholder="Nhập lý do xin nghỉ"
+                            placeholder={t("staff.leave.reasonPlaceholder")}
                             editable={!isSubmitting}
                         />
                     </View>
@@ -122,7 +127,7 @@ export default function StaffLeaveRequestScreen() {
                         {isSubmitting ? (
                             <ActivityIndicator color="#ffffff" />
                         ) : (
-                            "Gửi yêu cầu"
+                            t("staff.leave.submit")
                         )}
                     </Button>
                 </View>

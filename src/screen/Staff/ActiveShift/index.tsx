@@ -1,5 +1,6 @@
 import { StaffHeader } from "@/components/StaffHeader";
 import useFetch from "@/hooks/useFetch";
+import { useTranslation } from "@/i18n";
 import type { IActiveShift } from "@/models/activeShift";
 import type { IScanLogItem } from "@/models/scanLog";
 import type { IStop } from "@/models/stop";
@@ -42,6 +43,7 @@ function getRouteId(shift: IActiveShift): string | undefined {
 }
 
 export default function StaffActiveShiftScreen() {
+    const { t } = useTranslation();
     const ui = useStaffShiftStore((state) => state.ui);
     const setStops = useStaffShiftStore((state) => state.setStops);
     const advanceStop = useStaffShiftStore((state) => state.advanceStop);
@@ -110,7 +112,7 @@ export default function StaffActiveShiftScreen() {
     } = useFetch<ShiftReportPreview>({
         fetchFn: async () => {
             if (!shiftStartAt) {
-                throw new Error("Chưa có phiên ca đang chạy");
+                throw new Error(t("staff.shift.none"));
             }
             const response = await shiftReportService.preview({
                 shiftStartAt,
@@ -118,7 +120,7 @@ export default function StaffActiveShiftScreen() {
             });
             if (!response.data) {
                 throw new Error(
-                    response.message || "Không nhận được thống kê ca",
+                    response.message || t("staff.shift.previewFail"),
                 );
             }
             return response.data;
@@ -172,7 +174,7 @@ export default function StaffActiveShiftScreen() {
         if (shiftError) {
             Toast.show({
                 type: "error",
-                text1: "Không tải được ca đang chạy",
+                text1: t("staff.shift.loadFail"),
             });
             router.replace("/staff" as Href);
             return;
@@ -181,11 +183,11 @@ export default function StaffActiveShiftScreen() {
         if (activeShift === null) {
             Toast.show({
                 type: "error",
-                text1: "Không có ca đang chạy",
+                text1: t("staff.shift.none"),
             });
             router.replace("/staff" as Href);
         }
-    }, [shiftReady, isShiftLoading, activeShift, shiftError]);
+    }, [shiftReady, isShiftLoading, activeShift, shiftError, t]);
 
     useEffect(() => {
         if (!shiftStartAt) return;
@@ -214,26 +216,26 @@ export default function StaffActiveShiftScreen() {
         if (!stopsError) return;
         Toast.show({
             type: "error",
-            text1: "Không tải được điểm dừng",
+            text1: t("staff.shift.stopsLoadFail"),
         });
-    }, [stopsError]);
+    }, [stopsError, t]);
 
     useEffect(() => {
         if (!scansError) return;
         Toast.show({
             type: "error",
-            text1: "Không tải được lịch sử quét",
+            text1: t("staff.shift.scansLoadFail"),
         });
-    }, [scansError]);
+    }, [scansError, t]);
 
     useEffect(() => {
         if (!previewError) return;
         setEndOpen(false);
         Toast.show({
             type: "error",
-            text1: "Không xem trước được báo cáo",
+            text1: t("staff.shift.previewFail"),
         });
-    }, [previewError]);
+    }, [previewError, t]);
 
     const handleBackToDashboard = () => {
         router.replace("/staff" as Href);
@@ -251,7 +253,7 @@ export default function StaffActiveShiftScreen() {
             const result = response.data;
 
             if (!result) {
-                throw new Error(response.message || "Không có kết quả quét");
+                throw new Error(response.message || t("staff.shift.scanFail"));
             }
 
             await loadScanLogs();
@@ -268,7 +270,9 @@ export default function StaffActiveShiftScreen() {
 
             Toast.show({
                 type: result.isValid ? "success" : "error",
-                text1: result.isValid ? "Vé hợp lệ" : "Vé không hợp lệ",
+                text1: result.isValid
+                    ? t("staff.shift.ticketValid")
+                    : t("staff.shift.ticketInvalid"),
                 text2: result.reason,
             });
 
@@ -278,7 +282,7 @@ export default function StaffActiveShiftScreen() {
         } catch {
             Toast.show({
                 type: "error",
-                text1: "Quét vé thất bại",
+                text1: t("staff.shift.scanFail"),
             });
         } finally {
             setScanLoading(false);
@@ -289,12 +293,12 @@ export default function StaffActiveShiftScreen() {
         if (!activeShift) return;
 
         Alert.alert(
-            "Kết thúc ca?",
-            "Hệ thống sẽ tổng hợp vé đã quét và gửi báo cáo ca.",
+            t("staff.shift.endConfirmTitle"),
+            t("staff.shift.endConfirmBody"),
             [
-                { text: "Ở lại ca", style: "cancel" },
+                { text: t("staff.shift.stay"), style: "cancel" },
                 {
-                    text: "Xem báo cáo",
+                    text: t("staff.shift.viewReport"),
                     onPress: () => {
                         shiftEndAtRef.current = new Date().toISOString();
                         resetPreview();
@@ -323,7 +327,9 @@ export default function StaffActiveShiftScreen() {
             });
 
             if (!response.success) {
-                throw new Error(response.message || "Gửi báo cáo thất bại");
+                throw new Error(
+                    response.message || t("staff.shift.reportFail"),
+                );
             }
 
             await staffShiftService.end();
@@ -331,8 +337,8 @@ export default function StaffActiveShiftScreen() {
 
             Toast.show({
                 type: "success",
-                text1: "Đã gửi báo cáo ca",
-                text2: "Chờ admin duyệt",
+                text1: t("staff.shift.reportSent"),
+                text2: t("staff.shift.reportPending"),
             });
 
             setEndOpen(false);
@@ -341,7 +347,7 @@ export default function StaffActiveShiftScreen() {
         } catch {
             Toast.show({
                 type: "error",
-                text1: "Gửi báo cáo thất bại",
+                text1: t("staff.shift.reportFail"),
             });
         } finally {
             setIsSubmitting(false);
@@ -352,8 +358,8 @@ export default function StaffActiveShiftScreen() {
         if (!ui.stops.length) {
             Toast.show({
                 type: "error",
-                text1: "Chưa có danh sách trạm",
-                text2: "Gán tuyến cho staff để tải điểm dừng",
+                text1: t("staff.shift.noStopsTitle"),
+                text2: t("staff.shift.noStopsDesc"),
             });
             return;
         }
@@ -361,8 +367,8 @@ export default function StaffActiveShiftScreen() {
         if (ui.stopIndex >= ui.stops.length - 1) {
             Toast.show({
                 type: "success",
-                text1: "Đã hết trạm trên tuyến",
-                text2: "Có thể kết thúc ca để gửi báo cáo",
+                text1: t("staff.shift.lastStopTitle"),
+                text2: t("staff.shift.lastStopDesc"),
             });
             return;
         }
@@ -370,7 +376,7 @@ export default function StaffActiveShiftScreen() {
         advanceStop();
         Toast.show({
             type: "success",
-            text1: "Đã xác nhận qua trạm",
+            text1: t("staff.shift.passStopSuccess"),
             text2: nextStop?.name,
         });
     };
@@ -386,12 +392,12 @@ export default function StaffActiveShiftScreen() {
     const nextStopName =
         nextStop?.name ||
         activeShift.routeName ||
-        "Chưa có trạm — chọn tuyến khi check-in";
+        t("staff.shift.noStop");
 
     return (
         <View className="flex-1 bg-card">
             <StaffHeader
-                title="Ca đang chạy"
+                title={t("staff.shift.title")}
                 showBack
                 onBackPress={handleBackToDashboard}
                 actions={[
@@ -399,7 +405,7 @@ export default function StaffActiveShiftScreen() {
                         key: "done",
                         icon: CheckCircle2,
                         color: "#ffffff",
-                        accessibilityLabel: "Kết thúc ca",
+                        accessibilityLabel: t("staff.shift.endA11y"),
                         onPress: handleOpenEndShift,
                     },
                 ]}
@@ -421,7 +427,7 @@ export default function StaffActiveShiftScreen() {
                         <View className="flex-row items-start justify-between gap-3">
                             <View className="min-w-0 flex-1">
                                 <Text className="text-[11px] font-semibold uppercase tracking-wide text-text-muted">
-                                    Trạm tiếp theo
+                                    {t("staff.shift.nextStop")}
                                 </Text>
                                 <Text
                                     className="mt-1 text-[15px] font-bold text-text-primary"
@@ -432,13 +438,15 @@ export default function StaffActiveShiftScreen() {
                             </View>
                             <View className="items-end">
                                 <Text className="text-[11px] font-semibold uppercase tracking-wide text-text-muted">
-                                    Đã quét
+                                    {t("staff.shift.scanned")}
                                 </Text>
                                 <Text className="mt-1 text-xl font-bold text-primary">
                                     {isScansLoading ? "…" : scanCount}
                                 </Text>
                                 <Text className="text-[10px] text-text-muted">
-                                    {validCount} hợp lệ
+                                    {t("staff.shift.validCount", {
+                                        n: validCount,
+                                    })}
                                 </Text>
                             </View>
                         </View>
@@ -448,7 +456,7 @@ export default function StaffActiveShiftScreen() {
                 <View className="gap-4 px-4 pt-4">
                     {activeShift.routeName ? (
                         <Text className="text-sm text-text-secondary">
-                            Tuyến:{" "}
+                            {t("staff.shift.routeLabel")}{" "}
                             <Text className="font-semibold text-primary">
                                 {activeShift.routeName}
                             </Text>
@@ -456,8 +464,7 @@ export default function StaffActiveShiftScreen() {
                     ) : null}
 
                     <Text className="text-xs text-text-muted">
-                        Quay lại trang chủ vẫn giữ ca (server). Kết thúc ca (✓)
-                        để gửi báo cáo.
+                        {t("staff.shift.hint")}
                     </Text>
 
                     <Pressable
@@ -467,13 +474,13 @@ export default function StaffActiveShiftScreen() {
                     >
                         <ScanLine color="#ffffff" size={22} />
                         <Text className="text-sm font-bold uppercase tracking-wide text-on-primary">
-                            Quét vé khách lên
+                            {t("staff.shift.scanCta")}
                         </Text>
                     </Pressable>
 
                     <View className="rounded-2xl border border-border bg-card px-4 py-3">
                         <Text className="mb-1 text-sm font-bold uppercase tracking-wide text-primary">
-                            Vé đã quét ({scanCount})
+                            {t("staff.shift.scannedList", { n: scanCount })}
                         </Text>
                         {isScansLoading ? (
                             <View className="items-center py-6">
@@ -490,7 +497,7 @@ export default function StaffActiveShiftScreen() {
                         onPress={handleConfirmPassStop}
                     >
                         <Text className="text-sm font-bold uppercase tracking-wide text-primary">
-                            Xác nhận qua trạm
+                            {t("staff.shift.passStop")}
                         </Text>
                     </Pressable>
                 </View>

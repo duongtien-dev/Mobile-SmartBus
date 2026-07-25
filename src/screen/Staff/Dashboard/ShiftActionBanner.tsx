@@ -1,9 +1,11 @@
+import { useTranslation } from "@/i18n";
 import { router, type Href } from "expo-router";
 import { Bus, ChevronRight } from "lucide-react-native";
 import { ActivityIndicator, Pressable, Text, View } from "react-native";
 import { useActiveShiftBanner } from "./hooks/useActiveShiftBanner";
 
 export function ShiftActionBanner() {
+    const { t } = useTranslation();
     const {
         loading,
         hasActiveShift,
@@ -34,14 +36,15 @@ export function ShiftActionBanner() {
                 </View>
                 <View className="min-w-0 flex-1">
                     <Text className="text-sm font-bold text-on-primary">
-                        Ca đang chạy
+                        {t("staff.banner.activeTitle")}
                     </Text>
                     <Text className="mt-0.5 text-xs text-white/80">
-                        Đã quét {scanTotal} vé
+                        {t("staff.banner.scannedTickets", { n: scanTotal })}
                         {activeShift?.routeCode
                             ? ` · ${activeShift.routeCode}`
                             : ""}
-                        {" · Chạm để tiếp tục"}
+                        {" · "}
+                        {t("staff.banner.tapContinue")}
                     </Text>
                 </View>
                 <ChevronRight color="#ffffff" size={18} />
@@ -65,12 +68,14 @@ export function ShiftActionBanner() {
             </View>
             <View className="min-w-0 flex-1">
                 <Text className="text-sm font-bold text-white">
-                    Nhận ca hôm nay
+                    {t("staff.banner.startTitle")}
                 </Text>
                 <Text className="mt-0.5 text-xs text-white/90">
                     {primaryRoute
-                        ? `Tuyến ${primaryRoute.code} · Check-in để bắt đầu`
-                        : "Check-in để quét vé và chạy ca"}
+                        ? t("staff.banner.startWithRoute", {
+                              code: primaryRoute.code,
+                          })
+                        : t("staff.banner.startGeneric")}
                 </Text>
             </View>
             <ChevronRight color="#ffffff" size={18} />

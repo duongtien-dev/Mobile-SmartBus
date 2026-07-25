@@ -1,3 +1,4 @@
+import { useTranslation } from "@/i18n";
 import { router, type Href } from "expo-router";
 import {
     CalendarDays,
@@ -56,20 +57,22 @@ function UtilityRow({
 }
 
 export function UtilitySection() {
+    const { t } = useTranslation();
+
     return (
         <View className="gap-3">
             <View>
                 <Text className="text-base font-bold text-text-primary">
-                    Tiện ích
+                    {t("staff.utility.title")}
                 </Text>
                 <Text className="mt-0.5 text-xs text-text-muted">
-                    Các chức năng phụ — mở từ trang chủ này
+                    {t("staff.utility.subtitle")}
                 </Text>
             </View>
             <View className="overflow-hidden rounded-2xl bg-card shadow-sm">
                 <UtilityRow
-                    title="Xin nghỉ"
-                    subtitle="Gửi yêu cầu nghỉ phép"
+                    title={t("staff.utility.leave")}
+                    subtitle={t("staff.utility.leaveDesc")}
                     Icon={CalendarDays}
                     iconColor="#cca010"
                     iconBgClass="bg-highlight-light"
@@ -78,8 +81,8 @@ export function UtilitySection() {
                     }
                 />
                 <UtilityRow
-                    title="Lịch sử hoạt động"
-                    subtitle="Báo cáo ca và đơn xin nghỉ"
+                    title={t("staff.utility.activity")}
+                    subtitle={t("staff.utility.activityDesc")}
                     Icon={ClipboardList}
                     iconColor="#005f8b"
                     iconBgClass="bg-primary-light"

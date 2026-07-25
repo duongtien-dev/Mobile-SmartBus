@@ -1,13 +1,15 @@
+import { useTranslation } from "@/i18n";
 import { ActivityIndicator, Text, View } from "react-native";
 import { useAssignedRoutes } from "./hooks/useAssignedRoutes";
 
 export function AssignedRoutesSection() {
+    const { t } = useTranslation();
     const { routes, loading } = useAssignedRoutes();
 
     return (
         <View className="gap-3">
             <Text className="text-base font-bold text-text-primary">
-                Tuyến được giao
+                {t("staff.routes.title")}
             </Text>
             {loading ? (
                 <View className="items-center rounded-2xl bg-card py-6 shadow-sm">
@@ -16,8 +18,7 @@ export function AssignedRoutesSection() {
             ) : routes.length === 0 ? (
                 <View className="rounded-2xl bg-card px-4 py-5 shadow-sm">
                     <Text className="text-sm text-text-muted">
-                        Chưa được gán tuyến. Vẫn có thể nhận ca và quét vé; điểm
-                        dừng sẽ trống.
+                        {t("staff.routes.empty")}
                     </Text>
                 </View>
             ) : (

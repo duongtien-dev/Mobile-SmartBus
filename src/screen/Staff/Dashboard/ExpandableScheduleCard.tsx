@@ -1,3 +1,4 @@
+import { useTranslation } from "@/i18n";
 import type { IStaffScheduleItem } from "@/models/staffSchedule";
 import { Bus, ChevronDown, ChevronUp } from "lucide-react-native";
 import { Pressable, Text, View } from "react-native";
@@ -23,8 +24,15 @@ function DetailRow({ label, value }: { label: string; value: string }) {
 }
 
 export function ExpandableScheduleCard(props: Props) {
-    // destructuring props
-    const { item, expanded, onToggle, onCheckIn, checkInLabel, checkInDisabled } = props;
+    const { t } = useTranslation();
+    const {
+        item,
+        expanded,
+        onToggle,
+        onCheckIn,
+        checkInLabel,
+        checkInDisabled,
+    } = props;
 
     const Chevron = expanded ? ChevronUp : ChevronDown;
 
@@ -56,9 +64,18 @@ export function ExpandableScheduleCard(props: Props) {
 
             {expanded ? (
                 <View className="border-t border-border bg-surface px-4 pb-4 pt-3">
-                    <DetailRow label="Tuyến xe" value={item.routeName} />
-                    <DetailRow label="Biển số xe" value={item.plateNumber} />
-                    <DetailRow label="Trạng thái" value={item.statusLabel} />
+                    <DetailRow
+                        label={t("staff.schedule.route")}
+                        value={item.routeName}
+                    />
+                    <DetailRow
+                        label={t("staff.schedule.plate")}
+                        value={item.plateNumber}
+                    />
+                    <DetailRow
+                        label={t("staff.schedule.status")}
+                        value={item.statusLabel}
+                    />
 
                     {item.isToday ? (
                         <Pressable
