@@ -1,40 +1,19 @@
 import type { ITicket, TicketStatus, TicketType } from "@/models/ticket";
-import { ITicketProduct } from "@/models/ticketProduct";
+import type { ITicketProduct } from "@/models/ticketProduct";
+import { translate } from "@/i18n/translations";
+import useLocaleStore from "@/store/locale.store";
 
-const TICKET_TYPE_LABELS: Record<TicketType, string> = {
-    single: "Vé lượt",
-    monthlySingleRoute: "Vé đơn tuyến",
-    monthlyInterRoute: "Vé liên tuyến",
-};
+function t(key: string, params?: Record<string, string | number>) {
+    return translate(useLocaleStore.getState().locale, key, params);
+}
 
-const TICKET_STATUS_CONFIG: Record<
-    TicketStatus,
-    { label: string; badgeClass: string }
-> = {
-    pending: {
-        label: "Chờ sử dụng",
-        badgeClass: "bg-highlight-light text-highlight-dark",
-    },
-    paid: {
-        label: "Khả dụng",
-        badgeClass: "bg-accent-light text-accent-dark",
-    },
-    active: {
-        label: "Khả dụng",
-        badgeClass: "bg-accent-light text-accent-dark",
-    },
-    used: {
-        label: "Đã sử dụng",
-        badgeClass: "bg-text-muted/15 text-text-muted",
-    },
-    expired: {
-        label: "Hết hạn",
-        badgeClass: "bg-text-muted/15 text-text-muted",
-    },
-    cancelled: {
-        label: "Đã hủy",
-        badgeClass: "bg-alert/15 text-alert",
-    },
+const TICKET_STATUS_BADGE: Record<TicketStatus, string> = {
+    pending: "bg-highlight-light text-highlight-dark",
+    paid: "bg-accent-light text-accent-dark",
+    active: "bg-accent-light text-accent-dark",
+    used: "bg-text-muted/15 text-text-muted",
+    expired: "bg-text-muted/15 text-text-muted",
+    cancelled: "bg-alert/15 text-alert",
 };
 
 function pad(value: number) {
@@ -49,11 +28,14 @@ function formatDate(value?: string | null) {
 }
 
 export function getTicketTypeLabel(ticketType: TicketType) {
-    return TICKET_TYPE_LABELS[ticketType];
+    return t(`ticket.type.${ticketType}`);
 }
 
 export function getTicketStatusConfig(status: TicketStatus) {
-    return TICKET_STATUS_CONFIG[status];
+    return {
+        label: t(`ticket.status.${status}`),
+        badgeClass: TICKET_STATUS_BADGE[status],
+    };
 }
 
 export function getTicketSubtitle(ticket: ITicket) {
@@ -67,25 +49,33 @@ export function getTicketSubtitle(ticket: ITicket) {
         return "—";
     }
 
-    return `Tháng ${pad(date.getMonth() + 1)}/${date.getFullYear()}`;
+    return t("ticket.subtitle.month", {
+        month: pad(date.getMonth() + 1),
+        year: date.getFullYear(),
+    });
 }
 
 export function getTicketValidityLabel(ticket: ITicket) {
     if (ticket.ticketType === "single") {
-        return `Hiệu lực: ${formatDate(ticket.departureDate)}`;
+        return t("ticket.validity.single", {
+            date: formatDate(ticket.departureDate),
+        });
     }
 
     const source = ticket.expiryDate ?? ticket.issueDate;
     const date = source ? new Date(source) : null;
     if (!date || Number.isNaN(date.getTime())) {
-        return "Hiệu lực: —";
+        return t("ticket.validity.single", { date: "—" });
     }
 
-    return `Hiệu lực: Tháng ${pad(date.getMonth() + 1)}/${date.getFullYear()}`;
+    return t("ticket.validity.month", {
+        month: pad(date.getMonth() + 1),
+        year: date.getFullYear(),
+    });
 }
 
 export function getTicketRouteTitle(ticket: ITicket) {
-    return ticket.routeName.replace(/^Tuyến\s+/i, "");
+    return ticket.routeName.replace(/^Tuyến\s+/i, "").replace(/^Route\s+/i, "");
 }
 
 export function getTripHistoryDateLabel(ticket: ITicket) {
@@ -106,22 +96,22 @@ export function getTripHistoryTimeLabel(ticket: ITicket) {
 
 export function getTripHistoryStatusLabel(ticket: ITicket) {
     if (ticket.status === "used" || ticket.usedAt) {
-        return "Đã sử dụng";
+        return t("ticket.status.used");
     }
 
     if (ticket.status === "expired") {
-        return "Đã hết hạn";
+        return t("ticket.expired");
     }
 
-    return "Đã hoàn thành";
+    return t("ticket.completed");
 }
 
 export function formatTicketPrice(product: ITicketProduct) {
-    const formatted = product.unitPrice.toLocaleString('vi-VN');
-    if (product.code === 'single') {
-        return `${formatted} đồng (1 lượt)`;
+    const formatted = product.unitPrice.toLocaleString("vi-VN");
+    if (product.code === "single") {
+        return t("ticket.pricePerRide", { amount: formatted });
     }
-    return `${formatted} đồng`;
+    return t("common.currencyVnd", { amount: formatted });
 }
 
 export function getTicketDisplayCode(ticket: Pick<ITicket, "_id" | "qrCode">) {

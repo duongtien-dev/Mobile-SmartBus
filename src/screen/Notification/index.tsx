@@ -2,6 +2,7 @@ import { PageHeader } from "@/components/PageHeader";
 import TabContainer from "@/components/TabContainer";
 import { Card } from "@/components/ui/Card";
 import usePaginationList from "@/hooks/usePaginationList";
+import { useTranslation } from "@/i18n";
 import type { IPost } from "@/models/post";
 import { postService } from "@/services/PostService";
 import { Image } from "expo-image";
@@ -10,39 +11,19 @@ import { useEffect, useMemo, useState } from "react";
 import { ActivityIndicator, SectionList, Text, View } from "react-native";
 import { NoticeCard } from "./NoticeCard";
 
-const listTabs = [
-    { label: "Mới nhất", key: "newest" },
-    { label: "Cũ nhất", key: "oldest" },
-] as const;
-
-type PostSort = (typeof listTabs)[number]["key"];
-
-function groupPostsByDate(posts: IPost[]) {
-    const today = moment().startOf("day");
-    const groups: { title: string; data: IPost[] }[] = [];
-    const todayPosts: IPost[] = [];
-    const earlierPosts: IPost[] = [];
-
-    posts.forEach((post) => {
-        if (moment(post.createdAt).isSameOrAfter(today)) {
-            todayPosts.push(post);
-        } else {
-            earlierPosts.push(post);
-        }
-    });
-
-    if (todayPosts.length) {
-        groups.push({ title: "Hôm nay", data: todayPosts });
-    }
-    if (earlierPosts.length) {
-        groups.push({ title: "Trước đó", data: earlierPosts });
-    }
-
-    return groups;
-}
+type PostSort = "newest" | "oldest";
 
 export default function NotificationsScreen() {
+    const { t } = useTranslation();
     const [activeTab, setActiveTab] = useState<PostSort>("newest");
+
+    const listTabs = useMemo(
+        () => [
+            { label: t("notice.sortNewest"), key: "newest" as const },
+            { label: t("notice.sortOldest"), key: "oldest" as const },
+        ],
+        [t],
+    );
 
     const {
         list: posts,
@@ -63,11 +44,36 @@ export default function NotificationsScreen() {
         loadFirstPage();
     }, [activeTab]);
 
-    const sections = useMemo(() => groupPostsByDate(posts), [posts]);
+    const sections = useMemo(() => {
+        const today = moment().startOf("day");
+        const groups: { title: string; data: IPost[] }[] = [];
+        const todayPosts: IPost[] = [];
+        const earlierPosts: IPost[] = [];
+
+        posts.forEach((post) => {
+            if (moment(post.createdAt).isSameOrAfter(today)) {
+                todayPosts.push(post);
+            } else {
+                earlierPosts.push(post);
+            }
+        });
+
+        if (todayPosts.length) {
+            groups.push({ title: t("notice.groupToday"), data: todayPosts });
+        }
+        if (earlierPosts.length) {
+            groups.push({
+                title: t("notice.groupEarlier"),
+                data: earlierPosts,
+            });
+        }
+
+        return groups;
+    }, [posts, t]);
 
     return (
         <View className="flex-1 bg-app-shell">
-            <PageHeader title="Thông báo" isIconBack={false} />
+            <PageHeader title={t("notice.title")} isIconBack={false} />
 
             <View className="gap-4 px-5 pt-4">
                 <Card padding="none" className="overflow-hidden">
@@ -86,7 +92,9 @@ export default function NotificationsScreen() {
                                 label: tab.label,
                             }))}
                             value={activeTab}
-                            onChange={(value) => setActiveTab(value as PostSort)}
+                            onChange={(value) =>
+                                setActiveTab(value as PostSort)
+                            }
                             variant="underline"
                             tabListClassName="justify-center gap-10"
                         />
@@ -118,7 +126,7 @@ export default function NotificationsScreen() {
                     ) : (
                         <Card>
                             <Text className="py-6 text-center text-sm text-text-muted">
-                                Chưa có thông báo
+                                {t("notice.empty")}
                             </Text>
                         </Card>
                     )

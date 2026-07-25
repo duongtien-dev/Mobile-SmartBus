@@ -1,18 +1,15 @@
 import { PageHeader } from "@/components/PageHeader";
 import useFetch from "@/hooks/useFetch";
+import { useTranslation } from "@/i18n";
 import type { ITrip } from "@/models/trip";
 import { TripResultItem } from "@/screen/Trip/Search/TripResultItem";
 import { tripService } from "@/services/TripService";
 import useTripBookingStore from "@/store/tripBooking.store";
 import { useEffect } from "react";
-import {
-    ActivityIndicator,
-    ScrollView,
-    Text,
-    View,
-} from "react-native";
+import { ActivityIndicator, ScrollView, Text, View } from "react-native";
 
 export default function TripSearchScreen() {
+    const { t } = useTranslation();
     const searchContext = useTripBookingStore((state) => state.searchContext);
 
     const originName = searchContext?.originName ?? "";
@@ -39,7 +36,7 @@ export default function TripSearchScreen() {
 
     return (
         <View className="flex-1 bg-background">
-            <PageHeader title="Tìm tuyến" isIconBack={true} />
+            <PageHeader title={t("trip.search.title")} isIconBack />
 
             <ScrollView
                 className="flex-1"
@@ -49,7 +46,7 @@ export default function TripSearchScreen() {
                 <View className="gap-4">
                     <View className="gap-1.5">
                         <Text className="text-sm font-semibold text-text-primary">
-                            Điểm đi
+                            {t("trip.search.origin")}
                         </Text>
                         <View className="rounded-lg border border-border bg-background px-3 py-3">
                             <Text className="text-base text-text-primary">
@@ -60,7 +57,7 @@ export default function TripSearchScreen() {
 
                     <View className="gap-1.5">
                         <Text className="text-sm font-semibold text-text-primary">
-                            Điểm đến
+                            {t("trip.search.destination")}
                         </Text>
                         <View className="rounded-lg border border-border bg-background px-3 py-3">
                             <Text className="text-base text-text-primary">
@@ -71,7 +68,7 @@ export default function TripSearchScreen() {
                 </View>
 
                 <Text className="mt-6 text-sm font-medium text-primary">
-                    Các lộ trình di chuyển từ vị trí hiện tại của bạn:
+                    {t("trip.search.routesFromHere")}
                 </Text>
 
                 <View className="mt-2">
@@ -88,7 +85,7 @@ export default function TripSearchScreen() {
                         ))
                     ) : (
                         <Text className="py-10 text-center text-sm text-text-muted">
-                            Không tìm thấy lộ trình phù hợp
+                            {t("trip.search.empty")}
                         </Text>
                     )}
                 </View>

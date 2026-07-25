@@ -1,4 +1,5 @@
 import type { QuickAction } from "@/constants/home";
+import { useTranslation } from "@/i18n";
 import {
     Heart,
     MapPin,
@@ -21,6 +22,7 @@ type QuickActionButtonProps = {
 };
 
 export function QuickActionButton({ action, onPress }: QuickActionButtonProps) {
+    const { t } = useTranslation();
     const Icon = ICONS[action.icon];
 
     return (
@@ -29,13 +31,11 @@ export function QuickActionButton({ action, onPress }: QuickActionButtonProps) {
             className="flex-1 items-center active:opacity-80"
             onPress={onPress}
         >
-            <View
-                className={`mb-2 h-14 w-14 items-center justify-center rounded-full bg-primary-light`}
-            >
+            <View className="mb-2 h-14 w-14 items-center justify-center rounded-full bg-primary-light">
                 <Icon color="#005f8b" size={24} />
             </View>
             <Text className="text-center text-xs font-medium text-text-primary">
-                {action.label}
+                {t(action.labelKey)}
             </Text>
         </Pressable>
     );

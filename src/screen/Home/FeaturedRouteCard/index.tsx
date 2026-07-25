@@ -1,4 +1,5 @@
 import type { IRoute } from "@/models/route";
+import { useTranslation } from "@/i18n";
 import { getRouteTitle } from "@/screen/Route/Detail/utils";
 import { router } from "expo-router";
 import { ArrowRight, Bus, ChevronDown, Flame, Star } from "lucide-react-native";
@@ -9,6 +10,7 @@ type FeaturedRouteCardProps = {
 };
 
 export function FeaturedRouteCard({ route }: FeaturedRouteCardProps) {
+    const { t } = useTranslation();
     const title = getRouteTitle(route);
     const start = route.startName?.trim();
     const end = route.endName?.trim();
@@ -38,7 +40,7 @@ export function FeaturedRouteCard({ route }: FeaturedRouteCardProps) {
                         </View>
                         <View>
                             <Text className="text-[11px] font-medium text-white/75">
-                                Tuyến
+                                {t("home.card.routeBadge")}
                             </Text>
                             <Text className="text-lg font-bold text-white">
                                 {route.code}
@@ -101,7 +103,7 @@ export function FeaturedRouteCard({ route }: FeaturedRouteCardProps) {
                             </Text>
                         ) : (
                             <Text className="text-xs font-medium text-accent">
-                                Xem chi tiết
+                                {t("home.card.viewDetail")}
                             </Text>
                         )}
 

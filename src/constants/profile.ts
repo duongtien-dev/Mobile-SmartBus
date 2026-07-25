@@ -159,13 +159,13 @@ export const PROFILE_AUTH_ACTIONS: ProfileMenuItemConfig[] = [
 ];
 
 export const GUEST_PROFILE_STATS = [
-    { id: "points", label: "Điểm", value: "—" },
-    { id: "trips", label: "Chuyến", value: "—" },
-    { id: "tickets", label: "Vé tháng", value: "—" },
+    { id: "points", labelKey: "profile.stats.points", value: "—" },
+    { id: "trips", labelKey: "profile.stats.trips", value: "—" },
+    { id: "tickets", labelKey: "profile.stats.monthlyTicket", value: "—" },
 ] as const;
 
 export const DEMO_PROFILE_STATS = [
-    { id: "points", label: "Điểm", value: "1.250" },
-    { id: "trips", label: "Chuyến", value: "48" },
-    { id: "tickets", label: "Vé tháng", value: "1" },
+    { id: "points", labelKey: "profile.stats.points", value: "1.250" },
+    { id: "trips", labelKey: "profile.stats.trips", value: "48" },
+    { id: "tickets", labelKey: "profile.stats.monthlyTicket", value: "1" },
 ] as const;

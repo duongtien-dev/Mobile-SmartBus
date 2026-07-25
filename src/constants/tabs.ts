@@ -13,17 +13,18 @@ export type TabRouteName =
     | "profile";
 
 export type TabConfig = {
-    label: string;
+    labelKey: string;
     icon: LucideIcon;
     activeColor: string;
     inactiveColor: string;
     screenIconColor: string;
     screenIconBgClass: string;
+    isCenter?: boolean;
 };
 
 export const TAB_CONFIG: Record<TabRouteName, TabConfig> = {
     index: {
-        label: "Trang chủ",
+        labelKey: "tabs.home",
         icon: Home,
         activeColor: "#005f8b",
         inactiveColor: "#94a3b8",
@@ -31,7 +32,7 @@ export const TAB_CONFIG: Record<TabRouteName, TabConfig> = {
         screenIconBgClass: "bg-accent-light",
     },
     notifications: {
-        label: "Thông báo",
+        labelKey: "tabs.notifications",
         icon: Bell,
         activeColor: "#005f8b",
         inactiveColor: "#94a3b8",
@@ -39,7 +40,7 @@ export const TAB_CONFIG: Record<TabRouteName, TabConfig> = {
         screenIconBgClass: "bg-accent-light",
     },
     payment: {
-        label: "Thanh toán",
+        labelKey: "tabs.payment",
         icon: CreditCard,
         activeColor: "#005f8b",
         inactiveColor: "#94a3b8",
@@ -47,7 +48,7 @@ export const TAB_CONFIG: Record<TabRouteName, TabConfig> = {
         screenIconBgClass: "bg-primary-light",
     },
     profile: {
-        label: "Tài khoản",
+        labelKey: "tabs.profile",
         icon: User,
         activeColor: "#005f8b",
         inactiveColor: "#94a3b8",

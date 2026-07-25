@@ -3,15 +3,17 @@ import { PageHeader } from "@/components/PageHeader";
 import { Card } from "@/components/ui/Card";
 import { ListRow } from "@/components/ui/ListRow";
 import useFetch from "@/hooks/useFetch";
+import { useTranslation } from "@/i18n";
 import type { IPaymentMethod } from "@/models/paymentMethod";
 import { paymentService } from "@/services/PaymentService";
-import { CreditCard } from "lucide-react-native";
+import { getPaymentSubtitle, getPaymentTitle } from "@/utils/payment";
 import { useRouter } from "expo-router";
+import { CreditCard } from "lucide-react-native";
 import { useEffect } from "react";
 import { ActivityIndicator, ScrollView, Text, View } from "react-native";
-import { getPaymentSubtitle, getPaymentTitle } from "@/utils/payment";
 
 export default function PaymentScreen() {
+    const { t } = useTranslation();
     const router = useRouter();
     const {
         data: paymentMethods,
@@ -32,7 +34,7 @@ export default function PaymentScreen() {
 
     return (
         <View className="flex-1 bg-app-shell">
-            <PageHeader title="Thanh toán" isIconBack={false} />
+            <PageHeader title={t("payment.title")} isIconBack={false} />
 
             {isLoading ? (
                 <View className="mt-10 items-center">
@@ -69,10 +71,10 @@ export default function PaymentScreen() {
                 <View className="mx-5 mt-4">
                     <Card>
                         <Text className="text-center text-base font-semibold text-text-primary">
-                            Bạn chưa có phương thức thanh toán
+                            {t("payment.emptyTitle")}
                         </Text>
                         <Text className="mt-2 text-center text-sm text-text-muted">
-                            Thêm thẻ hoặc ví điện tử để thanh toán nhanh hơn
+                            {t("payment.emptyDesc")}
                         </Text>
                     </Card>
                 </View>
@@ -85,7 +87,9 @@ export default function PaymentScreen() {
                     className="w-full rounded-xl"
                     onPress={() => router.push("/payment/add")}
                 >
-                    {hasPaymentMethods ? "Thêm phương thức" : "Thiết lập ngay"}
+                    {hasPaymentMethods
+                        ? t("payment.addMethod")
+                        : t("payment.setupNow")}
                 </Button>
             </View>
         </View>

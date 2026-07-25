@@ -1,4 +1,5 @@
 import type { HomeTip } from "@/constants/homeSections";
+import { useTranslation } from "@/i18n";
 import { Text, View } from "react-native";
 
 type TipCardProps = {
@@ -6,6 +7,7 @@ type TipCardProps = {
 };
 
 export function TipCard({ tip }: TipCardProps) {
+    const { t } = useTranslation();
     const Icon = tip.icon;
     const iconColor = tip.colorClass === "bg-highlight" ? "#005f8b" : "#ffffff";
 
@@ -26,10 +28,10 @@ export function TipCard({ tip }: TipCardProps) {
                 <Icon color={iconColor} size={22} />
             </View>
             <Text className="mt-3.5 text-[15px] font-bold text-text-primary">
-                {tip.title}
+                {t(tip.titleKey)}
             </Text>
             <Text className="mt-1.5 text-xs leading-5 text-text-muted">
-                {tip.description}
+                {t(tip.descriptionKey)}
             </Text>
         </View>
     );

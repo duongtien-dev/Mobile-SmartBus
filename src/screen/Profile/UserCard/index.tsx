@@ -1,6 +1,7 @@
 import { Button } from "@/components/Button";
 import { Card } from "@/components/ui/Card";
 import { DEMO_PROFILE_STATS, GUEST_PROFILE_STATS } from "@/constants/profile";
+import { useTranslation } from "@/i18n";
 import { router } from "expo-router";
 import { ChevronRight, UserRound } from "lucide-react-native";
 import { Pressable, Text, View } from "react-native";
@@ -18,6 +19,7 @@ export function ProfileUserCard({
     isAuthenticated,
     onEditPress,
 }: ProfileUserCardProps) {
+    const { t } = useTranslation();
     const stats = isAuthenticated ? DEMO_PROFILE_STATS : GUEST_PROFILE_STATS;
 
     return (
@@ -36,12 +38,14 @@ export function ProfileUserCard({
 
                 <View className="flex-1 gap-1">
                     <Text className="text-lg font-bold text-text-primary">
-                        {isAuthenticated ? (name ?? "Người dùng") : "Khách"}
+                        {isAuthenticated
+                            ? (name ?? t("profile.user.fallbackName"))
+                            : t("profile.user.guest")}
                     </Text>
                     <Text className="text-sm text-text-muted">
                         {isAuthenticated
-                            ? (email ?? "Chưa cập nhật email")
-                            : "Đăng nhập để quản lý vé và điểm"}
+                            ? (email ?? t("profile.user.noEmail"))
+                            : t("profile.user.loginHint")}
                     </Text>
                 </View>
 
@@ -62,7 +66,7 @@ export function ProfileUserCard({
                             {stat.value}
                         </Text>
                         <Text className="mt-0.5 text-xs text-text-muted">
-                            {stat.label}
+                            {t(stat.labelKey)}
                         </Text>
                     </View>
                 ))}
@@ -76,7 +80,7 @@ export function ProfileUserCard({
                         className="w-full rounded-xl"
                         onPress={() => router.push("/login")}
                     >
-                        Đăng nhập / Đăng ký
+                        {t("profile.user.loginCta")}
                     </Button>
                 </View>
             ) : null}

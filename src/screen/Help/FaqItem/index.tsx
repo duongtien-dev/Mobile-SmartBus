@@ -1,4 +1,5 @@
 import type { FaqItem } from "@/constants/faq";
+import { useTranslation } from "@/i18n";
 import { cn } from "@/lib/utils";
 import { ChevronDown } from "lucide-react-native";
 import { Pressable, Text, View } from "react-native";
@@ -11,6 +12,7 @@ type Props = {
 };
 
 export function FAQItem({ item, index, expanded, onToggle }: Props) {
+    const { t } = useTranslation();
     const isAlt = index % 2 === 1;
 
     return (
@@ -22,7 +24,7 @@ export function FAQItem({ item, index, expanded, onToggle }: Props) {
                 onPress={onToggle}
             >
                 <Text className="flex-1 text-sm font-medium leading-5 text-text-primary">
-                    {item.question}
+                    {t(item.questionKey)}
                 </Text>
                 <ChevronDown
                     color="#00a2e8"
@@ -37,7 +39,7 @@ export function FAQItem({ item, index, expanded, onToggle }: Props) {
             {expanded ? (
                 <View className={cn("border-t border-border/60 px-5 pb-4 pt-1")}>
                     <Text className="text-sm leading-6 text-text-secondary">
-                        {item.answer}
+                        {t(item.answerKey)}
                     </Text>
                 </View>
             ) : null}

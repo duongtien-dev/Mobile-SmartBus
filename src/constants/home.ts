@@ -1,6 +1,6 @@
 export type QuickAction = {
     id: string;
-    label: string;
+    labelKey: string;
     icon: "search" | "map-pin" | "heart" | "message-circle";
     path: string;
 };
@@ -8,27 +8,26 @@ export type QuickAction = {
 export const QUICK_ACTIONS: QuickAction[] = [
     {
         id: "lookup",
-        label: "Tra cứu",
+        labelKey: "home.quick.lookup",
         icon: "search",
         path: "/routes/lookup",
     },
     {
         id: "nearby",
-        label: "Trạm xung quanh",
+        labelKey: "home.quick.nearby",
         icon: "map-pin",
         path: "/routes/nearby",
     },
     {
         id: "favorites",
-        label: "Yêu thích",
+        labelKey: "home.quick.favorites",
         icon: "heart",
         path: "/routes/favorites",
     },
     {
         id: "reviews",
-        label: "Đánh giá",
+        labelKey: "home.quick.reviews",
         icon: "message-circle",
         path: "/routes/reviews",
     },
 ];
-

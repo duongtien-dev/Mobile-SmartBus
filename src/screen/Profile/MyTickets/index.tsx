@@ -3,6 +3,7 @@ import { Card } from "@/components/ui/Card";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { PageHeader } from "@/components/PageHeader";
 import usePaginationList from "@/hooks/usePaginationList";
+import { useTranslation } from "@/i18n";
 import type { ITicket } from "@/models/ticket";
 import { MyTicketItem } from "@/screen/Profile/MyTickets/TicketItem";
 import { ticketService } from "@/services/TicketService";
@@ -11,6 +12,7 @@ import { useEffect } from "react";
 import { ActivityIndicator, FlatList, Text, View } from "react-native";
 
 export default function MyTicketsScreen() {
+    const { t } = useTranslation();
     const {
         list: tickets,
         loadFirstPage,
@@ -43,7 +45,7 @@ export default function MyTicketsScreen() {
 
     return (
         <View className="flex-1 bg-app-shell">
-            <PageHeader title="Vé của bạn" isIconBack />
+            <PageHeader title={t("profile.tickets.title")} isIconBack />
 
             <View className="px-5 pt-4">
                 <Button
@@ -52,7 +54,7 @@ export default function MyTicketsScreen() {
                     className="w-full rounded-xl"
                     onPress={handleOpenQrList}
                 >
-                    Mã QR khả dụng
+                    {t("profile.tickets.availableQr")}
                 </Button>
             </View>
 
@@ -62,7 +64,7 @@ export default function MyTicketsScreen() {
                 keyExtractor={(item) => item._id}
                 ListHeaderComponent={
                     <View className="px-5 pb-2 pt-4">
-                        <SectionTitle title="Tất cả vé đã mua" />
+                        <SectionTitle title={t("profile.tickets.allPurchased")} />
                     </View>
                 }
                 renderItem={({ item }) => (
@@ -86,7 +88,7 @@ export default function MyTicketsScreen() {
                     ) : (
                         <Card className="mx-5">
                             <Text className="py-4 text-center text-sm text-text-muted">
-                                Bạn chưa có vé nào
+                                {t("profile.tickets.empty")}
                             </Text>
                         </Card>
                     )
