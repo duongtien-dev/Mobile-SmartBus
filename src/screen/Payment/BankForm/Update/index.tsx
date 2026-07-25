@@ -2,6 +2,7 @@ import { Button } from "@/components/Button";
 import { PageHeader } from "@/components/PageHeader";
 import useFetch from "@/hooks/useFetch";
 import { useToastify } from "@/hooks/useToastify";
+import { useTranslation } from "@/i18n";
 import type { IPaymentMethod } from "@/models/paymentMethod";
 import { BankFormFields } from "@/screen/Payment/BankForm/BankFormFields";
 import {
@@ -22,6 +23,7 @@ import {
 } from "react-native";
 
 export default function UpdateBankFormScreen() {
+    const { t } = useTranslation();
     const { id } = useLocalSearchParams<{ id?: string }>();
     const showToast = useToastify();
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -76,7 +78,9 @@ export default function UpdateBankFormScreen() {
 
         showToast({
             type: res.success ? "success" : "error",
-            content: res.success ? "Cập nhật phương thức thành công" : "Cập nhật phương thức thất bại",
+            content: res.success
+                ? t("payment.toastUpdateSuccess")
+                : t("payment.toastUpdateFail"),
         });
         if (res.success) {
             router.replace("/payment");
@@ -94,7 +98,7 @@ export default function UpdateBankFormScreen() {
 
     return (
         <View className="flex-1 flex-col gap-5 bg-background">
-            <PageHeader title="Cập nhật phương thức thanh toán" isIconBack />
+            <PageHeader title={t("payment.updateTitle")} isIconBack />
 
             <KeyboardAvoidingView
                 className="flex-1"
@@ -107,7 +111,7 @@ export default function UpdateBankFormScreen() {
                     showsVerticalScrollIndicator={false}
                 >
                     <Text className="text-center text-base font-bold text-primary">
-                        Tài khoản / Thẻ ngân hàng
+                        {t("payment.bankSection")}
                     </Text>
 
                     <BankFormFields
@@ -115,14 +119,17 @@ export default function UpdateBankFormScreen() {
                         onChange={handleChange}
                     />
 
-                    <Button type="primary" variant="bold" className="w-full rounded-lg"
+                    <Button
+                        type="primary"
+                        variant="bold"
+                        className="w-full rounded-lg"
                         disabled={isSubmitting}
                         onPress={handleSubmit}
                     >
                         {isSubmitting ? (
                             <ActivityIndicator color="#ffffff" />
                         ) : (
-                            "Cập nhật phương thức"
+                            t("payment.updateCta")
                         )}
                     </Button>
                 </ScrollView>

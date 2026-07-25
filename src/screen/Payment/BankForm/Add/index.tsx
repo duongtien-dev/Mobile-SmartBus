@@ -1,6 +1,7 @@
 import { Button } from "@/components/Button";
 import { PageHeader } from "@/components/PageHeader";
 import { useToastify } from "@/hooks/useToastify";
+import { useTranslation } from "@/i18n";
 import { BankFormFields } from "@/screen/Payment/BankForm/BankFormFields";
 import {
     INITIAL_BANK_FORM,
@@ -20,6 +21,7 @@ import {
 } from "react-native";
 
 export default function AddBankFormScreen() {
+    const { t } = useTranslation();
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [formData, setFormData] = useState<BankFormData>(INITIAL_BANK_FORM);
     const showToast = useToastify();
@@ -27,7 +29,6 @@ export default function AddBankFormScreen() {
     const handleChange = (key: keyof BankFormData, value: string) => {
         setFormData((prev) => ({ ...prev, [key]: value }));
     };
-
 
     const handleSubmit = async () => {
         if (isSubmitting) {
@@ -40,7 +41,9 @@ export default function AddBankFormScreen() {
 
         showToast({
             type: res.success ? "success" : "error",
-            content: res.success ? "Thêm phương thức thành công" : "Thêm phương thức thất bại",
+            content: res.success
+                ? t("payment.toastAddSuccess")
+                : t("payment.toastAddFail"),
         });
         if (res.success) {
             router.replace("/payment");
@@ -50,7 +53,7 @@ export default function AddBankFormScreen() {
 
     return (
         <View className="flex-1 flex-col gap-5 bg-background">
-            <PageHeader title="Thêm phương thức thanh toán" isIconBack />
+            <PageHeader title={t("payment.addTitle")} isIconBack />
 
             <KeyboardAvoidingView
                 className="flex-1"
@@ -63,7 +66,7 @@ export default function AddBankFormScreen() {
                     showsVerticalScrollIndicator={false}
                 >
                     <Text className="text-center text-base font-bold text-primary">
-                        Tài khoản / Thẻ ngân hàng
+                        {t("payment.bankSection")}
                     </Text>
 
                     <BankFormFields
@@ -81,7 +84,7 @@ export default function AddBankFormScreen() {
                         {isSubmitting ? (
                             <ActivityIndicator color="#ffffff" />
                         ) : (
-                            "Thêm phương thức"
+                            t("payment.addCta")
                         )}
                     </Button>
                 </ScrollView>

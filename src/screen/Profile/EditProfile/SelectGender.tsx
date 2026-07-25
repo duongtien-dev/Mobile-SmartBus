@@ -1,8 +1,13 @@
 import { FormField } from "@/components/Form/FormField";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { useTranslation } from "@/i18n";
 import { Text, View } from "react-native";
 
-const GENDER_OPTIONS: string[] = ["Nam", "Nữ"];
+/** Giá trị gửi API giữ nguyên Nam/Nữ; chỉ label theo locale. */
+const GENDER_OPTIONS = [
+    { value: "Nam", labelKey: "profile.edit.genderMale" },
+    { value: "Nữ", labelKey: "profile.edit.genderFemale" },
+] as const;
 
 interface SelectGenderProps {
     value?: string;
@@ -10,24 +15,24 @@ interface SelectGenderProps {
 }
 
 export default function SelectGender({ value, onChange }: SelectGenderProps) {
+    const { t } = useTranslation();
+
     return (
-        <FormField labelText="Giới tính" required={true}>
+        <FormField labelText={t("profile.edit.gender")} required>
             <RadioGroup
                 className="flex-row items-center gap-6"
                 value={value}
                 onValueChange={onChange}
             >
-                {GENDER_OPTIONS.map((option) => {
-                    return (
-                        <View key={option} className="flex-row items-center gap-2"
-                        >
-                            <RadioGroupItem
-                                value={option}
-                            />
-                            <Text>{option}</Text>
-                        </View>
-                    );
-                })}
+                {GENDER_OPTIONS.map((option) => (
+                    <View
+                        key={option.value}
+                        className="flex-row items-center gap-2"
+                    >
+                        <RadioGroupItem value={option.value} />
+                        <Text>{t(option.labelKey)}</Text>
+                    </View>
+                ))}
             </RadioGroup>
         </FormField>
     );

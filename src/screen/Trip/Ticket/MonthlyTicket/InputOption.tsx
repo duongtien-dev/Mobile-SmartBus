@@ -25,7 +25,7 @@ export function InputOption({ value, onChange, options }: Props) {
                 </FormField>
             </View>
 
-            <View className="flex-1 gap-2">
+            <View className="flex-1 gap-3">
                 <Text className="text-sm font-medium text-primary">
                     {t("ticket.monthly.ticketCount")}{" "}
                     <Text className="text-alert">{t("common.required")}</Text>
@@ -35,7 +35,7 @@ export function InputOption({ value, onChange, options }: Props) {
                     onValueChange={(next) => onChange(next)}
                     placeholder={t("ticket.monthly.select")}
                     options={options}
-                    triggerClassName="h-12 rounded-xl border-0 bg-surface px-4 shadow-sm"
+                    triggerClassName="h-12 rounded-xl border border-border bg-surface px-4 shadow-sm focus:border-primary focus:outline-none"
                 />
             </View>
         </View>
