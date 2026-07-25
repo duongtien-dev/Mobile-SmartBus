@@ -19,7 +19,7 @@ export function useAssignedRoutes() {
                 page: 1,
                 limit: 20,
                 sort: "newest",
-                userId,
+                staffId: userId,
             });
             return response.data ?? [];
         },

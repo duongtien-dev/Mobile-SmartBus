@@ -48,7 +48,7 @@ export function useActiveShiftBanner() {
                 page: 1,
                 limit: 1,
                 sort: "newest",
-                userId,
+                staffId: userId,
             });
             return response.data ?? [];
         },
@@ -84,7 +84,7 @@ export function useActiveShiftBanner() {
 
         const scheduleRes = await staffScheduleService.getMySchedule();
         const todaySchedule =
-            scheduleRes.data?.items.find((item) => item.isToday) ?? null;
+            scheduleRes.data?.items.find((item: any) => item.isToday) ?? null;
 
         await checkIn({
             schedule: todaySchedule,
