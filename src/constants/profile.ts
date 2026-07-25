@@ -13,40 +13,61 @@ import {
     Shield,
     Ticket,
     UserRound,
+    type LucideIcon,
 } from "lucide-react-native";
+import type { TranslationKey } from "@/i18n/translations";
 
-export const PROFILE_MENU_SECTIONS = [
+export type ProfileMenuItemConfig = {
+    id: string;
+    labelKey: TranslationKey;
+    descriptionKey?: TranslationKey;
+    /** description động (vd. ngôn ngữ hiện tại) — override descriptionKey */
+    descriptionFromLocale?: boolean;
+    icon: LucideIcon;
+    href?: string;
+    authOnly?: boolean;
+    guestOnly?: boolean;
+    destructive?: boolean;
+};
+
+export type ProfileMenuSectionConfig = {
+    id: string;
+    titleKey: TranslationKey;
+    items: ProfileMenuItemConfig[];
+};
+
+export const PROFILE_MENU_SECTIONS: ProfileMenuSectionConfig[] = [
     {
         id: "account",
-        title: "Tài khoản",
+        titleKey: "profile.section.account",
         items: [
             {
                 id: "edit-profile",
-                label: "Thông tin cá nhân",
-                description: "Cập nhật họ tên, số điện thoại",
+                labelKey: "profile.menu.editProfile",
+                descriptionKey: "profile.menu.editProfile.desc",
                 icon: UserRound,
                 href: "/profile/edit",
                 authOnly: true,
             },
             {
                 id: "payment",
-                label: "Phương thức thanh toán",
-                description: "Thẻ, ví điện tử đã liên kết",
+                labelKey: "profile.menu.payment",
+                descriptionKey: "profile.menu.payment.desc",
                 icon: CreditCard,
                 href: "/payment",
             },
             {
                 id: "my-tickets",
-                label: "Vé của tôi",
-                description: "Vé lượt, vé tháng đang sử dụng",
+                labelKey: "profile.menu.myTickets",
+                descriptionKey: "profile.menu.myTickets.desc",
                 icon: Ticket,
                 href: "/profile/my-tickets",
                 authOnly: true,
             },
             {
                 id: "trip-history",
-                label: "Lịch sử chuyến đi",
-                description: "Các chuyến đã đi gần đây",
+                labelKey: "profile.menu.tripHistory",
+                descriptionKey: "profile.menu.tripHistory.desc",
                 icon: History,
                 href: "/profile/trip-history",
                 authOnly: true,
@@ -55,26 +76,26 @@ export const PROFILE_MENU_SECTIONS = [
     },
     {
         id: "services",
-        title: "Dịch vụ",
+        titleKey: "profile.section.services",
         items: [
             {
                 id: "favorites",
-                label: "Tuyến yêu thích",
-                description: "Lưu nhanh tuyến thường dùng",
+                labelKey: "profile.menu.favorites",
+                descriptionKey: "profile.menu.favorites.desc",
                 icon: Heart,
                 href: "/routes/favorites",
             },
             {
                 id: "nearby",
-                label: "Trạm xung quanh",
-                description: "Tìm trạm gần vị trí hiện tại",
+                labelKey: "profile.menu.nearby",
+                descriptionKey: "profile.menu.nearby.desc",
                 icon: MapPin,
                 href: "/",
             },
             {
                 id: "notifications",
-                label: "Thông báo",
-                description: "Tin tức và cập nhật tuyến",
+                labelKey: "profile.menu.notifications",
+                descriptionKey: "profile.menu.notifications.desc",
                 icon: Bell,
                 href: "/notifications",
             },
@@ -82,59 +103,60 @@ export const PROFILE_MENU_SECTIONS = [
     },
     {
         id: "settings",
-        title: "Cài đặt",
+        titleKey: "profile.section.settings",
         items: [
             {
                 id: "language",
-                label: "Ngôn ngữ",
-                description: "Tiếng Việt",
+                labelKey: "profile.menu.language",
+                descriptionFromLocale: true,
                 icon: Languages,
+                href: "/profile/language",
             },
             {
                 id: "help",
-                label: "Trung tâm trợ giúp",
-                description: "Câu hỏi thường gặp, liên hệ",
+                labelKey: "profile.menu.help",
+                descriptionKey: "profile.menu.help.desc",
                 icon: HelpCircle,
                 href: "/help",
             },
             {
                 id: "terms",
-                label: "Điều khoản sử dụng",
+                labelKey: "profile.menu.terms",
                 icon: FileText,
             },
             {
                 id: "privacy",
-                label: "Chính sách bảo mật",
+                labelKey: "profile.menu.privacy",
                 icon: Shield,
             },
             {
                 id: "about",
-                label: "Về DanaBus",
-                description: "Phiên bản ứng dụng",
+                labelKey: "profile.menu.about",
+                descriptionKey: "profile.menu.about.desc",
                 icon: Info,
             },
         ],
     },
-] as const;
+];
 
-export const PROFILE_AUTH_ACTIONS = [
+export const PROFILE_AUTH_ACTIONS: ProfileMenuItemConfig[] = [
     {
         id: "login",
-        label: "Đăng nhập / Đăng ký",
-        description: "Đồng bộ vé và điểm tích lũy",
+        labelKey: "profile.menu.login",
+        descriptionKey: "profile.menu.login.desc",
         icon: LogIn,
         href: "/login",
         guestOnly: true,
     },
     {
         id: "logout",
-        label: "Đăng xuất",
-        description: "Thoát khỏi tài khoản hiện tại",
+        labelKey: "profile.menu.logout",
+        descriptionKey: "profile.menu.logout.desc",
         icon: LogOut,
         destructive: true,
         authOnly: true,
     },
-] as const;
+];
 
 export const GUEST_PROFILE_STATS = [
     { id: "points", label: "Điểm", value: "—" },
