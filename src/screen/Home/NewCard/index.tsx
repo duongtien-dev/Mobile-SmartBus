@@ -46,7 +46,7 @@ export function NewsCard({ item }: NewsCardProps) {
                     <View className="absolute left-3 top-3 flex-row items-center gap-1.5 rounded-full bg-card/95 px-2.5 py-1">
                         <Newspaper color="#005f8b" size={12} />
                         <Text className="text-[11px] font-semibold text-primary">
-                            {item.category?.trim() || "Tin tức"}
+                            {item.category?.trim()}
                         </Text>
                     </View>
                 </View>
