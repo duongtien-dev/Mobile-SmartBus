@@ -1,3 +1,4 @@
+import { useTranslation } from "@/i18n";
 import type { ITicketProduct } from "@/models/ticketProduct";
 import { formatTicketPrice } from "@/utils/ticket";
 import { ChevronRight, Clock, DollarSign, Ticket } from "lucide-react-native";
@@ -9,6 +10,8 @@ type TicketTypeCardProps = {
 };
 
 export function TicketTypeCard({ product, onPress }: TicketTypeCardProps) {
+    const { t } = useTranslation();
+
     return (
         <Pressable
             className="flex-row items-center gap-4 rounded-2xl border border-primary/10 bg-white px-4 py-4 shadow-sm active:opacity-80"
@@ -21,7 +24,7 @@ export function TicketTypeCard({ product, onPress }: TicketTypeCardProps) {
             <View className="flex-1 gap-2">
                 <View className="self-start rounded-full bg-primary/10 px-2.5 py-1">
                     <Text className="text-[11px] font-bold uppercase tracking-wide text-primary">
-                        Vé xe buýt
+                        {t("ticket.type.busBadge")}
                     </Text>
                 </View>
 

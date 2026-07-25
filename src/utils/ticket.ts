@@ -107,7 +107,10 @@ export function getTripHistoryStatusLabel(ticket: ITicket) {
 }
 
 export function formatTicketPrice(product: ITicketProduct) {
-    const formatted = product.unitPrice.toLocaleString("vi-VN");
+    const locale = useLocaleStore.getState().locale;
+    const formatted = product.unitPrice.toLocaleString(
+        locale === "en" ? "en-US" : locale === "ja" ? "ja-JP" : "vi-VN",
+    );
     if (product.code === "single") {
         return t("ticket.pricePerRide", { amount: formatted });
     }

@@ -1,4 +1,5 @@
 import { Select } from "@/components/Select";
+import { useTranslation } from "@/i18n";
 import { Text, View } from "react-native";
 
 interface Props {
@@ -8,15 +9,18 @@ interface Props {
 }
 
 export function InputSeat({ value, onChange, options }: Props) {
+    const { t } = useTranslation();
+
     return (
         <View className="flex-1 gap-2">
             <Text className="text-sm font-medium text-primary">
-                Số lượng ghế <Text className="text-alert">*</Text>
+                {t("ticket.single.seatCount")}{" "}
+                <Text className="text-alert">{t("common.required")}</Text>
             </Text>
             <Select
                 value={value}
-                onValueChange={(value) => onChange(value)}
-                placeholder="Chọn số lượng ghế"
+                onValueChange={(next) => onChange(next)}
+                placeholder={t("ticket.single.selectSeats")}
                 options={options}
                 triggerClassName="h-12 rounded-xl"
             />

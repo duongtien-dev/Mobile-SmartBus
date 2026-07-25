@@ -1,5 +1,6 @@
 import { FormField } from "@/components/Form/FormField";
 import InputText from "@/components/Input/InputText";
+import { useTranslation } from "@/i18n";
 import { Text, View } from "react-native";
 
 interface Props {
@@ -8,10 +9,14 @@ interface Props {
 }
 
 export function TicketInfo({ pickupStopName, departureDate }: Props) {
+    const { t } = useTranslation();
+
     return (
         <View className="gap-4">
-            <Text className="text-base font-bold text-primary">Thông tin lượt đi</Text>
-            <FormField labelText="Trạm đón (Trạm lên xe)">
+            <Text className="text-base font-bold text-primary">
+                {t("ticket.single.tripInfo")}
+            </Text>
+            <FormField labelText={t("ticket.single.pickupLabel")}>
                 <InputText
                     value={pickupStopName}
                     editable={false}
@@ -19,7 +24,7 @@ export function TicketInfo({ pickupStopName, departureDate }: Props) {
                 />
             </FormField>
 
-            <FormField labelText="Ngày đi">
+            <FormField labelText={t("ticket.single.travelDate")}>
                 <InputText
                     value={departureDate}
                     editable={false}

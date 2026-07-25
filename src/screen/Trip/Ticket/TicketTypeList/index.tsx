@@ -1,4 +1,5 @@
 import { PageHeader } from "@/components/PageHeader";
+import { useTranslation } from "@/i18n";
 import type { ITicketProduct } from "@/models/ticketProduct";
 import { TicketTypeCard } from "@/screen/Trip/Ticket/TicketTypeCard";
 import { ticketProductService } from "@/services";
@@ -8,6 +9,7 @@ import { useCallback, useEffect, useState } from "react";
 import { ActivityIndicator, ScrollView, Text, View } from "react-native";
 
 export default function TicketTypeListScreen() {
+    const { t } = useTranslation();
     const setTicketType = useTripBookingStore((state) => state.setTicketType);
     const [products, setProducts] = useState<ITicketProduct[]>([]);
     const [loading, setLoading] = useState(true);
@@ -20,12 +22,12 @@ export default function TicketTypeListScreen() {
             const res = await ticketProductService.list();
             setProducts(res.data ?? []);
         } catch {
-            setError("Không tải được danh sách loại vé");
+            setError(t("ticket.type.loadFail"));
             setProducts([]);
         } finally {
             setLoading(false);
         }
-    }, []);
+    }, [t]);
 
     useEffect(() => {
         loadProducts();
@@ -44,7 +46,7 @@ export default function TicketTypeListScreen() {
 
     return (
         <View className="flex-1 bg-background">
-            <PageHeader title="Mua vé" isIconBack={true} />
+            <PageHeader title={t("ticket.buy.title")} isIconBack={true} />
 
             <ScrollView
                 className="flex-1"
@@ -52,7 +54,7 @@ export default function TicketTypeListScreen() {
                 showsVerticalScrollIndicator={false}
             >
                 <Text className="text-lg font-bold text-primary">
-                    Bạn muốn mua loại vé nào?
+                    {t("ticket.type.prompt")}
                 </Text>
 
                 {loading ? (
@@ -61,11 +63,11 @@ export default function TicketTypeListScreen() {
                     </View>
                 ) : error ? (
                     <Text className="text-sm text-alert" onPress={loadProducts}>
-                        {error}. Nhấn để thử lại.
+                        {t("ticket.type.retryHint", { error })}
                     </Text>
                 ) : products.length === 0 ? (
                     <Text className="text-sm text-text-muted">
-                        Hiện chưa có loại vé nào.
+                        {t("ticket.type.empty")}
                     </Text>
                 ) : (
                     products.map((product) => (

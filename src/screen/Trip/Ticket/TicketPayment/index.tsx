@@ -1,4 +1,5 @@
 import { PageHeader } from "@/components/PageHeader";
+import { useTranslation } from "@/i18n";
 import { FormControls } from "@/screen/Trip/Ticket/Element/FormControls";
 import { ticketService } from "@/services/TicketService";
 import useTripBookingStore from "@/store/tripBooking.store";
@@ -12,8 +13,6 @@ import PaymentMethods from "./PaymentMethods";
 import TicketSummary from "./TicketSummary";
 
 function goToTicketSuccess() {
-    // dismissAll rồi replace — tránh race (dismiss bị nuốt nếu navigate ngay)
-    // Stack mua vé bị xóa; success đứng một mình → back không về form
     if (router.canDismiss()) {
         router.dismissAll();
     }
@@ -23,6 +22,7 @@ function goToTicketSuccess() {
 }
 
 export default function TicketPaymentScreen() {
+    const { t } = useTranslation();
     const totalPrice = useTripBookingStore((state) => state.totalPrice);
     const selectedMethodId = useTripBookingStore(
         (state) => state.selectedPaymentMethodId,
@@ -36,7 +36,7 @@ export default function TicketPaymentScreen() {
         if (!selectedMethodId) {
             Toast.show({
                 type: "error",
-                text1: "Vui lòng chọn phương thức thanh toán",
+                text1: t("ticket.payment.toastSelectMethod"),
             });
             return;
         }
@@ -50,7 +50,10 @@ export default function TicketPaymentScreen() {
             selectedPaymentMethodId: state.selectedPaymentMethodId,
         });
         if (error || !body) {
-            Toast.show({ type: "error", text1: error || "Không thể tạo vé" });
+            Toast.show({
+                type: "error",
+                text1: error || t("ticket.payment.createFail"),
+            });
             return;
         }
 
@@ -59,21 +62,23 @@ export default function TicketPaymentScreen() {
             const response = await ticketService.createTicket(body);
             const ticket = response.data;
             if (!ticket) {
-                throw new Error(response.message || "Không nhận được dữ liệu vé");
+                throw new Error(
+                    response.message || t("ticket.payment.noTicketData"),
+                );
             }
 
             setLastPurchasedTicket(ticket);
 
             Toast.show({
                 type: "success",
-                text1: "Thanh toán thành công",
-                text2: "Vé của bạn đã sẵn sàng",
+                text1: t("ticket.payment.toastSuccess"),
+                text2: t("ticket.payment.toastSuccessDesc"),
             });
             goToTicketSuccess();
         } catch (err: unknown) {
             Toast.show({
                 type: "error",
-                text1: "Thanh toán thất bại",
+                text1: t("ticket.payment.toastFail"),
                 text2: (err as Error).message,
             });
         } finally {
@@ -83,7 +88,7 @@ export default function TicketPaymentScreen() {
 
     return (
         <View className="flex-1 bg-app-shell">
-            <PageHeader title="Thanh toán" isIconBack={true} />
+            <PageHeader title={t("ticket.payment.title")} isIconBack={true} />
 
             <ScrollView
                 className="flex-1"
@@ -97,7 +102,11 @@ export default function TicketPaymentScreen() {
 
             <FormControls
                 price={totalPrice}
-                buttonLabel={paying ? "Đang xử lý..." : "Thanh toán"}
+                buttonLabel={
+                    paying
+                        ? t("ticket.payment.processing")
+                        : t("ticket.payment.pay")
+                }
                 disabled={!selectedMethodId || paying}
                 onPress={handlePay}
             />
