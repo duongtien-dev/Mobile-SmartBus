@@ -1,6 +1,7 @@
 import type { AppLocale } from "./localeConfig";
 import en from "./locales/en.json";
 import vi from "./locales/vi.json";
+import ja from "./locales/ja.json";
 
 type TranslationDict = Record<string, string>;
 type TranslateParams = Record<string, string | number>;
@@ -8,6 +9,7 @@ type TranslateParams = Record<string, string | number>;
 const dictionaries: Record<AppLocale, TranslationDict> = {
     vi,
     en,
+    ja,
 };
 
 export type TranslationKey = keyof typeof vi;

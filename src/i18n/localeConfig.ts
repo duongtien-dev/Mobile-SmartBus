@@ -1,4 +1,4 @@
-export type AppLocale = "vi" | "en";
+export type AppLocale = "vi" | "en" | "ja";
 
 export type AppLocaleOption = {
     code: AppLocale;
@@ -23,10 +23,15 @@ export const APP_LOCALE_OPTIONS: AppLocaleOption[] = [
         nativeLabel: "English",
         secondaryLabel: "Tiếng Anh",
     },
+    {
+        code: "ja",
+        nativeLabel: "日本語",
+        secondaryLabel: "Japanese",
+    },
 ];
 
 export function isAppLocale(value: unknown): value is AppLocale {
-    return value === "vi" || value === "en";
+    return value === "vi" || value === "en" || value === "ja";
 }
 
 export function getLocaleOption(code: AppLocale): AppLocaleOption {
