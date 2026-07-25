@@ -1,3 +1,4 @@
+import { useTranslation } from "@/i18n";
 import { cn } from "@/lib/utils";
 import React from "react";
 import type { TextInputProps } from "react-native";
@@ -5,12 +6,19 @@ import { TextInput } from "react-native-css/components";
 
 interface TextAreaProps extends TextInputProps {}
 
-const TextArea: React.FC<TextAreaProps> = ({ className, style, ...props }) => {
+const TextArea: React.FC<TextAreaProps> = ({
+    className,
+    style,
+    placeholder,
+    ...props
+}) => {
+    const { t } = useTranslation();
+
     return (
         <TextInput
             multiline
             numberOfLines={4}
-            placeholder="Nội dung"
+            placeholder={placeholder ?? t("textarea.placeholder")}
             textAlignVertical="top"
             underlineColorAndroid="transparent"
             className={cn(

@@ -1,3 +1,4 @@
+import { useTranslation } from "@/i18n";
 import { cn } from "@/lib/utils";
 import { Check, ChevronDown } from "lucide-react-native";
 import { useMemo, useRef, useState } from "react";
@@ -31,18 +32,20 @@ type TriggerLayout = LayoutRectangle & { pageX: number; pageY: number };
 export function Select({
     value,
     onValueChange,
-    placeholder = "Chọn",
+    placeholder,
     options = [],
     className,
     triggerClassName,
     contentClassName,
     disabled = false,
 }: SelectProps) {
+    const { t } = useTranslation();
     const [open, setOpen] = useState(false);
     const [triggerLayout, setTriggerLayout] = useState<TriggerLayout | null>(
         null,
     );
     const triggerRef = useRef<View>(null);
+    const resolvedPlaceholder = placeholder ?? t("select.placeholder");
 
     const selectedOption = useMemo(
         () => options.find((option) => option.value === value),
@@ -84,7 +87,7 @@ export function Select({
                         )}
                         numberOfLines={1}
                     >
-                        {selectedOption?.label ?? placeholder}
+                        {selectedOption?.label ?? resolvedPlaceholder}
                     </Text>
                     <ChevronDown color="#6b7280" size={18} />
                 </Pressable>
@@ -109,7 +112,10 @@ export function Select({
                                 contentClassName,
                             )}
                             style={{
-                                top: triggerLayout.pageY + triggerLayout.height + 4,
+                                top:
+                                    triggerLayout.pageY +
+                                    triggerLayout.height +
+                                    4,
                                 left: triggerLayout.pageX,
                                 width: triggerLayout.width,
                             }}
@@ -151,7 +157,7 @@ export function Select({
                                 }}
                                 ListEmptyComponent={
                                     <Text className="px-4 py-6 text-center text-sm text-text-muted">
-                                        Không có lựa chọn
+                                        {t("select.empty")}
                                     </Text>
                                 }
                             />

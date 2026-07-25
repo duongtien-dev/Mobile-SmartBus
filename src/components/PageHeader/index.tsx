@@ -1,3 +1,4 @@
+import { useTranslation } from "@/i18n";
 import { cn } from "@/lib/utils";
 import { router } from "expo-router";
 import { ArrowLeft } from "lucide-react-native";
@@ -21,6 +22,8 @@ export function PageHeader({
     onBackPress,
     ...props
 }: PageHeaderProps) {
+    const { t } = useTranslation();
+
     return (
         <View
             className={cn(
@@ -49,7 +52,7 @@ export function PageHeader({
                     {isIconBack ? (
                         <Pressable
                             accessibilityRole="button"
-                            accessibilityLabel="Quay lại"
+                            accessibilityLabel={t("a11y.back")}
                             className="h-10 w-10 items-center justify-center active:opacity-80"
                             onPress={() =>
                                 onBackPress ? onBackPress() : router.back()

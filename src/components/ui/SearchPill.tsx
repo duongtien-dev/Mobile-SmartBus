@@ -1,3 +1,4 @@
+import { useTranslation } from "@/i18n";
 import { cn } from "@/lib/utils";
 import { Search } from "lucide-react-native";
 import { Pressable, Text, View, type PressableProps } from "react-native";
@@ -10,12 +11,15 @@ type SearchPillProps = PressableProps & {
 };
 
 export function SearchPill({
-    placeholder = "Tìm kiếm...",
+    placeholder,
     value,
     className,
     onPress,
     ...props
 }: SearchPillProps) {
+    const { t } = useTranslation();
+    const resolvedPlaceholder = placeholder ?? t("search.placeholder");
+
     return (
         <Pressable
             accessibilityRole="button"
@@ -34,7 +38,7 @@ export function SearchPill({
                 )}
                 numberOfLines={1}
             >
-                {value || placeholder}
+                {value || resolvedPlaceholder}
             </Text>
         </Pressable>
     );
