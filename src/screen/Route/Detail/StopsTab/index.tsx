@@ -1,3 +1,4 @@
+import { useTranslation } from "@/i18n";
 import type { IStop } from "@/models/stop";
 import { MapPin } from "lucide-react-native";
 import { Text, View } from "react-native";
@@ -7,10 +8,12 @@ type StopsTabProps = {
 };
 
 export function StopsTab({ stops }: StopsTabProps) {
+    const { t } = useTranslation();
+
     if (!stops.length) {
         return (
             <Text className="px-5 py-10 text-center text-sm text-text-muted">
-                Chưa có trạm dừng cho tuyến này
+                {t("route.stops.emptyDetail")}
             </Text>
         );
     }
@@ -32,7 +35,7 @@ export function StopsTab({ stops }: StopsTabProps) {
                                 {stop.name}
                             </Text>
                             <Text className="mt-0.5 text-sm text-text-muted">
-                                Mã trạm: {stop.stopCode}
+                                {t("route.stops.code", { code: stop.stopCode })}
                             </Text>
                         </View>
                         <MapPin color="#00a2e8" size={20} />

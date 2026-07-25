@@ -1,10 +1,11 @@
 import { Button } from "@/components/Button";
 import ModalBlank from "@/components/ModalBlank";
+import { useTranslation } from "@/i18n";
 import type { IReview } from "@/models/review";
 import { StarRating } from "@/screen/Route/Reviews/StarRating";
 import { reviewRouteService } from "@/services/ReivewRouteService";
-import moment from "moment";
 import { Trash2 } from "lucide-react-native";
+import moment from "moment";
 import { useState } from "react";
 import { ActivityIndicator, Pressable, Text, View } from "react-native";
 import Toast from "react-native-toast-message";
@@ -14,19 +15,20 @@ type ReviewCardProps = {
     onDeleted?: (reviewId: string) => void;
 };
 
-function getRouteLabel(review: IReview) {
-    if (review.route?.name) {
-        return `Tuyến ${review.route.name}`;
-    }
-    if (review.route?.code) {
-        return `Tuyến ${review.route.code}`;
-    }
-    return "Tuyến xe";
-}
-
 export function ReviewCard({ review, onDeleted }: ReviewCardProps) {
+    const { t } = useTranslation();
     const [isConfirmOpen, setIsConfirmOpen] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
+
+    const getRouteLabel = () => {
+        if (review.route?.name) {
+            return t("route.reviews.routeNamed", { name: review.route.name });
+        }
+        if (review.route?.code) {
+            return t("route.reviews.routeNamed", { name: review.route.code });
+        }
+        return t("route.reviews.routeLabel");
+    };
 
     const handleConfirmDelete = async () => {
         if (isDeleting) return;
@@ -41,7 +43,7 @@ export function ReviewCard({ review, onDeleted }: ReviewCardProps) {
         } catch {
             Toast.show({
                 type: "error",
-                text1: "Không thể xóa đánh giá",
+                text1: t("route.reviews.deleteFail"),
             });
         } finally {
             setIsDeleting(false);
@@ -66,7 +68,7 @@ export function ReviewCard({ review, onDeleted }: ReviewCardProps) {
                     </Text>
                 ) : null}
                 <Text className="mt-1 text-sm italic text-text-muted">
-                    {getRouteLabel(review)}
+                    {getRouteLabel()}
                 </Text>
             </View>
 
@@ -77,7 +79,9 @@ export function ReviewCard({ review, onDeleted }: ReviewCardProps) {
                     onPress={() => setIsConfirmOpen(true)}
                 >
                     <Trash2 color="#e50049" size={16} />
-                    <Text className="text-sm font-medium text-alert">Xóa</Text>
+                    <Text className="text-sm font-medium text-alert">
+                        {t("route.reviews.delete")}
+                    </Text>
                 </Pressable>
             </View>
 
@@ -90,11 +94,10 @@ export function ReviewCard({ review, onDeleted }: ReviewCardProps) {
                 closeButton={!isDeleting}
             >
                 <Text className="text-lg font-bold text-text-primary">
-                    Xóa đánh giá
+                    {t("route.reviews.deleteTitle")}
                 </Text>
                 <Text className="text-sm leading-5 text-text-secondary">
-                    Bạn có chắc muốn xóa đánh giá này? Hành động không thể hoàn
-                    tác.
+                    {t("route.reviews.deleteMessage")}
                 </Text>
                 <View className="mt-1 flex-row gap-3">
                     <Button
@@ -105,7 +108,7 @@ export function ReviewCard({ review, onDeleted }: ReviewCardProps) {
                         disabled={isDeleting}
                         onPress={() => setIsConfirmOpen(false)}
                     >
-                        Hủy
+                        {t("route.reviews.deleteCancel")}
                     </Button>
                     <Button
                         type="danger"
@@ -118,7 +121,7 @@ export function ReviewCard({ review, onDeleted }: ReviewCardProps) {
                         {isDeleting ? (
                             <ActivityIndicator color="#ffffff" size="small" />
                         ) : (
-                            "Xóa"
+                            t("route.reviews.delete")
                         )}
                     </Button>
                 </View>

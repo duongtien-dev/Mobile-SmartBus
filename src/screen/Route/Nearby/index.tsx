@@ -1,6 +1,7 @@
 import useCurrentLocation, {
     type MapCoordinate,
 } from "@/hooks/useCurrentLocation";
+import { useTranslation } from "@/i18n";
 import type { ISuggestLocation } from "@/models/suggestLocation";
 import { NearbyActionBar } from "@/screen/Route/Nearby/NearbyActionBar";
 import { NearbyMap } from "@/screen/Route/Nearby/NearbyMap";
@@ -12,6 +13,7 @@ import { ActivityIndicator, Pressable, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function NearbyScreen() {
+    const { t } = useTranslation();
     const insets = useSafeAreaInsets();
     const setPrefillOrigin = useTripBookingStore(
         (state) => state.setPrefillOrigin,
@@ -31,7 +33,7 @@ export default function NearbyScreen() {
 
     const handleDirectionsPress = () => {
         const originName =
-            selectedLocation?.display_name ?? "Vị trí hiện tại";
+            selectedLocation?.display_name ?? t("route.nearby.currentLocation");
         const originLat = selectedLocation?.lat ?? location.latitude;
         const originLng = selectedLocation?.lng ?? location.longitude;
 
@@ -50,7 +52,7 @@ export default function NearbyScreen() {
                 <View className="flex-1 items-center justify-center bg-surface">
                     <ActivityIndicator color="#005f8b" size="large" />
                     <Text className="mt-3 text-sm text-text-muted">
-                        Đang lấy vị trí...
+                        {t("route.nearby.locating")}
                     </Text>
                 </View>
             ) : (
@@ -72,14 +74,14 @@ export default function NearbyScreen() {
                             style={{ top: 80 }}
                         >
                             <Text className="text-xs text-white">
-                                Không có quyền vị trí — dùng mặc định Đà Nẵng
+                                {t("route.nearby.permissionDeniedDetail")}
                             </Text>
                             <Pressable
                                 className="mt-1 active:opacity-80"
                                 onPress={refresh}
                             >
                                 <Text className="text-center text-xs font-medium text-accent">
-                                    Thử lại
+                                    {t("route.nearby.retry")}
                                 </Text>
                             </Pressable>
                         </View>

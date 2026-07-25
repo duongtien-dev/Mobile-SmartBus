@@ -1,4 +1,5 @@
 import TabContainer from "@/components/TabContainer";
+import { useTranslation } from "@/i18n";
 import type { IRoute } from "@/models/route";
 import type { IStop } from "@/models/stop";
 import { InfoTab } from "@/screen/Route/Detail/InfoTab";
@@ -11,7 +12,7 @@ import { routeService } from "@/services/RouteService";
 import { stopService } from "@/services/StopService";
 import { router, useLocalSearchParams } from "expo-router";
 import { ArrowLeft } from "lucide-react-native";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
     ActivityIndicator,
     Pressable,
@@ -20,16 +21,12 @@ import {
     View,
 } from "react-native";
 
-const DETAIL_TABS = [
-    { key: "schedule", label: "Biểu đồ giờ" },
-    { key: "stops", label: "Trạm dừng" },
-    { key: "info", label: "Thông tin" },
-    { key: "reviews", label: "Đánh giá" },
-] as const;
+const DETAIL_TAB_KEYS = ["schedule", "stops", "info", "reviews"] as const;
 
-type DetailTab = (typeof DETAIL_TABS)[number]["key"];
+type DetailTab = (typeof DETAIL_TAB_KEYS)[number];
 
 export default function RouteDetailScreen() {
+    const { t } = useTranslation();
     const { id } = useLocalSearchParams<{ id: string }>();
     const routeId = Array.isArray(id) ? id[0] : id;
 
@@ -38,6 +35,15 @@ export default function RouteDetailScreen() {
     const [stops, setStops] = useState<IStop[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+
+    const detailTabs = useMemo(
+        () =>
+            DETAIL_TAB_KEYS.map((key) => ({
+                key,
+                label: t(`route.detail.tab.${key}`),
+            })),
+        [t],
+    );
 
     useEffect(() => {
         if (!routeId) return;
@@ -60,7 +66,7 @@ export default function RouteDetailScreen() {
                 setStops((stopsResponse.data ?? []) as IStop[]);
             } catch {
                 if (mounted) {
-                    setError("Không thể tải chi tiết tuyến xe");
+                    setError(t("route.detail.loadFail"));
                 }
             } finally {
                 if (mounted) setIsLoading(false);
@@ -71,7 +77,7 @@ export default function RouteDetailScreen() {
         return () => {
             mounted = false;
         };
-    }, [routeId]);
+    }, [routeId, t]);
 
     if (isLoading) {
         return (
@@ -88,7 +94,7 @@ export default function RouteDetailScreen() {
                     <View className="flex-row items-center gap-2 px-4 py-3">
                         <Pressable
                             accessibilityRole="button"
-                            accessibilityLabel="Quay lại"
+                            accessibilityLabel={t("a11y.back")}
                             className="h-10 w-10 items-center justify-center active:opacity-80"
                             hitSlop={8}
                             onPress={() => router.back()}
@@ -96,12 +102,12 @@ export default function RouteDetailScreen() {
                             <ArrowLeft color="#ffffff" size={24} />
                         </Pressable>
                         <Text className="text-lg font-bold text-on-primary">
-                            Chi tiết tuyến xe
+                            {t("route.detail.title")}
                         </Text>
                     </View>
                 </View>
                 <Text className="px-5 py-10 text-center text-sm text-text-muted">
-                    {error ?? "Không tìm thấy tuyến xe"}
+                    {error ?? t("route.detail.notFound")}
                 </Text>
             </View>
         );
@@ -115,7 +121,7 @@ export default function RouteDetailScreen() {
                 <View className="flex-row items-center gap-2 px-4 py-3">
                     <Pressable
                         accessibilityRole="button"
-                        accessibilityLabel="Quay lại"
+                        accessibilityLabel={t("a11y.back")}
                         className="h-10 w-10 items-center justify-center active:opacity-80"
                         hitSlop={8}
                         onPress={() => router.back()}
@@ -123,7 +129,7 @@ export default function RouteDetailScreen() {
                         <ArrowLeft color="#ffffff" size={24} />
                     </Pressable>
                     <Text className="text-lg font-bold text-on-primary">
-                        Chi tiết tuyến xe
+                        {t("route.detail.title")}
                     </Text>
                 </View>
             </View>
@@ -146,17 +152,14 @@ export default function RouteDetailScreen() {
                 </Text>
                 <View className="rounded-full bg-accent-light px-3 py-1">
                     <Text className="text-xs font-semibold text-accent">
-                        Lượt đi
+                        {t("route.detail.outbound")}
                     </Text>
                 </View>
             </View>
 
             <View className="border-b border-border px-5">
                 <TabContainer
-                    tabs={DETAIL_TABS.map((tab) => ({
-                        key: tab.key,
-                        label: tab.label,
-                    }))}
+                    tabs={detailTabs}
                     value={activeTab}
                     onChange={(value) => setActiveTab(value as DetailTab)}
                     variant="underline"

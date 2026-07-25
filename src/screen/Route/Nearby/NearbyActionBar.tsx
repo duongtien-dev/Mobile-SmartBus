@@ -1,3 +1,4 @@
+import { useTranslation } from "@/i18n";
 import { Bus, Navigation } from "lucide-react-native";
 import { Pressable, Text, View } from "react-native";
 
@@ -12,6 +13,8 @@ export function NearbyActionBar({
     onLookupPress,
     onDirectionsPress,
 }: NearbyActionBarProps) {
+    const { t } = useTranslation();
+
     return (
         <View
             className="absolute inset-x-0 z-20 border-t border-border bg-white"
@@ -25,7 +28,7 @@ export function NearbyActionBar({
                 >
                     <Bus color="#005f8b" size={28} />
                     <Text className="mt-1 text-sm font-medium text-text-primary">
-                        Tra cứu
+                        {t("route.nearby.lookup")}
                     </Text>
                 </Pressable>
 
@@ -38,7 +41,7 @@ export function NearbyActionBar({
                 >
                     <Navigation color="#005f8b" size={28} />
                     <Text className="mt-1 text-sm font-medium text-text-primary">
-                        Tìm đường
+                        {t("route.nearby.findRoute")}
                     </Text>
                 </Pressable>
             </View>

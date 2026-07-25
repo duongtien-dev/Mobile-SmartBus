@@ -1,4 +1,5 @@
 import usePaginationList from "@/hooks/usePaginationList";
+import { useTranslation } from "@/i18n";
 import type { IReview } from "@/models/review";
 import { ReviewCard } from "@/screen/Route/Reviews/ReviewCard";
 import { reviewRouteService } from "@/services/ReivewRouteService";
@@ -15,6 +16,7 @@ import {
 } from "react-native";
 
 export default function MyReviewsScreen() {
+    const { t } = useTranslation();
     const user = useAuthStore((state) => state.user);
 
     const {
@@ -50,7 +52,7 @@ export default function MyReviewsScreen() {
                 <View className="flex-row items-center gap-2 px-4 py-3">
                     <Pressable
                         accessibilityRole="button"
-                        accessibilityLabel="Quay lại"
+                        accessibilityLabel={t("a11y.back")}
                         className="h-10 w-10 items-center justify-center active:opacity-80"
                         hitSlop={8}
                         onPress={() => router.back()}
@@ -58,7 +60,7 @@ export default function MyReviewsScreen() {
                         <ArrowLeft color="#005f8b" size={24} />
                     </Pressable>
                     <Text className="text-lg font-bold text-on-highlight">
-                        Đánh giá
+                        {t("route.reviews.title")}
                     </Text>
                 </View>
             </View>
@@ -81,7 +83,7 @@ export default function MyReviewsScreen() {
                         </View>
                     ) : (
                         <Text className="px-5 py-10 text-center text-sm text-text-muted">
-                            Bạn chưa có đánh giá nào
+                            {t("route.reviews.empty")}
                         </Text>
                     )
                 }
@@ -96,7 +98,7 @@ export default function MyReviewsScreen() {
 
             <Pressable
                 accessibilityRole="button"
-                accessibilityLabel="Thêm đánh giá"
+                accessibilityLabel={t("route.reviews.addA11y")}
                 className="absolute bottom-8 right-6 h-14 w-14 items-center justify-center rounded-2xl border-2 border-primary bg-white shadow-md active:opacity-80"
                 onPress={() => router.push("/routes/reviews/create" as never)}
             >

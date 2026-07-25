@@ -1,3 +1,4 @@
+import { useTranslation } from "@/i18n";
 import type { IStop } from "@/models/stop";
 import { collectScheduleTimes } from "@/screen/Route/Detail/utils";
 import { Text, View } from "react-native";
@@ -7,12 +8,13 @@ type ScheduleTabProps = {
 };
 
 export function ScheduleTab({ stops }: ScheduleTabProps) {
+    const { t } = useTranslation();
     const times = collectScheduleTimes(stops.map((stop) => stop.times ?? []));
 
     if (!times.length) {
         return (
             <Text className="px-5 py-10 text-center text-sm text-text-muted">
-                Chưa có biểu đồ giờ cho tuyến này
+                {t("route.schedule.emptyDetail")}
             </Text>
         );
     }
