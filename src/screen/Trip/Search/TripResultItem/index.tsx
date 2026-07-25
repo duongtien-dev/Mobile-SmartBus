@@ -1,3 +1,4 @@
+import { useTranslation } from "@/i18n";
 import type { ITrip, ITripDetail } from "@/models/trip";
 import { TripDetailPanel } from "@/screen/Trip/Search/TripDetail";
 import { tripService } from "@/services/TripService";
@@ -8,26 +9,12 @@ import { Fragment, useState } from "react";
 import { ActivityIndicator, Pressable, Text, View } from "react-native";
 import Toast from "react-native-toast-message";
 
-function formatDuration(minutes: number) {
-    if (minutes < 60) {
-        return `${minutes} phút`;
-    }
-
-    const hours = Math.floor(minutes / 60);
-    const remainingMinutes = minutes % 60;
-
-    if (remainingMinutes === 0) {
-        return `${hours} giờ`;
-    }
-
-    return `${hours} giờ ${remainingMinutes} phút`;
-}
-
 type TripResultItemProps = {
     trip: ITrip;
 };
 
 export function TripResultItem({ trip }: TripResultItemProps) {
+    const { t } = useTranslation();
     const searchContext = useTripBookingStore((state) => state.searchContext);
     const setBookingSelection = useTripBookingStore(
         (state) => state.setBookingSelection,
@@ -41,6 +28,24 @@ export function TripResultItem({ trip }: TripResultItemProps) {
     const destination = searchContext?.destination;
     const originName = searchContext?.originName ?? "";
     const destinationName = searchContext?.destinationName ?? "";
+
+    const formatDuration = (minutes: number) => {
+        if (minutes < 60) {
+            return t("trip.duration.minutes", { n: minutes });
+        }
+
+        const hours = Math.floor(minutes / 60);
+        const remainingMinutes = minutes % 60;
+
+        if (remainingMinutes === 0) {
+            return t("trip.duration.hours", { n: hours });
+        }
+
+        return t("trip.duration.hoursMinutes", {
+            hours,
+            minutes: remainingMinutes,
+        });
+    };
 
     const canShowDetail =
         trip.type === "direct" &&
@@ -57,7 +62,7 @@ export function TripResultItem({ trip }: TripResultItemProps) {
         if (!canShowDetail || !origin || !destination) {
             Toast.show({
                 type: "error",
-                text1: "Chưa hỗ trợ xem chi tiết lộ trình này",
+                text1: t("trip.search.toastNoDetail"),
             });
             return;
         }
@@ -83,7 +88,7 @@ export function TripResultItem({ trip }: TripResultItemProps) {
         } catch {
             Toast.show({
                 type: "error",
-                text1: "Không thể tải chi tiết hành trình",
+                text1: t("trip.search.toastLoadFail"),
             });
             setExpanded(false);
         } finally {
@@ -97,7 +102,7 @@ export function TripResultItem({ trip }: TripResultItemProps) {
         if (!routeId) {
             Toast.show({
                 type: "error",
-                text1: "Thiếu thông tin tuyến để mua vé",
+                text1: t("trip.search.toastMissingRoute"),
             });
             return;
         }
@@ -129,7 +134,7 @@ export function TripResultItem({ trip }: TripResultItemProps) {
                         <Plus color="#005f8b" size={18} />
                     </View>
                     <Text className="mt-1 text-xs font-medium text-primary">
-                        Mua vé
+                        {t("trip.search.buyTicket")}
                     </Text>
                 </Pressable>
             </View>
@@ -149,8 +154,10 @@ export function TripResultItem({ trip }: TripResultItemProps) {
                             )}
                             <Text className="text-xs text-text-primary">
                                 {segment.type === "walk"
-                                    ? "Đi bộ"
-                                    : `Tuyến ${segment.code ?? ""}`}
+                                    ? t("trip.search.walk")
+                                    : t("trip.search.routeCode", {
+                                          code: segment.code ?? "",
+                                      })}
                             </Text>
                         </View>
                     </Fragment>
@@ -162,7 +169,9 @@ export function TripResultItem({ trip }: TripResultItemProps) {
                 onPress={handleToggleDetail}
             >
                 <Text className="text-sm font-medium text-accent">
-                    {expanded ? "Ẩn chi tiết" : "Xem thêm chi tiết"}
+                    {expanded
+                        ? t("trip.search.hideDetail")
+                        : t("trip.search.showDetail")}
                 </Text>
             </Pressable>
 
