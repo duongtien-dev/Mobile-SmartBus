@@ -1,3 +1,4 @@
+import { useTranslation } from "@/i18n";
 import { ChevronLeft, ChevronRight } from "lucide-react-native";
 import { Pressable, Text, View } from "react-native";
 
@@ -7,7 +8,10 @@ type PaginationProps = {
     onPageChange: (page: number) => void;
 };
 
-function getPageNumbers(page: number, totalPages: number): (number | "ellipsis")[] {
+function getPageNumbers(
+    page: number,
+    totalPages: number,
+): (number | "ellipsis")[] {
     if (totalPages <= 5) {
         return Array.from({ length: totalPages }, (_, index) => index + 1);
     }
@@ -24,6 +28,8 @@ function getPageNumbers(page: number, totalPages: number): (number | "ellipsis")
 }
 
 export function Pagination({ page, totalPages, onPageChange }: PaginationProps) {
+    const { t } = useTranslation();
+
     if (totalPages <= 1) {
         return null;
     }
@@ -34,7 +40,7 @@ export function Pagination({ page, totalPages, onPageChange }: PaginationProps) 
         <View className="w-fit flex-row items-center justify-center gap-1 bg-accent">
             <Pressable
                 accessibilityRole="button"
-                accessibilityLabel="Trang trước"
+                accessibilityLabel={t("a11y.prevPage")}
                 className="h-5 w-5 items-center justify-center active:opacity-80 disabled:opacity-40"
                 disabled={page <= 1}
                 onPress={() => onPageChange(page - 1)}
@@ -54,7 +60,7 @@ export function Pagination({ page, totalPages, onPageChange }: PaginationProps) 
                     <Pressable
                         key={item}
                         accessibilityRole="button"
-                        accessibilityLabel={`Trang ${item}`}
+                        accessibilityLabel={t("a11y.page", { n: item })}
                         className={`h-6 w-6 items-center justify-center active:opacity-80 ${
                             item === page ? "bg-primary" : ""
                         }`}
@@ -73,7 +79,7 @@ export function Pagination({ page, totalPages, onPageChange }: PaginationProps) 
 
             <Pressable
                 accessibilityRole="button"
-                accessibilityLabel="Trang sau"
+                accessibilityLabel={t("a11y.nextPage")}
                 className="h-6 w-6 items-center justify-center active:opacity-80 disabled:opacity-40"
                 disabled={page >= totalPages}
                 onPress={() => onPageChange(page + 1)}

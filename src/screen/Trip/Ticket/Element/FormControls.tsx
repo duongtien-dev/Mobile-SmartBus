@@ -1,5 +1,6 @@
 import { Button } from "@/components/Button";
 import { formatVnd } from "@/constants/ticket";
+import { useTranslation } from "@/i18n";
 import { Text, View } from "react-native";
 
 type FormControlsProps = {
@@ -9,8 +10,14 @@ type FormControlsProps = {
     onPress?: () => void;
 };
 
-export function FormControls({...Props}: FormControlsProps) {
-    const { price, buttonLabel = "Tiếp theo", disabled, onPress } = Props;
+export function FormControls({
+    price,
+    buttonLabel,
+    disabled,
+    onPress,
+}: FormControlsProps) {
+    const { t } = useTranslation();
+    const label = buttonLabel ?? t("ticket.single.next");
 
     return (
         <View className="border-t border-border bg-background px-5 pb-6 pt-4">
@@ -26,7 +33,7 @@ export function FormControls({...Props}: FormControlsProps) {
                     disabled={disabled}
                     onPress={onPress}
                 >
-                    <Text className="font-bold text-on-primary">{buttonLabel}</Text>
+                    <Text className="font-bold text-on-primary">{label}</Text>
                 </Button>
             </View>
         </View>

@@ -1,10 +1,11 @@
-import type { CreateTicketBody } from "@/services/TicketService";
+import { translate } from "@/i18n/translations";
+import type { TicketType } from "@/models/ticket";
 import type {
     IBookingSelection,
     IMonthlyTicketForm,
     ISingleTicketForm,
 } from "@/store/tripBooking.store";
-import type { TicketType } from "@/models/ticket";
+import useLocaleStore from "@/store/locale.store";
 
 type ParseFormTicketBodyInput = {
     bookingSelection: IBookingSelection | null;
@@ -14,10 +15,23 @@ type ParseFormTicketBodyInput = {
     selectedPaymentMethodId: string;
 };
 
+interface CreateTicketBody {
+    routeId: string;
+    startStopName: string;
+    endStopName: string;
+    ticketType: TicketType;
+    departureDate: string;
+    departureTime?: string;
+    seatQuantity: number;
+    paymentMethodId: string;
+}
 /** Map store → API body. Date/customer do backend xử lý. */
 export function parseFormTicketBody(
     input: ParseFormTicketBodyInput,
 ): { body?: CreateTicketBody; error?: string } {
+    const locale = useLocaleStore.getState().locale;
+    const t = (key: string) => translate(locale, key);
+
     const {
         bookingSelection,
         ticketType,
@@ -27,20 +41,20 @@ export function parseFormTicketBody(
     } = input;
 
     if (!ticketType) {
-        return { error: "Chưa chọn loại vé" };
+        return { error: t("ticket.validation.noProduct") };
     }
 
     if (!bookingSelection?.routeId) {
-        return { error: "Thiếu thông tin tuyến" };
+        return { error: t("ticket.validation.missingRoute") };
     }
 
     if (!selectedPaymentMethodId) {
-        return { error: "Vui lòng chọn phương thức thanh toán" };
+        return { error: t("ticket.payment.toastSelectMethod") };
     }
 
     const { startStopName, endStopName, routeId } = bookingSelection;
     if (!startStopName || !endStopName) {
-        return { error: "Thiếu điểm lên/xuống" };
+        return { error: t("ticket.validation.missingStops") };
     }
 
     const isSingle = ticketType === "single";
@@ -51,13 +65,13 @@ export function parseFormTicketBody(
     if (!departureDate) {
         return {
             error: isSingle
-                ? "Vui lòng chọn ngày khởi hành"
-                : "Vui lòng chọn tháng sử dụng",
+                ? t("ticket.validation.needDate")
+                : t("ticket.validation.needMonth"),
         };
     }
 
     if (isSingle && !singleForm.departureTime) {
-        return { error: "Vui lòng chọn giờ khởi hành" };
+        return { error: t("ticket.validation.needTime") };
     }
 
     const seatQuantity = isSingle

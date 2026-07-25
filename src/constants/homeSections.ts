@@ -8,46 +8,38 @@ import {
 
 export type HomeTip = {
     id: string;
-    title: string;
-    description: string;
+    titleKey: string;
+    descriptionKey: string;
     icon: LucideIcon;
-    colorClass: string;
-};
-
-export type HomeUtility = {
-    id: string;
-    label: string;
-    icon: LucideIcon;
-    path: string;
     colorClass: string;
 };
 
 export const HOME_TIPS: HomeTip[] = [
     {
         id: "plan-ahead",
-        title: "Lên lịch trước",
-        description: "Nhập điểm đi và điểm đến sớm để xem lộ trình và giờ khởi hành phù hợp.",
+        titleKey: "home.tip.planAhead.title",
+        descriptionKey: "home.tip.planAhead.desc",
         icon: Route,
         colorClass: "bg-accent",
     },
     {
         id: "save-favorite",
-        title: "Lưu tuyến yêu thích",
-        description: "Thêm tuyến thường đi vào mục Yêu thích để tra cứu nhanh hơn.",
+        titleKey: "home.tip.saveFavorite.title",
+        descriptionKey: "home.tip.saveFavorite.desc",
         icon: MapPinned,
         colorClass: "bg-primary",
     },
     {
         id: "monthly-ticket",
-        title: "Mua vé tháng",
-        description: "Tiết kiệm chi phí nếu bạn đi xe buýt thường xuyên trong tháng.",
+        titleKey: "home.tip.monthlyTicket.title",
+        descriptionKey: "home.tip.monthlyTicket.desc",
         icon: Ticket,
         colorClass: "bg-highlight",
     },
     {
         id: "scan-boarding",
-        title: "Quét mã lên xe",
-        description: "Dùng mã QR trên vé để lên xe nhanh và theo dõi chuyến đi dễ dàng.",
+        titleKey: "home.tip.scanBoarding.title",
+        descriptionKey: "home.tip.scanBoarding.desc",
         icon: ScanLine,
         colorClass: "bg-alert",
     },

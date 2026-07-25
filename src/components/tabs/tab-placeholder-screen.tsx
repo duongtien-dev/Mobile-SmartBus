@@ -3,6 +3,7 @@ import { Text, View } from "react-native";
 
 import type { TabRouteName } from "@/constants/tabs";
 import { TAB_CONFIG } from "@/constants/tabs";
+import { useTranslation } from "@/i18n";
 
 type TabPlaceholderScreenProps = {
     route: TabRouteName;
@@ -17,6 +18,7 @@ export function TabPlaceholderScreen({
     iconSize = 28,
     iconWrapperClassName,
 }: TabPlaceholderScreenProps) {
+    const { t } = useTranslation();
     const config = TAB_CONFIG[route];
     const Icon: LucideIcon = config.icon;
 
@@ -28,7 +30,7 @@ export function TabPlaceholderScreen({
                 <Icon color={config.screenIconColor} size={iconSize} />
             </View>
             <Text className="text-lg font-bold text-text-primary">
-                {config.label}
+                {t(config.labelKey)}
             </Text>
             <Text className="mt-2 text-center text-sm text-text-secondary">
                 {description}

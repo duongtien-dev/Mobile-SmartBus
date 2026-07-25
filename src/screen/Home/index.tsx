@@ -5,6 +5,7 @@ import { QUICK_ACTIONS } from "@/constants/home";
 import { HOME_TIPS } from "@/constants/homeSections";
 import useFetch from "@/hooks/useFetch";
 import usePaginationList from "@/hooks/usePaginationList";
+import { useTranslation } from "@/i18n";
 import type { IPost } from "@/models/post";
 import type { IRoute } from "@/models/route";
 import type { ISuggestLocation } from "@/models/suggestLocation";
@@ -34,6 +35,7 @@ import { TipCard } from "./TipCard";
 const FEATURED_ROUTES_LIMIT = 6;
 
 export default function HomeScreen() {
+    const { t } = useTranslation();
     const user = useAuthStore((state) => state.user);
     const setSearchContext = useTripBookingStore(
         (state) => state.setSearchContext,
@@ -85,7 +87,6 @@ export default function HomeScreen() {
         loadFeaturedRoutes();
     }, []);
 
-    // Sau mua vé (resetBooking) — xóa ô điểm đi/đến
     useEffect(() => {
         if (homeSearchResetKey === 0) return;
         setOrigin("");
@@ -97,7 +98,6 @@ export default function HomeScreen() {
     useFocusEffect(
         useCallback(() => {
             if (!prefillOrigin) return;
-
             setOrigin(prefillOrigin.display_name);
             setOriginLocation(prefillOrigin);
             clearPrefillOrigin();
@@ -108,7 +108,7 @@ export default function HomeScreen() {
         if (!originLocation || !destinationLocation) {
             Toast.show({
                 type: "error",
-                text1: "Vui lòng chọn địa điểm từ gợi ý",
+                text1: t("home.toastPickSuggestion"),
             });
             return;
         }
@@ -130,7 +130,8 @@ export default function HomeScreen() {
     };
 
     const routeList = featuredRoutes ?? [];
-    const greetingName = user?.full_name?.split(" ")[0] ?? "bạn";
+    const greetingName =
+        user?.full_name?.split(" ")[0] ?? t("home.greetingGuestName");
 
     return (
         <View className="flex-1 bg-app-shell">
@@ -138,7 +139,7 @@ export default function HomeScreen() {
                 className="flex-1"
                 contentContainerStyle={{
                     overflow: "visible",
-                    gap: 28,
+                    gap: 20,
                     paddingHorizontal: 20,
                     paddingTop: 12,
                     paddingBottom: 40,
@@ -150,16 +151,16 @@ export default function HomeScreen() {
                 <View className="w-full flex-row items-start justify-between gap-3">
                     <View className="min-w-0 flex-1 gap-0.5">
                         <Text className="text-xl font-bold text-text-primary">
-                            Xin chào, {greetingName}
+                            {t("home.greeting", { name: greetingName })}
                         </Text>
                         <Text className="text-sm text-text-muted">
-                            Bạn muốn đi đâu hôm nay?
+                            {t("home.subtitle")}
                         </Text>
                     </View>
 
                     <Pressable
                         accessibilityRole="button"
-                        accessibilityLabel="Tài khoản"
+                        accessibilityLabel={t("tabs.profile")}
                         className="h-10 w-10 items-center justify-center rounded-full bg-primary-light active:opacity-80"
                         onPress={() => router.push("/profile")}
                     >
@@ -173,8 +174,8 @@ export default function HomeScreen() {
                 >
                     <SearchPillContainer>
                         <SuggestLocationInput
-                            label="Điểm đi"
-                            placeholder="Địa chỉ hiện tại"
+                            label={t("home.origin")}
+                            placeholder={t("home.originPlaceholder")}
                             value={origin}
                             onChangeText={(text) => {
                                 setOrigin(text);
@@ -185,8 +186,8 @@ export default function HomeScreen() {
                         />
 
                         <SuggestLocationInput
-                            label="Điểm đến"
-                            placeholder="Bạn muốn đến đâu?"
+                            label={t("home.destination")}
+                            placeholder={t("home.destinationPlaceholder")}
                             value={destination}
                             onChangeText={(text) => {
                                 setDestination(text);
@@ -202,7 +203,7 @@ export default function HomeScreen() {
                             className="w-full rounded-xl"
                             onPress={handleSearch}
                         >
-                            Tìm chuyến
+                            {t("home.searchCta")}
                         </Button>
                     </SearchPillContainer>
                 </View>
@@ -222,9 +223,9 @@ export default function HomeScreen() {
                 <View style={{ gap: 14 }}>
                     <SectionHeader
                         variant="hero"
-                        title="Tuyến xe nổi bật"
-                        subtitle="Gợi ý lộ trình đi lại mỗi ngày"
-                        actionLabel="Tất cả"
+                        title={t("home.section.featured.title")}
+                        subtitle={t("home.section.featured.subtitle")}
+                        actionLabel={t("common.viewAll")}
                         onActionPress={() => router.push("/routes/lookup")}
                     />
 
@@ -249,7 +250,7 @@ export default function HomeScreen() {
                     ) : (
                         <Card>
                             <Text className="text-sm text-text-muted">
-                                Chưa có tuyến xe
+                                {t("home.empty.routes")}
                             </Text>
                         </Card>
                     )}
@@ -258,8 +259,8 @@ export default function HomeScreen() {
                 <View style={{ gap: 14 }}>
                     <SectionHeader
                         variant="rail"
-                        title="Mẹo di chuyển"
-                        subtitle="Dùng app nhanh hơn mỗi ngày"
+                        title={t("home.section.tips.title")}
+                        subtitle={t("home.section.tips.subtitle")}
                     />
                     <ScrollView
                         horizontal
@@ -276,9 +277,9 @@ export default function HomeScreen() {
                 <View style={{ gap: 14 }}>
                     <SectionHeader
                         variant="story"
-                        title="Tin tức & cập nhật"
-                        subtitle="Mới nhất"
-                        actionLabel="Tất cả"
+                        title={t("home.section.news.title")}
+                        subtitle={t("home.section.news.subtitle")}
+                        actionLabel={t("common.viewAll")}
                         onActionPress={() => router.push("/notice/list")}
                     />
 
@@ -300,7 +301,7 @@ export default function HomeScreen() {
                             ) : (
                                 <Card>
                                     <Text className="text-sm text-text-muted">
-                                        Chưa có tin tức
+                                        {t("home.empty.news")}
                                     </Text>
                                 </Card>
                             )}
@@ -311,9 +312,9 @@ export default function HomeScreen() {
                 <View style={{ gap: 14 }}>
                     <SectionHeader
                         variant="story"
-                        title="Hỏi đáp nhanh"
-                        subtitle="Hỗ trợ"
-                        actionLabel="Xem thêm"
+                        title={t("home.section.faq.title")}
+                        subtitle={t("home.section.faq.subtitle")}
+                        actionLabel={t("common.viewMore")}
                         onActionPress={() => router.push("/help")}
                     />
                     <Card padding="none">

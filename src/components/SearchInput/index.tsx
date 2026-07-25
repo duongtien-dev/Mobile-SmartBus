@@ -1,7 +1,8 @@
+import useDebounce from "@/hooks/useDebounce";
+import { useTranslation } from "@/i18n";
+import { Search } from "lucide-react-native";
 import { useEffect, useRef, useState } from "react";
 import { View } from "react-native";
-import { Search } from "lucide-react-native";
-import useDebounce from "@/hooks/useDebounce";
 import InputText from "../Input/InputText";
 
 type SearchInputProps = {
@@ -15,8 +16,9 @@ export default function SearchInput({
     delay = 1000,
     defaultValue = "",
     onSearch,
-    placeholder = "Tìm kiếm...",
+    placeholder,
 }: SearchInputProps) {
+    const { t } = useTranslation();
     const [keyword, setKeyword] = useState(defaultValue);
     const debouncedKeyword = useDebounce(keyword, delay);
     const isFirstRender = useRef(true);
@@ -40,7 +42,7 @@ export default function SearchInput({
             <InputText
                 value={keyword}
                 onChangeText={setKeyword}
-                placeholder={placeholder}
+                placeholder={placeholder ?? t("search.placeholder")}
                 placeholderTextColor="#64748b"
                 className="h-12 rounded-full border-0 bg-surface text-base text-text-primary"
                 style={{ paddingLeft: 48, paddingRight: 16 }}

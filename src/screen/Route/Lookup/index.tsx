@@ -1,20 +1,17 @@
 import { PageHeader } from "@/components/PageHeader";
-import { Card } from "@/components/ui/Card";
 import SearchInput from "@/components/SearchInput";
+import { Card } from "@/components/ui/Card";
 import usePaginationList from "@/hooks/usePaginationList";
+import { useTranslation } from "@/i18n";
 import type { IRoute } from "@/models/route";
 import { RouteCard } from "@/screen/Route/Lookup/RouteCard";
 import { routeService } from "@/services/RouteService";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
-import {
-    ActivityIndicator,
-    FlatList,
-    Text,
-    View,
-} from "react-native";
+import { ActivityIndicator, FlatList, Text, View } from "react-native";
 
 export default function RouteLookupScreen() {
+    const { t } = useTranslation();
     const [searchInput, setSearchInput] = useState("");
     const {
         list: routes,
@@ -46,12 +43,12 @@ export default function RouteLookupScreen() {
 
     return (
         <View className="flex-1 bg-app-shell">
-            <PageHeader title="Tra cứu tuyến xe" isIconBack />
+            <PageHeader title={t("route.lookup.title")} isIconBack />
 
             <View className="px-5 pb-3 pt-4">
                 <SearchInput
                     onSearch={setSearchInput}
-                    placeholder="Nhập số hiệu hoặc tên tuyến"
+                    placeholder={t("route.lookup.placeholder")}
                 />
             </View>
 
@@ -88,7 +85,7 @@ export default function RouteLookupScreen() {
                     ) : (
                         <Card className="mx-5">
                             <Text className="py-4 text-center text-sm text-text-muted">
-                                Không tìm thấy tuyến xe
+                                {t("route.lookup.empty")}
                             </Text>
                         </Card>
                     )

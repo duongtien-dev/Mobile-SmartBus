@@ -1,4 +1,5 @@
 import type { ITripDetail, ITripLocation } from "@/models/trip";
+import { useTranslation } from "@/i18n";
 import { useEffect, useMemo, useRef } from "react";
 import MapView, { Marker, Polyline, type Region } from "react-native-maps";
 
@@ -44,6 +45,7 @@ function getInitialRegion(coordinates: Coordinate[]): Region {
 }
 
 export function TripRouteMap({ detail }: TripRouteMapProps) {
+    const { t } = useTranslation();
     const mapRef = useRef<MapView>(null);
 
     const walkingStartCoords = useMemo(
@@ -129,7 +131,11 @@ export function TripRouteMap({ detail }: TripRouteMapProps) {
             ) : null}
 
             {origin ? (
-                <Marker coordinate={origin} title="Điểm đi" pinColor="#22c55e" />
+                <Marker
+                    coordinate={origin}
+                    title={t("trip.map.origin")}
+                    pinColor="#22c55e"
+                />
             ) : null}
 
             {pickup ? (
@@ -151,7 +157,7 @@ export function TripRouteMap({ detail }: TripRouteMapProps) {
             {destination ? (
                 <Marker
                     coordinate={destination}
-                    title="Điểm đến"
+                    title={t("trip.map.destination")}
                     pinColor="#ef4444"
                 />
             ) : null}

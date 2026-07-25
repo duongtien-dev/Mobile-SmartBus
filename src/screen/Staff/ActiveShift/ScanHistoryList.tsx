@@ -1,3 +1,4 @@
+import { useTranslation } from "@/i18n";
 import type { IScanLogItem } from "@/models/scanLog";
 import { CheckCircle2, XCircle } from "lucide-react-native";
 import moment from "moment";
@@ -8,6 +9,7 @@ type ScanHistoryListProps = {
 };
 
 function ScanHistoryRow({ item }: { item: IScanLogItem }) {
+    const { t } = useTranslation();
     const Icon = item.isValid ? CheckCircle2 : XCircle;
     const iconColor = item.isValid ? "#16a34a" : "#e50049";
 
@@ -36,17 +38,19 @@ function ScanHistoryRow({ item }: { item: IScanLogItem }) {
                     item.isValid ? "text-green-600" : "text-alert"
                 }`}
             >
-                {item.isValid ? "Hợp lệ" : "Lỗi"}
+                {item.isValid ? t("staff.scan.valid") : t("staff.scan.invalid")}
             </Text>
         </View>
     );
 }
 
 export function ScanHistoryList({ items }: ScanHistoryListProps) {
+    const { t } = useTranslation();
+
     if (!items.length) {
         return (
             <Text className="py-6 text-center text-sm text-text-muted">
-                Chưa quét vé nào trong ca này
+                {t("staff.scan.empty")}
             </Text>
         );
     }

@@ -1,3 +1,4 @@
+import { useTranslation } from "@/i18n";
 import { cn } from "@/lib/utils";
 import DateTimePicker, {
     type DateTimePickerEvent,
@@ -28,18 +29,23 @@ export function DatePickerField({
     label,
     value,
     onChange,
-    placeholder = "Chọn ngày",
+    placeholder,
     minimumDate,
     maximumDate,
     disabled = false,
     className,
 }: DatePickerFieldProps) {
+    const { t, locale } = useTranslation();
     const [open, setOpen] = useState(false);
     const [draft, setDraft] = useState<Date>(value ?? new Date());
 
+    const resolvedPlaceholder = placeholder ?? t("datepicker.placeholder");
+    const pickerLocale =
+        locale === "en" ? "en-US" : locale === "ja" ? "ja-JP" : "vi-VN";
+
     const displayValue = value
         ? moment(value).format("DD/MM/YYYY")
-        : placeholder;
+        : resolvedPlaceholder;
 
     const openPicker = () => {
         if (disabled) return;
@@ -71,7 +77,7 @@ export function DatePickerField({
 
             <Pressable
                 accessibilityRole="button"
-                accessibilityLabel={label ?? "Chọn ngày"}
+                accessibilityLabel={label ?? resolvedPlaceholder}
                 disabled={disabled}
                 onPress={openPicker}
                 className={cn(
@@ -122,15 +128,15 @@ export function DatePickerField({
                                     hitSlop={8}
                                 >
                                     <Text className="text-sm font-medium text-text-muted">
-                                        Hủy
+                                        {t("datepicker.cancel")}
                                     </Text>
                                 </Pressable>
                                 <Text className="text-base font-bold text-text-primary">
-                                    {label ?? "Chọn ngày"}
+                                    {label ?? resolvedPlaceholder}
                                 </Text>
                                 <Pressable onPress={confirmIos} hitSlop={8}>
                                     <Text className="text-sm font-semibold text-primary">
-                                        Xong
+                                        {t("datepicker.done")}
                                     </Text>
                                 </Pressable>
                             </View>
@@ -138,7 +144,7 @@ export function DatePickerField({
                                 value={draft}
                                 mode="date"
                                 display="spinner"
-                                locale="vi-VN"
+                                locale={pickerLocale}
                                 minimumDate={minimumDate}
                                 maximumDate={maximumDate}
                                 onChange={(_, selected) => {
@@ -167,7 +173,7 @@ export function DatePickerField({
                             onPress={(e) => e.stopPropagation()}
                         >
                             <Text className="text-base font-bold text-text-primary">
-                                {label ?? "Chọn ngày"}
+                                {label ?? resolvedPlaceholder}
                             </Text>
                             <DateTimePicker
                                 value={draft}
@@ -186,7 +192,7 @@ export function DatePickerField({
                                 onPress={() => setOpen(false)}
                             >
                                 <Text className="text-sm font-medium text-text-muted">
-                                    Đóng
+                                    {t("datepicker.close")}
                                 </Text>
                             </Pressable>
                         </Pressable>

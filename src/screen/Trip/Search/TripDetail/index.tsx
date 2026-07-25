@@ -1,12 +1,9 @@
+import { useTranslation } from "@/i18n";
 import type { ITrip, ITripDetail } from "@/models/trip";
-import { TripRouteMap } from "./TripRouteMap";
-import {
-    Bus,
-    Footprints,
-    Hand,
-} from "lucide-react-native";
+import { Bus, Footprints, Hand } from "lucide-react-native";
 import { useState } from "react";
 import { Pressable, Text, View } from "react-native";
+import { TripRouteMap } from "./TripRouteMap";
 
 type TripDetailPanelProps = {
     trip: ITrip;
@@ -81,8 +78,21 @@ export function TripDetailPanel({
     originName,
     destinationName,
 }: TripDetailPanelProps) {
+    const { t } = useTranslation();
     const [showStops, setShowStops] = useState(false);
     const busSegment = trip.segments.find((segment) => segment.type === "bus");
+
+    const routeLabel = t("trip.search.routeCode", {
+        code: detail.route.code,
+    });
+    const busSubtitle = busSegment?.durationMinutes
+        ? t("trip.detail.routeDuration", {
+              route: routeLabel,
+              duration: t("trip.duration.minutes", {
+                  n: busSegment.durationMinutes,
+              }),
+          })
+        : routeLabel;
 
     return (
         <View className="mt-4 gap-4">
@@ -93,18 +103,16 @@ export function TripDetailPanel({
             <View>
                 <TimelineRow
                     icon={<Footprints color="#005f8b" size={18} />}
-                    title="Đi bộ từ vị trí hiện tại đến trạm"
+                    title={t("trip.detail.walkToStop")}
                 />
 
                 <TimelineRow
                     time={formatTimeLabel(detail.startTime)}
                     icon={<Bus color="#005f8b" size={18} />}
-                    title={`Lên xe tại ${detail.pickupStop.name}`}
-                    subtitle={`Tuyến ${detail.route.code}${
-                        busSegment?.durationMinutes
-                            ? ` (${busSegment.durationMinutes} phút)`
-                            : ""
-                    }`}
+                    title={t("trip.detail.boardAt", {
+                        name: detail.pickupStop.name,
+                    })}
+                    subtitle={busSubtitle}
                 />
 
                 <Pressable
@@ -112,7 +120,9 @@ export function TripDetailPanel({
                     onPress={() => setShowStops((prev) => !prev)}
                 >
                     <Text className="text-sm font-medium text-accent">
-                        {showStops ? "Ẩn danh sách trạm" : "Xem danh sách trạm"}
+                        {showStops
+                            ? t("trip.detail.hideStops")
+                            : t("trip.detail.showStops")}
                     </Text>
                 </Pressable>
 
@@ -132,12 +142,14 @@ export function TripDetailPanel({
                 <TimelineRow
                     time={formatTimeLabel(detail.endTime)}
                     icon={<Footprints color="#005f8b" size={18} />}
-                    title={`Xuống xe tại ${detail.dropoffStop.name}`}
+                    title={t("trip.detail.alightAt", {
+                        name: detail.dropoffStop.name,
+                    })}
                 />
 
                 <TimelineRow
                     icon={<Footprints color="#005f8b" size={18} />}
-                    title="Đi bộ từ trạm cuối đến đích"
+                    title={t("trip.detail.walkToDest")}
                 />
 
                 <View className="flex-row gap-3">
@@ -150,7 +162,9 @@ export function TripDetailPanel({
                     <View className="flex-1 flex-row items-start gap-2">
                         <Hand color="#005f8b" size={18} />
                         <Text className="flex-1 text-sm font-medium text-text-primary">
-                            Đến {destinationName || originName}
+                            {t("trip.detail.arriveAt", {
+                                name: destinationName || originName,
+                            })}
                         </Text>
                     </View>
                 </View>

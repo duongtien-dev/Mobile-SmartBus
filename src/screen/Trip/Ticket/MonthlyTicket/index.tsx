@@ -1,5 +1,8 @@
 import { PageHeader } from "@/components/PageHeader";
-import useTripBookingStore, { computeMonthlyTicketPrice } from "@/store/tripBooking.store";
+import { useTranslation } from "@/i18n";
+import useTripBookingStore, {
+    computeMonthlyTicketPrice,
+} from "@/store/tripBooking.store";
 import { router } from "expo-router";
 import { useMemo } from "react";
 import {
@@ -8,10 +11,10 @@ import {
     ScrollView,
     View,
 } from "react-native";
-import { LocationInfo } from "../Element/LocationInfo";
 import { FormControls } from "../Element/FormControls";
-import { TicketInfo } from "./TicketInfo";
+import { LocationInfo } from "../Element/LocationInfo";
 import { InputOption } from "./InputOption";
+import { TicketInfo } from "./TicketInfo";
 
 const TICKET_COUNT_OPTIONS = [
     { value: "1", label: "1" },
@@ -20,6 +23,7 @@ const TICKET_COUNT_OPTIONS = [
 ];
 
 export default function MonthlyTicketScreen() {
+    const { t } = useTranslation();
     const searchContext = useTripBookingStore((state) => state.searchContext);
     const ticketType = useTripBookingStore((state) => state.ticketType);
     const formData = useTripBookingStore((state) => state.monthlyForm);
@@ -38,8 +42,10 @@ export default function MonthlyTicketScreen() {
     const pageTitle = useMemo(
         () =>
             selectedTicketProduct?.title ||
-            (isMultiRoute ? "Vé tháng liên tuyến" : "Vé tháng đơn tuyến"),
-        [isMultiRoute, selectedTicketProduct?.title],
+            (isMultiRoute
+                ? t("ticket.monthly.interTitle")
+                : t("ticket.monthly.singleTitle")),
+        [isMultiRoute, selectedTicketProduct?.title, t],
     );
 
     const totalPrice = useMemo(
@@ -87,16 +93,15 @@ export default function MonthlyTicketScreen() {
                         <TicketInfo usageMonth={formData.usageMonth} />
                         <InputOption
                             value={formData.ticketCount || "1"}
-                            onChange={(value) => handleChangForm({ ticketCount: value })}
+                            onChange={(value) =>
+                                handleChangForm({ ticketCount: value })
+                            }
                             options={TICKET_COUNT_OPTIONS}
                         />
                     </View>
                 </ScrollView>
 
-                <FormControls
-                    price={totalPrice}
-                    onPress={handleSubmit}
-                />
+                <FormControls price={totalPrice} onPress={handleSubmit} />
             </KeyboardAvoidingView>
         </View>
     );

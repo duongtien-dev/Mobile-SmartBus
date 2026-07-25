@@ -2,11 +2,12 @@ import { PageHeader } from "@/components/PageHeader";
 import TabContainer from "@/components/TabContainer";
 import { Card } from "@/components/ui/Card";
 import usePaginationList from "@/hooks/usePaginationList";
+import { useTranslation } from "@/i18n";
 import type { IRoute } from "@/models/route";
 import { RouteCard } from "@/screen/Route/Lookup/RouteCard";
 import { favoriteRouteService } from "@/services/FavoriteRouteService";
 import { router } from "expo-router";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
     ActivityIndicator,
     FlatList,
@@ -14,15 +15,21 @@ import {
     View,
 } from "react-native";
 
-const FAVORITE_TABS = [
-    { key: "routes", label: "Tuyến" },
-    { key: "stops", label: "Trạm" },
-] as const;
+const FAVORITE_TAB_KEYS = ["routes", "stops"] as const;
 
-type FavoriteTab = (typeof FAVORITE_TABS)[number]["key"];
+type FavoriteTab = (typeof FAVORITE_TAB_KEYS)[number];
 
 export default function FavoriteRoutesScreen() {
+    const { t } = useTranslation();
     const [activeTab, setActiveTab] = useState<FavoriteTab>("routes");
+
+    const favoriteTabs = useMemo(
+        () => [
+            { key: "routes" as const, label: t("route.favorites.tabRoutes") },
+            { key: "stops" as const, label: t("route.favorites.tabStops") },
+        ],
+        [t],
+    );
 
     const {
         list: routes,
@@ -61,14 +68,11 @@ export default function FavoriteRoutesScreen() {
 
     return (
         <View className="flex-1 bg-app-shell">
-            <PageHeader title="Yêu thích" isIconBack />
+            <PageHeader title={t("route.favorites.title")} isIconBack />
 
             <View className="border-b border-border bg-card px-5 pb-4">
                 <TabContainer
-                    tabs={FAVORITE_TABS.map((tab) => ({
-                        key: tab.key,
-                        label: tab.label,
-                    }))}
+                    tabs={favoriteTabs}
                     value={activeTab}
                     onChange={(value) => setActiveTab(value as FavoriteTab)}
                     variant="underline"
@@ -109,7 +113,7 @@ export default function FavoriteRoutesScreen() {
                         ) : (
                             <Card className="mx-5 mt-4">
                                 <Text className="py-4 text-center text-sm text-text-muted">
-                                    Chưa có tuyến yêu thích
+                                    {t("route.favorites.emptyRoutes")}
                                 </Text>
                             </Card>
                         )
@@ -125,7 +129,7 @@ export default function FavoriteRoutesScreen() {
             ) : (
                 <Card className="mx-5 mt-4">
                     <Text className="py-6 text-center text-sm text-text-muted">
-                        Tính năng trạm yêu thích sắp ra mắt
+                        {t("route.favorites.stopsComingSoon")}
                     </Text>
                 </Card>
             )}

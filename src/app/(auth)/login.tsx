@@ -1,6 +1,7 @@
 import { Button } from "@/components/Button";
 import InputText from "@/components/Input/InputText";
 import { useToastify } from "@/hooks/useToastify";
+import { useTranslation } from "@/i18n";
 import { navigateAuth } from "@/lib/auth-navigation";
 import { authService } from "@/services/AuthService";
 import useAuthStore from "@/store/auth.store";
@@ -20,6 +21,7 @@ import {
 } from "react-native";
 
 export default function Login() {
+    const { t } = useTranslation();
     const { setIsAuthenticated, setUser, setToken } = useAuthStore();
     const showToast = useToastify();
 
@@ -42,8 +44,8 @@ export default function Login() {
         showToast({
             type: response.success ? "success" : "error",
             content: response.success
-                ? "Đăng nhập thành công"
-                : "Đăng nhập thất bại",
+                ? t("auth.login.success")
+                : t("auth.login.fail"),
         });
         if (response.success) {
             router.replace(navigateAuth(user?.role));
@@ -86,12 +88,12 @@ export default function Login() {
                     <View className="mt-2 gap-4">
                         <View className="gap-2">
                             <Text className="text-sm font-medium text-on-primary">
-                                Email
+                                {t("auth.field.email")}
                             </Text>
                             <InputText
                                 value={email}
                                 onChangeText={setEmail}
-                                placeholder="Email"
+                                placeholder={t("auth.field.email")}
                                 autoCapitalize="none"
                                 keyboardType="email-address"
                                 className="w-full rounded-xl border-0 bg-surface"
@@ -100,13 +102,13 @@ export default function Login() {
 
                         <View className="gap-2">
                             <Text className="text-sm font-medium text-on-primary">
-                                Mật khẩu
+                                {t("auth.field.password")}
                             </Text>
                             <View className="relative">
                                 <InputText
                                     value={password}
                                     onChangeText={setPassword}
-                                    placeholder="Mật khẩu"
+                                    placeholder={t("auth.field.password")}
                                     secureTextEntry={!showPassword}
                                     className="w-full rounded-xl border-0 bg-surface"
                                     style={{ paddingRight: 40 }}
@@ -132,7 +134,7 @@ export default function Login() {
                             }
                         >
                             <Text className="text-sm font-medium text-on-primary">
-                                Quên mật khẩu?
+                                {t("auth.login.forgot")}
                             </Text>
                         </Pressable>
 
@@ -146,18 +148,18 @@ export default function Login() {
                             {isSubmitting ? (
                                 <ActivityIndicator color="#ffffff" />
                             ) : (
-                                "Đăng nhập"
+                                t("auth.login.submit")
                             )}
                         </Button>
 
                         <View className="mt-2 items-center">
                             <Text className="text-sm text-on-primary">
-                                Chưa có tài khoản?{" "}
+                                {t("auth.login.noAccount")}{" "}
                                 <Text
                                     className="font-semibold text-on-primary"
                                     onPress={() => router.push("/register")}
                                 >
-                                    Đăng ký ngay
+                                    {t("auth.login.signUp")}
                                 </Text>
                             </Text>
                         </View>

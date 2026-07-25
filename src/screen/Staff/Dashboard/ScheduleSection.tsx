@@ -1,8 +1,10 @@
+import { useTranslation } from "@/i18n";
 import { ActivityIndicator, Text, View } from "react-native";
 import { ExpandableScheduleCard } from "./ExpandableScheduleCard";
 import { useStaffWeekSchedule } from "./hooks/useStaffWeekSchedule";
 
 export function ScheduleSection() {
+    const { t } = useTranslation();
     const {
         items,
         loading,
@@ -17,11 +19,10 @@ export function ScheduleSection() {
         <View className="gap-3">
             <View>
                 <Text className="text-base font-bold text-text-primary">
-                    Lịch ca tuần này
+                    {t("staff.schedule.title")}
                 </Text>
                 <Text className="mt-0.5 text-xs text-text-muted">
-                    Lịch được giao từ hệ thống — nhận / tiếp tục ca bằng nút
-                    phía trên hoặc trong ca hôm nay.
+                    {t("staff.schedule.subtitle")}
                 </Text>
             </View>
 
@@ -32,8 +33,7 @@ export function ScheduleSection() {
             ) : items.length === 0 ? (
                 <View className="rounded-2xl bg-card px-4 py-5 shadow-sm">
                     <Text className="text-sm text-text-muted">
-                        Chưa có lịch ca tuần này. Liên hệ admin để được xếp
-                        lịch.
+                        {t("staff.schedule.empty")}
                     </Text>
                 </View>
             ) : (

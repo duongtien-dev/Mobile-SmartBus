@@ -1,4 +1,5 @@
 import type { MapCoordinate } from "@/hooks/useCurrentLocation";
+import { useTranslation } from "@/i18n";
 import { useEffect, useRef } from "react";
 import MapView, { Marker, type Region } from "react-native-maps";
 
@@ -21,6 +22,7 @@ export function NearbyMap({
     selectedLocation,
     selectedLabel,
 }: NearbyMapProps) {
+    const { t } = useTranslation();
     const mapRef = useRef<MapView>(null);
 
     useEffect(() => {
@@ -45,14 +47,14 @@ export function NearbyMap({
         >
             <Marker
                 coordinate={userLocation}
-                title="Vị trí của bạn"
+                title={t("route.nearby.yourLocation")}
                 pinColor="#e50049"
             />
 
             {selectedLocation ? (
                 <Marker
                     coordinate={selectedLocation}
-                    title={selectedLabel ?? "Địa điểm"}
+                    title={selectedLabel ?? t("route.nearby.place")}
                     pinColor="#005f8b"
                 />
             ) : null}

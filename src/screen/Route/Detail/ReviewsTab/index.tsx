@@ -1,5 +1,6 @@
 import useFetch from "@/hooks/useFetch";
 import usePaginationList from "@/hooks/usePaginationList";
+import { useTranslation } from "@/i18n";
 import type { IReview, ReviewSummary } from "@/models/review";
 import { reviewRouteService } from "@/services/ReivewRouteService";
 import { Star } from "lucide-react-native";
@@ -39,12 +40,13 @@ function RatingStars({ rating }: { rating: number }) {
 }
 
 function ReviewSummarySection({ summary }: { summary: ReviewSummary }) {
+    const { t } = useTranslation();
     const maxCount = Math.max(...Object.values(summary.distribution), 1);
 
     return (
         <View className="px-5 py-4">
             <Text className="mb-4 text-base font-bold text-text-primary">
-                Tổng hợp đánh giá
+                {t("route.reviews.summaryTitle")}
             </Text>
 
             <View className="flex-row items-center gap-4">
@@ -54,7 +56,7 @@ function ReviewSummarySection({ summary }: { summary: ReviewSummary }) {
                 <View>
                     <RatingStars rating={summary.average} />
                     <Text className="mt-1 text-sm text-text-muted">
-                        {summary.total} đánh giá
+                        {t("route.reviews.summary", { n: summary.total })}
                     </Text>
                 </View>
             </View>
@@ -105,6 +107,8 @@ function ReviewItem({ review }: { review: IReview }) {
 }
 
 export function ReviewsTab({ routeId }: ReviewsTabProps) {
+    const { t } = useTranslation();
+
     const {
         data: summary,
         isLoading: isSummaryLoading,
@@ -156,11 +160,11 @@ export function ReviewsTab({ routeId }: ReviewsTabProps) {
             <>
                 <ReviewSummarySection summary={summary} />
                 <Text className="border-t border-border px-5 py-4 text-base font-bold text-text-primary">
-                    Nhận xét và đánh giá
+                    {t("route.reviews.comments")}
                 </Text>
             </>
         );
-    }, [isSummaryLoading, summary]);
+    }, [isSummaryLoading, summary, t]);
 
     return (
         <FlatList
@@ -179,7 +183,7 @@ export function ReviewsTab({ routeId }: ReviewsTabProps) {
                     </View>
                 ) : (
                     <Text className="px-5 py-6 text-center text-sm text-text-muted">
-                        Chưa có đánh giá nào
+                        {t("route.reviews.noComments")}
                     </Text>
                 )
             }

@@ -1,6 +1,7 @@
-import type { ITicket } from "@/models/ticket";
 import { Card } from "@/components/ui/Card";
 import { StatusPill } from "@/components/ui/StatusPill";
+import { useTranslation } from "@/i18n";
+import type { ITicket } from "@/models/ticket";
 import {
     getTicketRouteTitle,
     getTicketTypeLabel,
@@ -16,6 +17,7 @@ type TripHistoryItemProps = {
 };
 
 export function TripHistoryItem({ ticket, onPress }: TripHistoryItemProps) {
+    const { t } = useTranslation();
     const statusLabel = getTripHistoryStatusLabel(ticket);
     const typeLabel = getTicketTypeLabel(ticket.ticketType);
 
@@ -35,7 +37,9 @@ export function TripHistoryItem({ ticket, onPress }: TripHistoryItemProps) {
                         className="text-base font-bold text-text-primary"
                         numberOfLines={2}
                     >
-                        Tuyến {getTicketRouteTitle(ticket)}
+                        {t("profile.ticketItem.route", {
+                            code: getTicketRouteTitle(ticket),
+                        })}
                     </Text>
                     <Text className="text-sm text-text-muted" numberOfLines={1}>
                         {ticket.startStopName} → {ticket.endStopName}

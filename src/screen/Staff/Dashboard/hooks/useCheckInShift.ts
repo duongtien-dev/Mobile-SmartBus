@@ -1,7 +1,9 @@
+import { translate } from "@/i18n/translations";
 import type { CheckInShiftBody } from "@/models/activeShift";
 import type { IRoute } from "@/models/route";
 import type { IStaffScheduleItem } from "@/models/staffSchedule";
 import { staffShiftService } from "@/services/StaffShiftService";
+import useLocaleStore from "@/store/locale.store";
 import { router, type Href } from "expo-router";
 import { useState } from "react";
 import Toast from "react-native-toast-message";
@@ -46,6 +48,8 @@ export function useCheckInShift() {
         hasActiveShift = false,
         onSuccess,
     }: CheckInInput = {}) => {
+        const locale = useLocaleStore.getState().locale;
+
         if (hasActiveShift) {
             router.push("/staff/shift" as Href);
             return;
@@ -59,7 +63,9 @@ export function useCheckInShift() {
             );
 
             if (!response.data) {
-                throw new Error(response.message || "Check-in thất bại");
+                throw new Error(
+                    response.message || translate(locale, "staff.checkIn.fail"),
+                );
             }
 
             const routeLabel =
@@ -67,10 +73,12 @@ export function useCheckInShift() {
 
             Toast.show({
                 type: "success",
-                text1: "Đã check-in nhận ca",
+                text1: translate(locale, "staff.checkIn.success"),
                 text2: routeLabel
-                    ? `Tuyến ${routeLabel}`
-                    : "Chưa gán tuyến — vẫn có thể quét vé",
+                    ? translate(locale, "staff.routeNamed", {
+                          code: routeLabel,
+                      })
+                    : translate(locale, "staff.checkIn.noRoute"),
             });
 
             await onSuccess?.();
@@ -78,7 +86,7 @@ export function useCheckInShift() {
         } catch {
             Toast.show({
                 type: "error",
-                text1: "Check-in thất bại",
+                text1: translate(locale, "staff.checkIn.fail"),
             });
         } finally {
             setIsCheckingIn(false);

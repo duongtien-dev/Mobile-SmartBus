@@ -1,5 +1,6 @@
 import InputText from "@/components/Input/InputText";
 import useFetch from "@/hooks/useFetch";
+import { useTranslation } from "@/i18n";
 import type { ISuggestLocation } from "@/models/suggestLocation";
 import { tripService } from "@/services/TripService";
 import { Ionicons } from "@expo/vector-icons";
@@ -21,6 +22,7 @@ export function NearbySearchBar({
     topInset,
     onSelectLocation,
 }: NearbySearchBarProps) {
+    const { t } = useTranslation();
     const [keyword, setKeyword] = useState("");
     const [isFocused, setIsFocused] = useState(false);
     const trimmedKeyword = keyword.trim();
@@ -78,7 +80,7 @@ export function NearbySearchBar({
                     }}
                 />
                 <InputText
-                    placeholder="Tìm trạm và địa điểm..."
+                    placeholder={t("route.nearby.searchPlaceholder")}
                     placeholderTextColor="#9CA3AF"
                     value={keyword}
                     onChangeText={setKeyword}

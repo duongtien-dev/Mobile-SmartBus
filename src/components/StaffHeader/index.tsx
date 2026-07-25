@@ -1,3 +1,4 @@
+import { useTranslation } from "@/i18n";
 import { cn } from "@/lib/utils";
 import { router } from "expo-router";
 import { ArrowLeft, type LucideIcon } from "lucide-react-native";
@@ -36,6 +37,8 @@ export function StaffHeader({
     children,
     ...props
 }: StaffHeaderProps) {
+    const { t } = useTranslation();
+
     return (
         <View
             className={cn("w-full bg-primary px-4 py-3", className)}
@@ -50,7 +53,7 @@ export function StaffHeader({
                         {showBack ? (
                             <Pressable
                                 accessibilityRole="button"
-                                accessibilityLabel="Quay lại"
+                                accessibilityLabel={t("a11y.back")}
                                 className="h-10 w-10 items-center justify-center active:opacity-80"
                                 onPress={() =>
                                     onBackPress

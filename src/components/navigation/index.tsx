@@ -3,6 +3,7 @@ import { Pressable, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { TAB_CONFIG, type TabRouteName } from "@/constants/tabs";
+import { useTranslation } from "@/i18n";
 
 export function NavigationTabs({
     state,
@@ -10,6 +11,7 @@ export function NavigationTabs({
     navigation,
 }: BottomTabBarProps) {
     const insets = useSafeAreaInsets();
+    const { t } = useTranslation();
 
     return (
         <View
@@ -36,6 +38,7 @@ export function NavigationTabs({
                     const color = isFocused
                         ? config.activeColor
                         : config.inactiveColor;
+                    const label = t(config.labelKey);
 
                     const onPress = () => {
                         const event = navigation.emit({
@@ -58,7 +61,7 @@ export function NavigationTabs({
                                     isFocused ? { selected: true } : {}
                                 }
                                 accessibilityLabel={
-                                    options.tabBarAccessibilityLabel
+                                    options.tabBarAccessibilityLabel ?? label
                                 }
                                 className="-mt-5 min-w-[64px] items-center active:opacity-90"
                                 onPress={onPress}
@@ -67,7 +70,7 @@ export function NavigationTabs({
                                     <Icon color="#ffffff" size={26} />
                                 </View>
                                 <Text className="mt-1 text-[10px] font-semibold text-accent">
-                                    {config.label}
+                                    {label}
                                 </Text>
                             </Pressable>
                         );
@@ -80,7 +83,9 @@ export function NavigationTabs({
                             accessibilityState={
                                 isFocused ? { selected: true } : {}
                             }
-                            accessibilityLabel={options.tabBarAccessibilityLabel}
+                            accessibilityLabel={
+                                options.tabBarAccessibilityLabel ?? label
+                            }
                             className="min-w-[56px] flex-1 items-center justify-center py-1 active:opacity-80"
                             onPress={onPress}
                         >
@@ -94,7 +99,7 @@ export function NavigationTabs({
                                 className="mt-0.5 text-[10px] font-medium"
                                 style={{ color }}
                             >
-                                {config.label}
+                                {label}
                             </Text>
                         </Pressable>
                     );

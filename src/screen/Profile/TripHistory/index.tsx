@@ -2,6 +2,7 @@ import { PageHeader } from "@/components/PageHeader";
 import { Card } from "@/components/ui/Card";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import usePaginationList from "@/hooks/usePaginationList";
+import { useTranslation } from "@/i18n";
 import type { ITicket } from "@/models/ticket";
 import { TripHistoryItem } from "@/screen/Profile/TripHistory/TripHistoryItem";
 import { ticketService } from "@/services/TicketService";
@@ -10,6 +11,7 @@ import { useEffect } from "react";
 import { ActivityIndicator, FlatList, Text, View } from "react-native";
 
 export default function TripHistoryScreen() {
+    const { t } = useTranslation();
     const {
         list: trips,
         loadFirstPage,
@@ -38,7 +40,7 @@ export default function TripHistoryScreen() {
 
     return (
         <View className="flex-1 bg-app-shell">
-            <PageHeader title="Lịch sử chuyến đi" isIconBack />
+            <PageHeader title={t("profile.tripHistory.title")} isIconBack />
 
             <FlatList
                 className="flex-1"
@@ -46,12 +48,17 @@ export default function TripHistoryScreen() {
                 keyExtractor={(item) => item._id}
                 ListHeaderComponent={
                     <View className="px-5 pb-2 pt-4">
-                        <SectionTitle title="Các chuyến đã đi gần đây" />
+                        <SectionTitle
+                            title={t("profile.tripHistory.subtitle")}
+                        />
                     </View>
                 }
                 renderItem={({ item }) => (
                     <View className="px-5">
-                        <TripHistoryItem ticket={item} onPress={handleTripPress} />
+                        <TripHistoryItem
+                            ticket={item}
+                            onPress={handleTripPress}
+                        />
                     </View>
                 )}
                 onEndReached={() => {
@@ -70,7 +77,7 @@ export default function TripHistoryScreen() {
                     ) : (
                         <Card className="mx-5">
                             <Text className="py-4 text-center text-sm text-text-muted">
-                                Chưa có chuyến đi nào
+                                {t("profile.tripHistory.empty")}
                             </Text>
                         </Card>
                     )

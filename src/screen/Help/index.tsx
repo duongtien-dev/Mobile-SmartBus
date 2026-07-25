@@ -1,17 +1,19 @@
 import { PageHeader } from "@/components/PageHeader";
 import { Card } from "@/components/ui/Card";
 import { FAQ_ITEMS } from "@/constants/faq";
+import { useTranslation } from "@/i18n";
 import { Image } from "expo-image";
 import { useState } from "react";
 import { ScrollView, View } from "react-native";
 import { FAQItem } from "./FaqItem";
 
 export default function HelpScreen() {
+    const { t } = useTranslation();
     const [expandedId, setExpandedId] = useState<string | null>(null);
 
     return (
         <View className="flex-1 bg-app-shell">
-            <PageHeader title="Trợ giúp" isIconBack />
+            <PageHeader title={t("help.title")} isIconBack />
 
             <ScrollView
                 className="flex-1"

@@ -1,13 +1,16 @@
 import { StaffHeader } from "@/components/StaffHeader";
 import { STAFF_NOTIFICATIONS_MOCK } from "@/constants/staff";
+import { useTranslation } from "@/i18n";
 import { Bell } from "lucide-react-native";
 import { FlatList, Pressable, Text, View } from "react-native";
 import Toast from "react-native-toast-message";
 
 export default function StaffNotificationsScreen() {
+    const { t } = useTranslation();
+
     return (
         <View className="flex-1 bg-card">
-            <StaffHeader title="Thông báo" showBack />
+            <StaffHeader title={t("staff.notifications.title")} showBack />
 
             <FlatList
                 data={STAFF_NOTIFICATIONS_MOCK}
@@ -24,7 +27,7 @@ export default function StaffNotificationsScreen() {
 
                         <View className="min-w-0 flex-1 gap-1">
                             <Text className="text-[15px] font-bold text-primary">
-                                {item.title}
+                                {t(item.titleKey)}
                             </Text>
                             <Text className="text-xs text-text-muted">
                                 {item.datetime}
@@ -37,20 +40,24 @@ export default function StaffNotificationsScreen() {
                             onPress={() =>
                                 Toast.show({
                                     type: "success",
-                                    text1: "Chi tiết thông báo",
-                                    text2: "Sẽ gắn API sau",
+                                    text1: t(
+                                        "staff.notifications.detailTitle",
+                                    ),
+                                    text2: t(
+                                        "staff.notifications.detailSoon",
+                                    ),
                                 })
                             }
                         >
                             <Text className="text-sm font-medium text-accent">
-                                Xem chi tiết
+                                {t("staff.notifications.viewDetail")}
                             </Text>
                         </Pressable>
                     </View>
                 )}
                 ListEmptyComponent={
                     <Text className="py-10 text-center text-sm text-text-muted">
-                        Chưa có thông báo
+                        {t("staff.notifications.empty")}
                     </Text>
                 }
             />

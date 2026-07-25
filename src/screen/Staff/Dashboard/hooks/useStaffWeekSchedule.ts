@@ -1,14 +1,17 @@
+import { translate } from "@/i18n/translations";
 import useFetch from "@/hooks/useFetch";
 import type { IActiveShift } from "@/models/activeShift";
 import type { IStaffScheduleItem } from "@/models/staffSchedule";
 import { staffScheduleService } from "@/services/StaffScheduleService";
 import { staffShiftService } from "@/services/StaffShiftService";
+import useLocaleStore from "@/store/locale.store";
 import { useFocusEffect } from "expo-router";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Toast from "react-native-toast-message";
 import { useCheckInShift } from "./useCheckInShift";
 
 export function useStaffWeekSchedule() {
+    const locale = useLocaleStore((state) => state.locale);
     const { isCheckingIn, checkIn } = useCheckInShift();
     const [expandedId, setExpandedId] = useState("");
 
@@ -38,10 +41,14 @@ export function useStaffWeekSchedule() {
     const hasActiveShift = !!activeShift;
 
     const checkInLabel = useMemo(() => {
-        if (hasActiveShift) return "Tiếp tục ca đang chạy";
-        if (isCheckingIn) return "Đang check-in...";
-        return "Check-in nhận ca";
-    }, [hasActiveShift, isCheckingIn]);
+        if (hasActiveShift) {
+            return translate(locale, "staff.schedule.continueShift");
+        }
+        if (isCheckingIn) {
+            return translate(locale, "staff.schedule.checkingIn");
+        }
+        return translate(locale, "staff.schedule.checkIn");
+    }, [hasActiveShift, isCheckingIn, locale]);
 
     useFocusEffect(
         useCallback(() => {
@@ -66,9 +73,9 @@ export function useStaffWeekSchedule() {
         if (!error) return;
         Toast.show({
             type: "error",
-            text1: "Không tải được lịch ca",
+            text1: translate(locale, "staff.schedule.loadFail"),
         });
-    }, [error]);
+    }, [error, locale]);
 
     const toggleExpanded = (id: string) => {
         setExpandedId((prev) => (prev === id ? "" : id));

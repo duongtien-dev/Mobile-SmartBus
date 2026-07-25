@@ -1,4 +1,5 @@
 import { PageHeader } from "@/components/PageHeader";
+import { useTranslation } from "@/i18n";
 import useTripBookingStore, {
     computeSingleTicketPrice,
 } from "@/store/tripBooking.store";
@@ -9,12 +10,12 @@ import {
     ScrollView,
     View,
 } from "react-native";
-import { LocationInfo } from "../Element/LocationInfo";
 import { FormControls } from "../Element/FormControls";
-import { TicketInfo } from "./TicketInfo";
-import { InputTime } from "./InputTime";
+import { LocationInfo } from "../Element/LocationInfo";
 import { InputSeat } from "./InputSeat";
 import { InputTerm } from "./InputTerm";
+import { InputTime } from "./InputTime";
+import { TicketInfo } from "./TicketInfo";
 
 const TIME_OPTIONS = [
     { value: "06:00", label: "06:00" },
@@ -32,6 +33,7 @@ const SEAT_OPTIONS = [
 ];
 
 export default function SingleTicketScreen() {
+    const { t } = useTranslation();
     const searchContext = useTripBookingStore((state) => state.searchContext);
     const pickupStopName = useTripBookingStore(
         (state) => state.bookingSelection?.startStopName ?? "",
@@ -48,7 +50,9 @@ export default function SingleTicketScreen() {
     const originName = searchContext?.originName;
     const destinationName = searchContext?.destinationName;
 
-    const totalPrice = computeSingleTicketPrice(selectedTicketProduct?.unitPrice);
+    const totalPrice = computeSingleTicketPrice(
+        selectedTicketProduct?.unitPrice,
+    );
 
     const handleSubmit = () => {
         if (!formData.seatCount) {
@@ -60,7 +64,7 @@ export default function SingleTicketScreen() {
 
     return (
         <View className="flex-1 bg-background">
-            <PageHeader title="Vé lượt" isIconBack={true} />
+            <PageHeader title={t("ticket.single.title")} isIconBack={true} />
 
             <KeyboardAvoidingView
                 className="flex-1"

@@ -1,6 +1,11 @@
 import { Button } from "@/components/Button";
-import { PageHeader } from "@/components/PageHeader";
+import { FormField } from "@/components/Form/FormField";
 import InputText from "@/components/Input/InputText";
+import { PageHeader } from "@/components/PageHeader";
+import { useToastify } from "@/hooks/useToastify";
+import { useTranslation } from "@/i18n";
+import { authService } from "@/services/AuthService";
+import useAuthStore from "@/store/auth.store";
 import { router } from "expo-router";
 import { useState } from "react";
 import {
@@ -8,10 +13,6 @@ import {
     ScrollView,
     View,
 } from "react-native";
-import { authService } from "@/services/AuthService";
-import useAuthStore from "@/store/auth.store";
-import { useToastify } from "@/hooks/useToastify";
-import { FormField } from "@/components/Form/FormField";
 import SelectGender from "./SelectGender";
 
 type TForm = {
@@ -25,9 +26,10 @@ type TForm = {
     district?: string;
     ward?: string;
     address_detail?: string;
-}
+};
 
 export default function FormProfile() {
+    const { t } = useTranslation();
     const user = useAuthStore((s) => s.user);
     const setUser = useAuthStore((s) => s.setUser);
     const showToast = useToastify();
@@ -51,7 +53,7 @@ export default function FormProfile() {
     };
 
     const parseFormData = () => {
-        const body = {
+        return {
             full_name: form.full_name,
             phone: form.phone,
             gender: form.gender,
@@ -62,8 +64,7 @@ export default function FormProfile() {
             ward: form.ward,
             address_detail: form.address_detail,
         };
-        return body;
-    }
+    };
 
     const handleSubmit = async () => {
         setIsSubmitting(true);
@@ -73,7 +74,9 @@ export default function FormProfile() {
 
         showToast({
             type: response.success ? "success" : "error",
-            content: response.success ? "Cập nhật thông tin thành công" : "Cập nhật thông tin thất bại",
+            content: response.success
+                ? t("profile.edit.success")
+                : t("profile.edit.fail"),
         });
 
         if (response.success) {
@@ -81,7 +84,7 @@ export default function FormProfile() {
             router.back();
         }
         setIsSubmitting(false);
-    }
+    };
 
     if (!user) {
         return (
@@ -93,7 +96,7 @@ export default function FormProfile() {
 
     return (
         <View className="flex-1 bg-background">
-            <PageHeader title="Thông tin cá nhân" isIconBack={true} />
+            <PageHeader title={t("profile.edit.title")} isIconBack={true} />
 
             <ScrollView
                 className="flex-1"
@@ -101,14 +104,16 @@ export default function FormProfile() {
                 showsVerticalScrollIndicator={false}
                 keyboardShouldPersistTaps="handled"
             >
-                <FormField labelText="Họ và tên" required={true}>
+                <FormField labelText={t("profile.edit.fullName")} required>
                     <InputText
                         value={form.full_name}
-                        onChangeText={(value) => handleChange("full_name", value)}
+                        onChangeText={(value) =>
+                            handleChange("full_name", value)
+                        }
                     />
                 </FormField>
 
-                <FormField labelText="Email" required={true}>
+                <FormField labelText={t("profile.edit.email")} required>
                     <InputText
                         value={form.email}
                         onChangeText={(value) => handleChange("email", value)}
@@ -116,7 +121,7 @@ export default function FormProfile() {
                     />
                 </FormField>
 
-                <FormField labelText="Số điện thoại" required={true}>
+                <FormField labelText={t("profile.edit.phone")} required>
                     <InputText
                         value={form.phone}
                         onChangeText={(value) => handleChange("phone", value)}
@@ -129,56 +134,67 @@ export default function FormProfile() {
                     onChange={(value) => handleChange("gender", value)}
                 />
 
-                <FormField labelText="Ngày sinh">
+                <FormField labelText={t("profile.edit.dob")}>
                     <InputText
                         value={form.date_of_birth}
-                        onChangeText={(value) => handleChange("date_of_birth", value)}
-                        placeholder="YYYY-MM-DD"
+                        onChangeText={(value) =>
+                            handleChange("date_of_birth", value)
+                        }
+                        placeholder={t("profile.edit.dobPlaceholder")}
                     />
                 </FormField>
 
-                <FormField labelText="Nghề nghiệp">
+                <FormField labelText={t("profile.edit.occupation")}>
                     <InputText
                         value={form.occupation}
-                        onChangeText={(value) => handleChange("occupation", value)}
-                        placeholder="Nghề nghiệp"
+                        onChangeText={(value) =>
+                            handleChange("occupation", value)
+                        }
+                        placeholder={t("profile.edit.occupation")}
                     />
                 </FormField>
 
-                <FormField labelText="Địa chỉ cư trú">
+                <FormField labelText={t("profile.edit.address")}>
                     <View className="gap-3">
                         <InputText
                             value={form.province}
                             onChangeText={(v) => handleChange("province", v)}
-                            placeholder="Tỉnh"
+                            placeholder={t("profile.edit.province")}
                         />
                         <InputText
                             value={form.district}
-                            onChangeText={(value) => handleChange("district", value)}
-                            placeholder="Quận/Huyện"
+                            onChangeText={(value) =>
+                                handleChange("district", value)
+                            }
+                            placeholder={t("profile.edit.district")}
                         />
                         <InputText
                             value={form.ward}
                             onChangeText={(value) => handleChange("ward", value)}
-                            placeholder="Phường/Xã"
+                            placeholder={t("profile.edit.ward")}
                         />
                         <InputText
                             value={form.address_detail}
-                            onChangeText={(value) => handleChange("address_detail", value)}
-                            placeholder="Địa chỉ chi tiết"
+                            onChangeText={(value) =>
+                                handleChange("address_detail", value)
+                            }
+                            placeholder={t("profile.edit.addressDetail")}
                         />
                     </View>
                 </FormField>
 
                 <View className="pt-2">
-                    <Button type="accent" variant="bold" className="w-full rounded-xl"
+                    <Button
+                        type="accent"
+                        variant="bold"
+                        className="w-full rounded-xl"
                         disabled={isSubmitting}
                         onPress={handleSubmit}
                     >
                         {isSubmitting ? (
                             <ActivityIndicator color="#ffffff" />
                         ) : (
-                            "Lưu"
+                            t("profile.edit.save")
                         )}
                     </Button>
                 </View>

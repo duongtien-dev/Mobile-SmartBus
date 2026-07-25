@@ -1,19 +1,25 @@
 import CheckBox from "@/components/Input/CheckBox";
+import { useTranslation } from "@/i18n";
 import { Pressable, Text, View } from "react-native";
 
 interface Props {
     value: boolean;
     onChange: (value: boolean) => void;
 }
+
 export function InputTerm({ value, onChange }: Props) {
+    const { t } = useTranslation();
+
     return (
         <View className="gap-4">
-            <Text className="text-base font-bold text-primary">Điều khoản và lưu ý</Text>
-            <Text className="text-sm leading-6 text-text-muted">
-                (*) Quý khách vui lòng có mặt tại điểm đón trước ít nhất 10 phút so với thời gian đón.
+            <Text className="text-base font-bold text-primary">
+                {t("ticket.terms.title")}
             </Text>
             <Text className="text-sm leading-6 text-text-muted">
-                (*) Vé đã mua không thể đổi, trả hoặc hoàn tiền.
+                {t("ticket.terms.arriveEarly")}
+            </Text>
+            <Text className="text-sm leading-6 text-text-muted">
+                {t("ticket.terms.noExchange")}
             </Text>
 
             <Pressable
@@ -25,7 +31,7 @@ export function InputTerm({ value, onChange }: Props) {
                 </View>
 
                 <Text className="flex-1 text-sm leading-6 text-text-primary">
-                    Chấp nhận điều khoản & chính sách bảo mật.
+                    {t("ticket.terms.acceptPrivacy")}
                 </Text>
             </Pressable>
         </View>

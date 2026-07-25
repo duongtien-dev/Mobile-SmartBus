@@ -1,8 +1,9 @@
 import { Button } from "@/components/Button";
 import InputText from "@/components/Input/InputText";
+import { useTranslation } from "@/i18n";
 import { CameraView, useCameraPermissions } from "expo-camera";
 import { Keyboard, X } from "lucide-react-native";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
     ActivityIndicator,
     Modal,
@@ -23,22 +24,27 @@ type ScanQrModalProps = {
     onSubmit: (qrCode: string) => void;
 };
 
-const MODE_TABS: { key: ScanMode; label: string }[] = [
-    { key: "camera", label: "Quét QR" },
-    { key: "manual", label: "Nhập mã" },
-];
-
 export function ScanQrModal({
     open,
     loading = false,
     onClose,
     onSubmit,
 }: ScanQrModalProps) {
+    const { t } = useTranslation();
     const insets = useSafeAreaInsets();
     const [permission, requestPermission] = useCameraPermissions();
     const [mode, setMode] = useState<ScanMode>("camera");
     const [qrCode, setQrCode] = useState("");
     const [locked, setLocked] = useState(false);
+
+    const modeTabs = useMemo(
+        () =>
+            [
+                { key: "camera" as const, label: t("staff.scan.tabCamera") },
+                { key: "manual" as const, label: t("staff.scan.tabManual") },
+            ] as const,
+        [t],
+    );
 
     useEffect(() => {
         if (!open) {
@@ -97,11 +103,11 @@ export function ScanQrModal({
             >
                 <View className="flex-row items-center justify-between px-4 py-3">
                     <Text className="text-lg font-bold text-text-primary">
-                        Quét vé khách lên
+                        {t("staff.scan.title")}
                     </Text>
                     <Pressable
                         accessibilityRole="button"
-                        accessibilityLabel="Đóng"
+                        accessibilityLabel={t("a11y.close")}
                         className="h-10 w-10 items-center justify-center rounded-full bg-surface active:opacity-80"
                         disabled={loading}
                         onPress={handleClose}
@@ -112,7 +118,7 @@ export function ScanQrModal({
                 </View>
 
                 <View className="mx-4 mb-3 flex-row rounded-xl bg-surface p-1">
-                    {MODE_TABS.map((tab) => {
+                    {modeTabs.map((tab) => {
                         const active = mode === tab.key;
                         return (
                             <Pressable
@@ -145,29 +151,28 @@ export function ScanQrModal({
                                 <View className="flex-1 items-center justify-center gap-3 px-6">
                                     <Keyboard color="#94a3b8" size={36} />
                                     <Text className="text-center text-sm text-white/80">
-                                        Camera không hỗ trợ trên web. Dùng tab
-                                        Nhập mã.
+                                        {t("staff.scan.webNoCamera")}
                                     </Text>
                                     <Button
                                         size="sm"
                                         onPress={() => setMode("manual")}
                                     >
-                                        Chuyển nhập mã
+                                        {t("staff.scan.switchManual")}
                                     </Button>
                                 </View>
                             ) : !permission?.granted ? (
                                 <View className="flex-1 items-center justify-center gap-3 px-6">
                                     <Text className="text-center text-sm text-white/90">
-                                        Cần quyền camera để quét mã QR trên vé.
+                                        {t("staff.scan.needPermission")}
                                     </Text>
                                     <Button onPress={requestPermission}>
-                                        Cấp quyền camera
+                                        {t("staff.scan.grantPermission")}
                                     </Button>
                                     <Pressable
                                         onPress={() => setMode("manual")}
                                     >
                                         <Text className="text-sm text-accent">
-                                            Hoặc nhập mã thủ công
+                                            {t("staff.scan.orManual")}
                                         </Text>
                                     </Pressable>
                                 </View>
@@ -192,7 +197,7 @@ export function ScanQrModal({
                                     >
                                         <View className="h-56 w-56 rounded-2xl border-2 border-white/90" />
                                         <Text className="mt-4 px-6 text-center text-sm font-medium text-white">
-                                            Đưa mã QR trên vé vào khung
+                                            {t("staff.scan.frameHint")}
                                         </Text>
                                     </View>
                                 </>
@@ -201,12 +206,12 @@ export function ScanQrModal({
                     ) : (
                         <View className="gap-4 rounded-2xl bg-card p-4 shadow-sm">
                             <Text className="text-sm text-text-secondary">
-                                Nhập mã QR in trên vé (TICKET-xxxxxx)
+                                {t("staff.scan.manualHint")}
                             </Text>
                             <InputText
                                 value={qrCode}
                                 onChangeText={setQrCode}
-                                placeholder="Nhập mã QR"
+                                placeholder={t("staff.scan.placeholder")}
                                 autoCapitalize="none"
                                 autoCorrect={false}
                                 editable={!loading}
@@ -220,7 +225,7 @@ export function ScanQrModal({
                                 {loading ? (
                                     <ActivityIndicator color="#ffffff" />
                                 ) : (
-                                    "Kiểm tra vé"
+                                    t("staff.scan.check")
                                 )}
                             </Button>
                         </View>
@@ -232,7 +237,7 @@ export function ScanQrModal({
                         <View className="items-center gap-3 rounded-2xl bg-card px-8 py-6">
                             <ActivityIndicator color="#005f8b" size="large" />
                             <Text className="text-sm font-medium text-text-primary">
-                                Đang kiểm tra vé...
+                                {t("staff.scan.checking")}
                             </Text>
                         </View>
                     </View>

@@ -1,8 +1,9 @@
 import { Button } from "@/components/Button";
-import { Select } from "@/components/Select";
 import TextArea from "@/components/Input/TextArea";
+import { Select } from "@/components/Select";
 import usePaginationList from "@/hooks/usePaginationList";
 import { useToastify } from "@/hooks/useToastify";
+import { useTranslation } from "@/i18n";
 import type { IRoute } from "@/models/route";
 import { getRouteTitle } from "@/screen/Route/Detail/utils";
 import { StarRating } from "@/screen/Route/Reviews/StarRating";
@@ -24,6 +25,7 @@ import {
 const PAGE_SIZE = 12;
 
 export default function CreateReviewScreen() {
+    const { t } = useTranslation();
     const showToast = useToastify();
 
     const [selectedRouteId, setSelectedRouteId] = useState<string>();
@@ -75,13 +77,13 @@ export default function CreateReviewScreen() {
             });
             showToast({
                 type: "success",
-                content: "Gửi đánh giá thành công",
+                content: t("route.reviews.toastSuccess"),
             });
             router.back();
         } catch {
             showToast({
                 type: "error",
-                content: "Không thể gửi đánh giá",
+                content: t("route.reviews.toastFail"),
             });
         } finally {
             setIsSubmitting(false);
@@ -94,7 +96,7 @@ export default function CreateReviewScreen() {
                 <View className="flex-row items-center gap-2 px-4 py-3">
                     <Pressable
                         accessibilityRole="button"
-                        accessibilityLabel="Quay lại"
+                        accessibilityLabel={t("a11y.back")}
                         className="h-10 w-10 items-center justify-center active:opacity-80"
                         hitSlop={8}
                         onPress={() => router.back()}
@@ -102,7 +104,7 @@ export default function CreateReviewScreen() {
                         <ArrowLeft color="#005f8b" size={24} />
                     </Pressable>
                     <Text className="text-lg font-bold text-on-highlight">
-                        Đánh giá
+                        {t("route.reviews.title")}
                     </Text>
                 </View>
             </View>
@@ -124,14 +126,16 @@ export default function CreateReviewScreen() {
                     >
                         <View className="gap-2">
                             <Text className="text-sm font-semibold text-primary">
-                                Chọn tuyến xe
+                                {t("route.reviews.createTitle")}
                             </Text>
                             {routeOptions.length > 0 ? (
                                 <>
                                     <Select
                                         value={selectedRouteId}
                                         onValueChange={setSelectedRouteId}
-                                        placeholder="Chọn tuyến xe"
+                                        placeholder={t(
+                                            "route.reviews.createTitle",
+                                        )}
                                         options={routeOptions}
                                         triggerClassName="h-12 rounded-xl border-border bg-surface px-4"
                                     />
@@ -149,7 +153,9 @@ export default function CreateReviewScreen() {
                                                 />
                                             ) : (
                                                 <Text className="text-sm font-medium text-accent">
-                                                    Tải thêm tuyến
+                                                    {t(
+                                                        "route.reviews.loadMoreRoutes",
+                                                    )}
                                                 </Text>
                                             )}
                                         </Pressable>
@@ -157,34 +163,32 @@ export default function CreateReviewScreen() {
                                 </>
                             ) : (
                                 <Text className="rounded-xl bg-surface px-4 py-3 text-sm text-text-muted">
-                                    Không có tuyến nào cần đánh giá
+                                    {t("route.reviews.noRoutesToReview")}
                                 </Text>
                             )}
                         </View>
 
                         <View className="gap-2">
                             <Text className="text-sm font-semibold text-primary">
-                                Đánh giá của bạn
+                                {t("route.reviews.yourRating")}
                             </Text>
                             <StarRating value={rating} onChange={setRating} />
                         </View>
 
                         <View className="gap-2">
                             <Text className="text-sm font-semibold text-primary">
-                                Nội dung phản hồi
+                                {t("route.reviews.content")}
                             </Text>
                             <TextArea
                                 value={content}
                                 onChangeText={setContent}
-                                placeholder="Nhập nội dung đánh giá..."
+                                placeholder={t("route.reviews.placeholder")}
                                 className="min-h-40 rounded-xl bg-surface"
                             />
                         </View>
 
                         <Text className="text-center text-sm leading-6 text-accent">
-                            Mỗi ý kiến góp ý từ Quý khách hàng đều sẽ giúp
-                            DanaBus tốt hơn từng ngày. Chúng tôi xin trân trọng
-                            cảm ơn và sẽ đảm bảo tính bảo mật của phản hồi!
+                            {t("route.reviews.thankYou")}
                         </Text>
 
                         <Button
@@ -197,7 +201,7 @@ export default function CreateReviewScreen() {
                             {isSubmitting ? (
                                 <ActivityIndicator color="#ffffff" />
                             ) : (
-                                "Gửi đánh giá"
+                                t("route.reviews.submit")
                             )}
                         </Button>
                     </ScrollView>

@@ -1,6 +1,7 @@
+import { useTranslation } from "@/i18n";
 import type { IRoute } from "@/models/route";
-import { favoriteRouteService } from "@/services/FavoriteRouteService";
 import { getRouteTitle } from "@/screen/Route/Detail/utils";
+import { favoriteRouteService } from "@/services/FavoriteRouteService";
 import { Clock, Heart, Star, Ticket } from "lucide-react-native";
 import { useEffect, useState } from "react";
 import { Pressable, Text, View } from "react-native";
@@ -12,11 +13,12 @@ type RouteCardProps = {
     onFavoriteChange?: (routeId: string, isFavorite: boolean) => void;
 };
 
-function formatPrice(amount: number) {
-    return `${amount.toLocaleString("vi-VN")}đ`;
+function formatPrice(amount: number, locale: string) {
+    return `${amount.toLocaleString(locale === "en" ? "en-US" : "vi-VN")}đ`;
 }
 
 export function RouteCard({ route, onPress, onFavoriteChange }: RouteCardProps) {
+    const { t, locale } = useTranslation();
     const [favorited, setFavorited] = useState(Boolean(route.isFavorite));
     const [isSubmitting, setIsSubmitting] = useState(false);
     const title = getRouteTitle(route);
@@ -50,8 +52,8 @@ export function RouteCard({ route, onPress, onFavoriteChange }: RouteCardProps) 
             Toast.show({
                 type: "error",
                 text1: nextValue
-                    ? "Không thể thêm yêu thích"
-                    : "Không thể bỏ yêu thích",
+                    ? t("route.card.addFavoriteFail")
+                    : t("route.card.removeFavoriteFail"),
             });
         } finally {
             setIsSubmitting(false);
@@ -106,7 +108,7 @@ export function RouteCard({ route, onPress, onFavoriteChange }: RouteCardProps) 
                                 <View className="flex-row items-center gap-1">
                                     <Ticket color="#64748b" size={14} />
                                     <Text className="text-xs text-text-muted">
-                                        {formatPrice(route.price)}
+                                        {formatPrice(route.price, locale)}
                                     </Text>
                                 </View>
                             ) : null}
@@ -128,7 +130,9 @@ export function RouteCard({ route, onPress, onFavoriteChange }: RouteCardProps) 
                 <Pressable
                     accessibilityRole="button"
                     accessibilityLabel={
-                        favorited ? "Bỏ yêu thích" : "Thêm yêu thích"
+                        favorited
+                            ? t("route.card.removeFavorite")
+                            : t("route.card.addFavorite")
                     }
                     className="active:opacity-70"
                     disabled={isSubmitting}
