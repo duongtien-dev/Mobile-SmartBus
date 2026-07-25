@@ -139,7 +139,7 @@ export default function HomeScreen() {
                 className="flex-1"
                 contentContainerStyle={{
                     overflow: "visible",
-                    gap: 28,
+                    gap: 20,
                     paddingHorizontal: 20,
                     paddingTop: 12,
                     paddingBottom: 40,

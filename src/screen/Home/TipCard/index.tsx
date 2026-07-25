@@ -12,16 +12,7 @@ export function TipCard({ tip }: TipCardProps) {
     const iconColor = tip.colorClass === "bg-highlight" ? "#005f8b" : "#ffffff";
 
     return (
-        <View
-            className="w-[220px] rounded-2xl bg-card p-4"
-            style={{
-                shadowColor: "#0f172a",
-                shadowOffset: { width: 0, height: 4 },
-                shadowOpacity: 0.06,
-                shadowRadius: 10,
-                elevation: 2,
-            }}
-        >
+        <View className="w-[170px] rounded-2xl bg-card p-4">
             <View
                 className={`h-11 w-11 items-center justify-center rounded-2xl ${tip.colorClass}`}
             >
