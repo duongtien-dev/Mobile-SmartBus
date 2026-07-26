@@ -5,10 +5,11 @@ import { useTranslation } from "@/i18n";
 import { navigateAuth } from "@/lib/auth-navigation";
 import { authService } from "@/services/AuthService";
 import useAuthStore from "@/store/auth.store";
+import { loginSchema, validateSchema } from "@/utils/validators";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import { Eye, EyeOff } from "lucide-react-native";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import {
     ActivityIndicator,
     Image,
@@ -29,31 +30,60 @@ export default function Login() {
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [errors, setErrors] = useState<{ email?: string; password?: string }>(
+        {},
+    );
+
+    const isFormValid = useMemo(() => {
+        return validateSchema(loginSchema, { email, password }).ok;
+    }, [email, password]);
 
     const handleLogin = async () => {
         if (isSubmitting) return;
+
+        const validation = validateSchema(loginSchema, { email, password });
+        if (!validation.ok) {
+            setErrors({
+                email: validation.errors.email
+                    ? t(validation.errors.email)
+                    : undefined,
+                password: validation.errors.password
+                    ? t(validation.errors.password)
+                    : undefined,
+            });
+            return;
+        }
+
+        setErrors({});
         setIsSubmitting(true);
 
-        const response = await authService.login({ email, password });
-        const { user, token } = response.data;
+        try {
+            const response = await authService.login(validation.data);
+            const { user, token } = response.data;
 
-        setUser(user);
-        setToken(token);
-        setIsAuthenticated(true);
+            setUser(user);
+            setToken(token);
+            setIsAuthenticated(true);
 
-        showToast({
-            type: response.success ? "success" : "error",
-            content: response.success
-                ? t("auth.login.success")
-                : t("auth.login.fail"),
-        });
-        if (response.success) {
-            router.replace(navigateAuth(user?.role));
+            showToast({
+                type: response.success ? "success" : "error",
+                content: response.success
+                    ? t("auth.login.success")
+                    : t("auth.login.fail"),
+            });
+            if (response.success) {
+                router.replace(navigateAuth(user?.role));
+            }
+        } catch (error: any) {
+            showToast({
+                type: "error",
+                content:
+                    error?.response?.data?.message ?? t("auth.login.fail"),
+            });
+        } finally {
+            setIsSubmitting(false);
         }
-        setIsSubmitting(false);
     };
-
-    const isFormValid = email.trim() && password.trim();
 
     return (
         <LinearGradient
@@ -92,12 +122,25 @@ export default function Login() {
                             </Text>
                             <InputText
                                 value={email}
-                                onChangeText={setEmail}
+                                onChangeText={(value) => {
+                                    setEmail(value);
+                                    if (errors.email) {
+                                        setErrors((prev) => ({
+                                            ...prev,
+                                            email: undefined,
+                                        }));
+                                    }
+                                }}
                                 placeholder={t("auth.field.email")}
                                 autoCapitalize="none"
                                 keyboardType="email-address"
                                 className="w-full rounded-xl border-0 bg-surface"
                             />
+                            {errors.email ? (
+                                <Text className="text-xs text-alert">
+                                    {errors.email}
+                                </Text>
+                            ) : null}
                         </View>
 
                         <View className="gap-2">
@@ -107,7 +150,15 @@ export default function Login() {
                             <View className="relative">
                                 <InputText
                                     value={password}
-                                    onChangeText={setPassword}
+                                    onChangeText={(value) => {
+                                        setPassword(value);
+                                        if (errors.password) {
+                                            setErrors((prev) => ({
+                                                ...prev,
+                                                password: undefined,
+                                            }));
+                                        }
+                                    }}
                                     placeholder={t("auth.field.password")}
                                     secureTextEntry={!showPassword}
                                     className="w-full rounded-xl border-0 bg-surface"
@@ -125,6 +176,11 @@ export default function Login() {
                                     )}
                                 </Pressable>
                             </View>
+                            {errors.password ? (
+                                <Text className="text-xs text-alert">
+                                    {errors.password}
+                                </Text>
+                            ) : null}
                         </View>
 
                         <Pressable

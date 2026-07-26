@@ -1,10 +1,17 @@
 import { Button } from "@/components/Button";
 import InputText from "@/components/Input/InputText";
+import { useToastify } from "@/hooks/useToastify";
+import { useTranslation } from "@/i18n";
 import { authService } from "@/services/AuthService";
+import {
+    registerSchema,
+    validateSchema,
+    type FieldErrors,
+} from "@/utils/validators";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import { Eye, EyeOff } from "lucide-react-native";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import {
     ActivityIndicator,
     Image,
@@ -15,9 +22,17 @@ import {
     Text,
     View,
 } from "react-native";
-import Toast from "react-native-toast-message";
+
+type RegisterFields =
+    | "full_name"
+    | "email"
+    | "phone"
+    | "password"
+    | "password_confirm";
 
 export default function Register() {
+    const { t } = useTranslation();
+    const showToast = useToastify();
     const [user, setUser] = useState({
         full_name: "",
         email: "",
@@ -28,32 +43,62 @@ export default function Register() {
     const [showPassword, setShowPassword] = useState(false);
     const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [errors, setErrors] = useState<FieldErrors<RegisterFields>>({});
+
+    const isFormValid = useMemo(
+        () => validateSchema(registerSchema, user).ok,
+        [user],
+    );
+
+    const updateField = (key: RegisterFields, value: string) => {
+        setUser((prev) => ({ ...prev, [key]: value }));
+        if (errors[key]) {
+            setErrors((prev) => ({ ...prev, [key]: undefined }));
+        }
+    };
 
     const handleRegister = async () => {
-        if (isSubmitting) {
+        if (isSubmitting) return;
+
+        const validation = validateSchema(registerSchema, user);
+        if (!validation.ok) {
+            const nextErrors: FieldErrors<RegisterFields> = {};
+            for (const [key, messageKey] of Object.entries(validation.errors)) {
+                if (messageKey) {
+                    nextErrors[key as RegisterFields] = t(messageKey);
+                }
+            }
+            setErrors(nextErrors);
+            showToast({
+                type: "error",
+                content: t("validation.formInvalid"),
+            });
             return;
         }
 
+        setErrors({});
         setIsSubmitting(true);
 
         try {
-            const response = await authService.register(user);
+            const response = await authService.register(validation.data);
 
-            Toast.show({
+            showToast({
                 type: "success",
-                text1: "Gửi OTP thành công",
-                text2: response.data?.message ?? response.message,
+                content:
+                    response.data?.message ??
+                    response.message ??
+                    t("auth.register.otpSent"),
             });
 
             router.push({
                 pathname: "/verify-otp",
-                params: { email: user.email },
+                params: { email: validation.data.email },
             });
-        } catch (error) {
-            Toast.show({
+        } catch (error: any) {
+            showToast({
                 type: "error",
-                text1: "Đăng ký thất bại",
-                text2: "Vui lòng kiểm tra lại thông tin và thử lại",
+                content:
+                    error?.response?.data?.message ?? t("auth.register.fail"),
             });
         } finally {
             setIsSubmitting(false);
@@ -93,61 +138,76 @@ export default function Register() {
                     <View className="mt-2 gap-4">
                         <View className="gap-2">
                             <Text className="text-sm font-medium text-on-primary">
-                                Họ và tên
+                                {t("auth.field.fullName")}
                             </Text>
                             <InputText
                                 value={user.full_name}
                                 onChangeText={(text) =>
-                                    setUser({ ...user, full_name: text })
+                                    updateField("full_name", text)
                                 }
-                                placeholder="Họ và tên"
+                                placeholder={t("auth.field.fullName")}
                                 autoCapitalize="words"
                                 className="w-full rounded-xl border-0 bg-surface"
                             />
+                            {errors.full_name ? (
+                                <Text className="text-xs text-alert">
+                                    {errors.full_name}
+                                </Text>
+                            ) : null}
                         </View>
 
                         <View className="gap-2">
                             <Text className="text-sm font-medium text-on-primary">
-                                Email
+                                {t("auth.field.email")}
                             </Text>
                             <InputText
                                 value={user.email}
                                 onChangeText={(text) =>
-                                    setUser({ ...user, email: text })
+                                    updateField("email", text)
                                 }
-                                placeholder="Email"
+                                placeholder={t("auth.field.email")}
                                 autoCapitalize="none"
                                 keyboardType="email-address"
                                 className="w-full rounded-xl border-0 bg-surface"
                             />
+                            {errors.email ? (
+                                <Text className="text-xs text-alert">
+                                    {errors.email}
+                                </Text>
+                            ) : null}
                         </View>
 
                         <View className="gap-2">
                             <Text className="text-sm font-medium text-on-primary">
-                                Số điện thoại
+                                {t("auth.field.phone")}
                             </Text>
                             <InputText
                                 value={user.phone}
                                 onChangeText={(text) =>
-                                    setUser({ ...user, phone: text })
+                                    updateField("phone", text)
                                 }
-                                placeholder="Số điện thoại"
+                                placeholder={t("auth.field.phone")}
                                 keyboardType="phone-pad"
                                 className="w-full rounded-xl border-0 bg-surface"
                             />
+                            {errors.phone ? (
+                                <Text className="text-xs text-alert">
+                                    {errors.phone}
+                                </Text>
+                            ) : null}
                         </View>
 
                         <View className="gap-2">
                             <Text className="text-sm font-medium text-on-primary">
-                                Mật khẩu
+                                {t("auth.field.password")}
                             </Text>
                             <View className="relative">
                                 <InputText
                                     value={user.password}
                                     onChangeText={(text) =>
-                                        setUser({ ...user, password: text })
+                                        updateField("password", text)
                                     }
-                                    placeholder="Mật khẩu"
+                                    placeholder={t("auth.field.password")}
                                     className="w-full rounded-xl border-0 bg-surface"
                                     style={{ paddingRight: 40 }}
                                     secureTextEntry={!showPassword}
@@ -164,22 +224,24 @@ export default function Register() {
                                     )}
                                 </Pressable>
                             </View>
+                            {errors.password ? (
+                                <Text className="text-xs text-alert">
+                                    {errors.password}
+                                </Text>
+                            ) : null}
                         </View>
 
                         <View className="gap-2">
                             <Text className="text-sm font-medium text-on-primary">
-                                Xác nhận mật khẩu
+                                {t("auth.field.confirmPassword")}
                             </Text>
                             <View className="relative">
                                 <InputText
                                     value={user.password_confirm}
                                     onChangeText={(text) =>
-                                        setUser({
-                                            ...user,
-                                            password_confirm: text,
-                                        })
+                                        updateField("password_confirm", text)
                                     }
-                                    placeholder="Xác nhận mật khẩu"
+                                    placeholder={t("auth.field.confirmPassword")}
                                     secureTextEntry={!showPasswordConfirm}
                                     className="w-full rounded-xl border-0 bg-surface"
                                     style={{ paddingRight: 40 }}
@@ -198,30 +260,35 @@ export default function Register() {
                                     )}
                                 </Pressable>
                             </View>
+                            {errors.password_confirm ? (
+                                <Text className="text-xs text-alert">
+                                    {errors.password_confirm}
+                                </Text>
+                            ) : null}
                         </View>
 
                         <Button
                             type="accent"
                             variant="bold"
                             className="w-full rounded-xl"
-                            disabled={isSubmitting}
+                            disabled={!isFormValid || isSubmitting}
                             onPress={handleRegister}
                         >
                             {isSubmitting ? (
                                 <ActivityIndicator color="#ffffff" />
                             ) : (
-                                "Đăng ký"
+                                t("auth.register.submit")
                             )}
                         </Button>
 
                         <View className="mt-2 items-center">
                             <Text className="text-sm text-on-primary">
-                                Đã có tài khoản?{" "}
+                                {t("auth.register.hasAccount")}{" "}
                                 <Text
                                     className="font-semibold text-on-primary"
                                     onPress={() => router.back()}
                                 >
-                                    Đăng nhập
+                                    {t("auth.register.signIn")}
                                 </Text>
                             </Text>
                         </View>
