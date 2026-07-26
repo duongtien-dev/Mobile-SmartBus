@@ -6,7 +6,7 @@ import { StarRating } from "@/screen/Route/Reviews/StarRating";
 import { reviewRouteService } from "@/services/ReivewRouteService";
 import { Trash2 } from "lucide-react-native";
 import moment from "moment";
-import { useState } from "react";
+import { memo, useState } from "react";
 import { ActivityIndicator, Pressable, Text, View } from "react-native";
 import Toast from "react-native-toast-message";
 
@@ -15,7 +15,7 @@ type ReviewCardProps = {
     onDeleted?: (reviewId: string) => void;
 };
 
-export function ReviewCard({ review, onDeleted }: ReviewCardProps) {
+function ReviewCardComponent({ review, onDeleted }: ReviewCardProps) {
     const { t } = useTranslation();
     const [isConfirmOpen, setIsConfirmOpen] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
@@ -129,3 +129,5 @@ export function ReviewCard({ review, onDeleted }: ReviewCardProps) {
         </View>
     );
 }
+
+export const ReviewCard = memo(ReviewCardComponent);

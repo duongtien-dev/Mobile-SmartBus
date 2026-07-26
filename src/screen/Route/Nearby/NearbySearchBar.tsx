@@ -1,10 +1,9 @@
 import InputText from "@/components/Input/InputText";
-import useFetch from "@/hooks/useFetch";
+import useLocationSuggestions from "@/hooks/useLocationSuggestions";
 import { useTranslation } from "@/i18n";
 import type { ISuggestLocation } from "@/models/suggestLocation";
-import { tripService } from "@/services/TripService";
 import { Ionicons } from "@expo/vector-icons";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
     ActivityIndicator,
     Pressable,
@@ -24,37 +23,13 @@ export function NearbySearchBar({
 }: NearbySearchBarProps) {
     const { t } = useTranslation();
     const [keyword, setKeyword] = useState("");
-    const [isFocused, setIsFocused] = useState(false);
-    const trimmedKeyword = keyword.trim();
-
     const {
-        data: suggestions,
+        setIsFocused,
+        handleBlur,
+        suggestionList,
         isLoading,
-        loadFetchFn,
-    } = useFetch<ISuggestLocation[]>({
-        fetchFn: async () => {
-            const response = await tripService.suggestLocations({
-                keyword: trimmedKeyword,
-            });
-            return response.data ?? [];
-        },
-    });
-
-    useEffect(() => {
-        if (!trimmedKeyword) return;
-
-        const timer = setTimeout(() => {
-            loadFetchFn();
-        }, 400);
-
-        return () => clearTimeout(timer);
-    }, [trimmedKeyword]);
-
-    const suggestionList = suggestions ?? [];
-    const showSuggestions =
-        isFocused &&
-        trimmedKeyword.length > 0 &&
-        (isLoading || suggestionList.length > 0);
+        showSuggestions,
+    } = useLocationSuggestions(keyword);
 
     const handleSelect = (item: ISuggestLocation) => {
         setKeyword(item.display_name);
@@ -85,9 +60,7 @@ export function NearbySearchBar({
                     value={keyword}
                     onChangeText={setKeyword}
                     onFocus={() => setIsFocused(true)}
-                    onBlur={() => {
-                        setTimeout(() => setIsFocused(false), 200);
-                    }}
+                    onBlur={handleBlur}
                     className="h-12 rounded-xl border border-gray-200 bg-white pl-12 pr-4 text-base shadow-sm"
                 />
 

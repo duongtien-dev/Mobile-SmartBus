@@ -1,11 +1,17 @@
 import { Button } from "@/components/Button";
 import InputText from "@/components/Input/InputText";
 import { useToastify } from "@/hooks/useToastify";
+import { useTranslation } from "@/i18n";
 import { authService } from "@/services/AuthService";
+import {
+    MIN_PASSWORD_LENGTH,
+    resetPasswordSchema,
+    validateSchema,
+} from "@/utils/validators";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useLocalSearchParams } from "expo-router";
 import { Check, Eye, EyeOff } from "lucide-react-native";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import {
     ActivityIndicator,
     KeyboardAvoidingView,
@@ -16,6 +22,7 @@ import {
 } from "react-native";
 
 export default function ResetPasswordScreen() {
+    const { t } = useTranslation();
     const showToast = useToastify();
     const { otp } = useLocalSearchParams<{ otp?: string }>();
 
@@ -26,29 +33,53 @@ export default function ResetPasswordScreen() {
     const [rememberMe, setRememberMe] = useState(true);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const isFormValid =
-        password.length >= 6 &&
-        confirmPassword.length >= 6 &&
-        password === confirmPassword &&
-        Boolean(otp);
+    const isFormValid = useMemo(
+        () =>
+            validateSchema(resetPasswordSchema, {
+                password,
+                confirmPassword,
+                otp: otp ?? "",
+            }).ok,
+        [password, confirmPassword, otp],
+    );
+
+    const showMismatch =
+        confirmPassword.length > 0 && password !== confirmPassword;
+    const showPasswordMin =
+        password.length > 0 && password.length < MIN_PASSWORD_LENGTH;
 
     const handleSubmit = async () => {
-        if (!isFormValid || isSubmitting || !otp) return;
+        if (isSubmitting) return;
+
+        const validation = validateSchema(resetPasswordSchema, {
+            password,
+            confirmPassword,
+            otp: otp ?? "",
+        });
+        if (!validation.ok) {
+            showToast({
+                type: "error",
+                content: t(
+                    validation.errors.confirmPassword ??
+                        validation.errors.password ??
+                        "validation.formInvalid",
+                ),
+            });
+            return;
+        }
 
         setIsSubmitting(true);
 
         try {
             const response = await authService.resetPassword({
-                otp,
-                newPassword: password,
-                newPassword_confirm: confirmPassword,
+                otp: validation.data.otp,
+                newPassword: validation.data.password,
+                newPassword_confirm: validation.data.confirmPassword,
             });
 
             showToast({
                 type: "success",
-                content:
-                    response.message ??
-                    "Đặt lại mật khẩu thành công. Vui lòng đăng nhập.",
+                content: response.message ?? t("auth.reset.success"),
             });
 
             router.replace("/login");
@@ -56,8 +87,7 @@ export default function ResetPasswordScreen() {
             showToast({
                 type: "error",
                 content:
-                    error?.response?.data?.message ??
-                    "Đặt lại mật khẩu thất bại",
+                    error?.response?.data?.message ?? t("auth.reset.fail"),
             });
         } finally {
             setIsSubmitting(false);
@@ -96,19 +126,19 @@ export default function ResetPasswordScreen() {
             >
                 <View className="flex-1 justify-center px-8">
                     <Text className="mb-8 text-center text-2xl font-bold text-primary">
-                        Tạo mật khẩu mới
+                        {t("auth.reset.title")}
                     </Text>
 
                     <View className="gap-5">
                         <View className="gap-2">
                             <Text className="text-sm font-medium text-accent">
-                                Mật khẩu
+                                {t("auth.field.password")}
                             </Text>
                             <View className="relative">
                                 <InputText
                                     value={password}
                                     onChangeText={setPassword}
-                                    placeholder="Mật khẩu"
+                                    placeholder={t("auth.field.password")}
                                     secureTextEntry={!showPassword}
                                     className="h-12 w-full rounded-xl border-0 bg-surface"
                                     style={{ paddingRight: 48 }}
@@ -124,17 +154,22 @@ export default function ResetPasswordScreen() {
                                     )}
                                 </Pressable>
                             </View>
+                            {showPasswordMin ? (
+                                <Text className="text-xs text-alert">
+                                    {t("validation.passwordMin")}
+                                </Text>
+                            ) : null}
                         </View>
 
                         <View className="gap-2">
                             <Text className="text-sm font-medium text-accent">
-                                Xác nhận mật khẩu
+                                {t("auth.field.confirmPassword")}
                             </Text>
                             <View className="relative">
                                 <InputText
                                     value={confirmPassword}
                                     onChangeText={setConfirmPassword}
-                                    placeholder="Xác nhận mật khẩu"
+                                    placeholder={t("auth.field.confirmPassword")}
                                     secureTextEntry={!showConfirmPassword}
                                     className="h-12 w-full rounded-xl border-0 bg-surface"
                                     style={{ paddingRight: 48 }}
@@ -152,10 +187,9 @@ export default function ResetPasswordScreen() {
                                     )}
                                 </Pressable>
                             </View>
-                            {confirmPassword.length > 0 &&
-                            password !== confirmPassword ? (
+                            {showMismatch ? (
                                 <Text className="text-xs text-alert">
-                                    Mật khẩu xác nhận không khớp
+                                    {t("auth.reset.mismatch")}
                                 </Text>
                             ) : null}
                         </View>
@@ -176,7 +210,7 @@ export default function ResetPasswordScreen() {
                                 ) : null}
                             </View>
                             <Text className="text-sm font-medium text-primary">
-                                Nhớ tôi
+                                {t("auth.reset.rememberMe")}
                             </Text>
                         </Pressable>
 
@@ -190,7 +224,7 @@ export default function ResetPasswordScreen() {
                             {isSubmitting ? (
                                 <ActivityIndicator color="#ffffff" />
                             ) : (
-                                "Tiếp tục"
+                                t("auth.reset.continue")
                             )}
                         </Button>
                     </View>

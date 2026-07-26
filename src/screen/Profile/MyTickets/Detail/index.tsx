@@ -1,6 +1,7 @@
 import { PageHeader } from "@/components/PageHeader";
 import { Card } from "@/components/ui/Card";
 import { StatusPill } from "@/components/ui/StatusPill";
+import { formatVnd } from "@/constants/ticket";
 import useFetch from "@/hooks/useFetch";
 import type { ITicket } from "@/models/ticket";
 import { ticketService } from "@/services/TicketService";
@@ -97,7 +98,7 @@ export default function MyTicketDetailScreen() {
                     <DetailRow label="Số ghế" value={String(ticket.seatQuantity)} />
                     <DetailRow
                         label="Giá"
-                        value={`${ticket.price.toLocaleString("vi-VN")} đồng`}
+                        value={formatVnd(ticket.price)}
                     />
                 </Card>
             </ScrollView>

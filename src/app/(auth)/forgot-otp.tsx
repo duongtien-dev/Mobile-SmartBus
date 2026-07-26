@@ -1,9 +1,13 @@
 import { Button } from "@/components/Button";
+import useOtpCountdown, {
+    OTP_LENGTH,
+    sanitizeOtpInput,
+} from "@/hooks/useOtpCountdown";
 import { useToastify } from "@/hooks/useToastify";
 import { authService } from "@/services/AuthService";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useLocalSearchParams } from "expo-router";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
     ActivityIndicator,
     KeyboardAvoidingView,
@@ -14,31 +18,15 @@ import {
     View,
 } from "react-native";
 
-const OTP_LENGTH = 6;
 const COUNTDOWN_SECONDS = 120;
-
-function formatTime(seconds: number) {
-    const minutes = Math.floor(seconds / 60);
-    const remaining = seconds % 60;
-    return `${String(minutes).padStart(2, "0")}:${String(remaining).padStart(2, "0")}`;
-}
 
 export default function ForgotOtpScreen() {
     const showToast = useToastify();
     const { email } = useLocalSearchParams<{ email?: string }>();
     const [otp, setOtp] = useState("");
-    const [remainingSeconds, setRemainingSeconds] = useState(COUNTDOWN_SECONDS);
     const [isResending, setIsResending] = useState(false);
-
-    useEffect(() => {
-        if (remainingSeconds <= 0) return;
-
-        const timer = setInterval(() => {
-            setRemainingSeconds((prev) => Math.max(prev - 1, 0));
-        }, 1000);
-
-        return () => clearInterval(timer);
-    }, [remainingSeconds]);
+    const { remainingSeconds, formatted, isExpired, reset } =
+        useOtpCountdown(COUNTDOWN_SECONDS);
 
     const handleContinue = () => {
         if (otp.length < OTP_LENGTH || remainingSeconds <= 0) return;
@@ -56,7 +44,7 @@ export default function ForgotOtpScreen() {
 
         try {
             await authService.forgotPassword({ email });
-            setRemainingSeconds(COUNTDOWN_SECONDS);
+            reset(COUNTDOWN_SECONDS);
             setOtp("");
             showToast({
                 type: "success",
@@ -66,8 +54,7 @@ export default function ForgotOtpScreen() {
             showToast({
                 type: "error",
                 content:
-                    error?.response?.data?.message ??
-                    "Không thể gửi lại OTP",
+                    error?.response?.data?.message ?? "Không thể gửi lại OTP",
             });
         } finally {
             setIsResending(false);
@@ -119,9 +106,7 @@ export default function ForgotOtpScreen() {
                         <TextInput
                             value={otp}
                             onChangeText={(text) =>
-                                setOtp(
-                                    text.replace(/\D/g, "").slice(0, OTP_LENGTH),
-                                )
+                                setOtp(sanitizeOtpInput(text))
                             }
                             placeholder=""
                             keyboardType="number-pad"
@@ -132,10 +117,10 @@ export default function ForgotOtpScreen() {
                         />
 
                         <Text className="text-base font-medium text-alert">
-                            {formatTime(remainingSeconds)}
+                            {formatted}
                         </Text>
 
-                        {remainingSeconds <= 0 ? (
+                        {isExpired ? (
                             <Pressable
                                 className="active:opacity-80"
                                 disabled={isResending}
@@ -157,9 +142,7 @@ export default function ForgotOtpScreen() {
                             type="primary"
                             variant="bold"
                             className="w-full rounded-xl"
-                            disabled={
-                                otp.length < OTP_LENGTH || remainingSeconds <= 0
-                            }
+                            disabled={otp.length < OTP_LENGTH || isExpired}
                             onPress={handleContinue}
                         >
                             Xác thực

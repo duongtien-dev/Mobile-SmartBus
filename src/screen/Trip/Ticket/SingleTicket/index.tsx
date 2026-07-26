@@ -1,4 +1,5 @@
 import { PageHeader } from "@/components/PageHeader";
+import { useToastify } from "@/hooks/useToastify";
 import { useTranslation } from "@/i18n";
 import useTripBookingStore, {
     computeSingleTicketPrice,
@@ -34,6 +35,7 @@ const SEAT_OPTIONS = [
 
 export default function SingleTicketScreen() {
     const { t } = useTranslation();
+    const showToast = useToastify();
     const searchContext = useTripBookingStore((state) => state.searchContext);
     const pickupStopName = useTripBookingStore(
         (state) => state.bookingSelection?.startStopName ?? "",
@@ -54,7 +56,23 @@ export default function SingleTicketScreen() {
         selectedTicketProduct?.unitPrice,
     );
 
+    const canSubmit = Boolean(formData.departureTime) && formData.acceptedTerms;
+
     const handleSubmit = () => {
+        if (!formData.departureTime) {
+            showToast({
+                type: "error",
+                content: t("ticket.single.timeRequired"),
+            });
+            return;
+        }
+        if (!formData.acceptedTerms) {
+            showToast({
+                type: "error",
+                content: t("ticket.single.termsRequired"),
+            });
+            return;
+        }
         if (!formData.seatCount) {
             handleChangForm({ seatCount: "1" });
         }
@@ -107,7 +125,11 @@ export default function SingleTicketScreen() {
                         }
                     />
                 </ScrollView>
-                <FormControls price={totalPrice} onPress={handleSubmit} />
+                <FormControls
+                    price={totalPrice}
+                    disabled={!canSubmit}
+                    onPress={handleSubmit}
+                />
             </KeyboardAvoidingView>
         </View>
     );
