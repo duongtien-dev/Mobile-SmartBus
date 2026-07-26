@@ -9,6 +9,7 @@ import {
     getTripHistoryTimeLabel,
 } from "@/utils/ticket";
 import { Bus } from "lucide-react-native";
+import { memo } from "react";
 import { Pressable, Text, View } from "react-native";
 
 type TripHistoryItemProps = {
@@ -16,7 +17,7 @@ type TripHistoryItemProps = {
     onPress?: (ticket: ITicket) => void;
 };
 
-export function TripHistoryItem({ ticket, onPress }: TripHistoryItemProps) {
+function TripHistoryItemComponent({ ticket, onPress }: TripHistoryItemProps) {
     const { t } = useTranslation();
     const statusLabel = getTripHistoryStatusLabel(ticket);
     const typeLabel = getTicketTypeLabel(ticket.ticketType);
@@ -57,3 +58,5 @@ export function TripHistoryItem({ ticket, onPress }: TripHistoryItemProps) {
         </Pressable>
     );
 }
+
+export const TripHistoryItem = memo(TripHistoryItemComponent);

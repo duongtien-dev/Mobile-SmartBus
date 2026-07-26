@@ -5,6 +5,7 @@ import type { IStop } from "@/models/stop";
 import type { ITicketProduct } from "@/models/ticketProduct";
 import { deriveOperatingHours } from "@/screen/Route/Detail/utils";
 import { ticketProductService } from "@/services";
+import { formatAmount } from "@/utils/formatCurrency";
 import { useEffect } from "react";
 import { Text, View } from "react-native";
 
@@ -43,9 +44,7 @@ export function InfoTab({ route, stops }: InfoTabProps) {
 
     const formatPrice = (amount: number | undefined, kind: "ride" | "month") => {
         if (amount == null) return "—";
-        const formatted = amount.toLocaleString(
-            locale === "en" ? "en-US" : "vi-VN",
-        );
+        const formatted = formatAmount(amount, locale);
         return kind === "ride"
             ? t("route.info.pricePerRide", { amount: formatted })
             : t("route.info.pricePerMonth", { amount: formatted });

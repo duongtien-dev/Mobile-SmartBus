@@ -2,8 +2,9 @@ import { useTranslation } from "@/i18n";
 import type { IRoute } from "@/models/route";
 import { getRouteTitle } from "@/screen/Route/Detail/utils";
 import { favoriteRouteService } from "@/services/FavoriteRouteService";
+import { formatAmount } from "@/utils/formatCurrency";
 import { Clock, Heart, Star, Ticket } from "lucide-react-native";
-import { useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import { Pressable, Text, View } from "react-native";
 import Toast from "react-native-toast-message";
 
@@ -13,11 +14,11 @@ type RouteCardProps = {
     onFavoriteChange?: (routeId: string, isFavorite: boolean) => void;
 };
 
-function formatPrice(amount: number, locale: string) {
-    return `${amount.toLocaleString(locale === "en" ? "en-US" : "vi-VN")}đ`;
-}
-
-export function RouteCard({ route, onPress, onFavoriteChange }: RouteCardProps) {
+function RouteCardComponent({
+    route,
+    onPress,
+    onFavoriteChange,
+}: RouteCardProps) {
     const { t, locale } = useTranslation();
     const [favorited, setFavorited] = useState(Boolean(route.isFavorite));
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -108,7 +109,7 @@ export function RouteCard({ route, onPress, onFavoriteChange }: RouteCardProps) 
                                 <View className="flex-row items-center gap-1">
                                     <Ticket color="#64748b" size={14} />
                                     <Text className="text-xs text-text-muted">
-                                        {formatPrice(route.price, locale)}
+                                        {`${formatAmount(route.price, locale)}đ`}
                                     </Text>
                                 </View>
                             ) : null}
@@ -149,3 +150,5 @@ export function RouteCard({ route, onPress, onFavoriteChange }: RouteCardProps) 
         </View>
     );
 }
+
+export const RouteCard = memo(RouteCardComponent);

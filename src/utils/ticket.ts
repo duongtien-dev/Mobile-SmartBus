@@ -2,6 +2,7 @@ import type { ITicket, TicketStatus, TicketType } from "@/models/ticket";
 import type { ITicketProduct } from "@/models/ticketProduct";
 import { translate } from "@/i18n/translations";
 import useLocaleStore from "@/store/locale.store";
+import { formatAmount } from "@/utils/formatCurrency";
 
 function t(key: string, params?: Record<string, string | number>) {
     return translate(useLocaleStore.getState().locale, key, params);
@@ -107,10 +108,7 @@ export function getTripHistoryStatusLabel(ticket: ITicket) {
 }
 
 export function formatTicketPrice(product: ITicketProduct) {
-    const locale = useLocaleStore.getState().locale;
-    const formatted = product.unitPrice.toLocaleString(
-        locale === "en" ? "en-US" : locale === "ja" ? "ja-JP" : "vi-VN",
-    );
+    const formatted = formatAmount(product.unitPrice);
     if (product.code === "single") {
         return t("ticket.pricePerRide", { amount: formatted });
     }

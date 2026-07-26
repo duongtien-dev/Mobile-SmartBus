@@ -1,8 +1,12 @@
 import { Button } from "@/components/Button";
+import useOtpCountdown, {
+    OTP_LENGTH,
+    sanitizeOtpInput,
+} from "@/hooks/useOtpCountdown";
 import { authService } from "@/services/AuthService";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useLocalSearchParams } from "expo-router";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
     ActivityIndicator,
     KeyboardAvoidingView,
@@ -13,37 +17,17 @@ import {
 } from "react-native";
 import Toast from "react-native-toast-message";
 
-const OTP_LENGTH = 6;
 const COUNTDOWN_SECONDS = 60;
-
-function formatTime(seconds: number) {
-    const minutes = Math.floor(seconds / 60);
-    const remaining = seconds % 60;
-    return `${String(minutes).padStart(2, "0")}:${String(remaining).padStart(2, "0")}`;
-}
 
 export default function VerifyOtp() {
     const { email } = useLocalSearchParams<{ email?: string }>();
     const [otp, setOtp] = useState("");
-    const [remainingSeconds, setRemainingSeconds] = useState(COUNTDOWN_SECONDS);
     const [isSubmitting, setIsSubmitting] = useState(false);
-
-    useEffect(() => {
-        if (remainingSeconds <= 0) {
-            return;
-        }
-
-        const timer = setInterval(() => {
-            setRemainingSeconds((prev) => Math.max(prev - 1, 0));
-        }, 1000);
-
-        return () => clearInterval(timer);
-    }, [remainingSeconds]);
+    const { remainingSeconds, formatted, isExpired } =
+        useOtpCountdown(COUNTDOWN_SECONDS);
 
     const handleVerifyOtp = async () => {
-        if (isSubmitting || otp.length < OTP_LENGTH) {
-            return;
-        }
+        if (isSubmitting || otp.length < OTP_LENGTH) return;
 
         setIsSubmitting(true);
 
@@ -61,7 +45,7 @@ export default function VerifyOtp() {
             Toast.show({
                 type: "error",
                 text1: "Xác thực thất bại",
-                text2: 'Mã OTP không hợp lệ',
+                text2: "Mã OTP không hợp lệ",
             });
         } finally {
             setIsSubmitting(false);
@@ -114,11 +98,7 @@ export default function VerifyOtp() {
                             <TextInput
                                 value={otp}
                                 onChangeText={(text) =>
-                                    setOtp(
-                                        text
-                                            .replace(/\D/g, "")
-                                            .slice(0, OTP_LENGTH),
-                                    )
+                                    setOtp(sanitizeOtpInput(text))
                                 }
                                 placeholder=""
                                 keyboardType="number-pad"
@@ -130,7 +110,7 @@ export default function VerifyOtp() {
                             />
 
                             <Text className="text-base font-medium text-alert">
-                                {formatTime(remainingSeconds)}
+                                {formatted}
                             </Text>
                         </View>
 
@@ -142,7 +122,7 @@ export default function VerifyOtp() {
                                 disabled={
                                     otp.length < OTP_LENGTH ||
                                     isSubmitting ||
-                                    remainingSeconds <= 0
+                                    isExpired
                                 }
                                 onPress={handleVerifyOtp}
                             >

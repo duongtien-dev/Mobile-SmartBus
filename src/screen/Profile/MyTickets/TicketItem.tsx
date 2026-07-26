@@ -10,6 +10,7 @@ import {
 } from "@/utils/ticket";
 import { Image } from "expo-image";
 import { ChevronRight, Ticket } from "lucide-react-native";
+import { memo } from "react";
 import { Pressable, Text, View } from "react-native";
 
 function statusToVariant(
@@ -26,7 +27,7 @@ type MyTicketItemProps = {
     onPress?: (ticket: ITicket) => void;
 };
 
-export function MyTicketItem({ ticket, onPress }: MyTicketItemProps) {
+function MyTicketItemComponent({ ticket, onPress }: MyTicketItemProps) {
     const status = getTicketStatusConfig(ticket.status);
     const typeLabel = getTicketTypeLabel(ticket.ticketType);
 
@@ -68,12 +69,14 @@ export function MyTicketItem({ ticket, onPress }: MyTicketItemProps) {
     );
 }
 
+export const MyTicketItem = memo(MyTicketItemComponent);
+
 type QrTicketItemProps = {
     ticket: ITicket;
     onPress?: (ticket: ITicket) => void;
 };
 
-export function QrTicketItem({ ticket, onPress }: QrTicketItemProps) {
+function QrTicketItemComponent({ ticket, onPress }: QrTicketItemProps) {
     return (
         <Pressable
             accessibilityRole="button"
@@ -110,3 +113,5 @@ export function QrTicketItem({ ticket, onPress }: QrTicketItemProps) {
         </Pressable>
     );
 }
+
+export const QrTicketItem = memo(QrTicketItemComponent);

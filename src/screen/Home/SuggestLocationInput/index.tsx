@@ -1,8 +1,6 @@
 import InputText from "@/components/Input/InputText";
-import useFetch from "@/hooks/useFetch";
+import useLocationSuggestions from "@/hooks/useLocationSuggestions";
 import type { ISuggestLocation } from "@/models/suggestLocation";
-import { tripService } from "@/services/TripService";
-import { useEffect, useState } from "react";
 import {
     ActivityIndicator,
     Pressable,
@@ -29,37 +27,13 @@ export function SuggestLocationInput({
     onSelect,
     zIndex = 30,
 }: Props) {
-    const [isFocused, setIsFocused] = useState(false);
-    const keyword = value.trim();
-
     const {
-        data: suggestions,
+        setIsFocused,
+        handleBlur,
+        suggestionList,
         isLoading,
-        loadFetchFn,
-    } = useFetch<ISuggestLocation[]>({
-        fetchFn: async () => {
-            const response = await tripService.suggestLocations({
-                keyword,
-            });
-            return response.data ?? [];
-        },
-    });
-
-    useEffect(() => {
-        if (!keyword) return;
-        const timer = setTimeout(() => {
-            loadFetchFn();
-        }, 400);
-
-        return () => clearTimeout(timer);
-    }, [keyword]);
-
-    const suggestionList = suggestions ?? [];
-
-    const showSuggestions =
-        isFocused &&
-        keyword.length > 0 &&
-        (isLoading || suggestionList.length > 0);
+        showSuggestions,
+    } = useLocationSuggestions(value);
 
     const handleSelect = (item: ISuggestLocation) => {
         onChangeText(item.display_name);
@@ -86,9 +60,7 @@ export function SuggestLocationInput({
                     value={value}
                     onChangeText={onChangeText}
                     onFocus={() => setIsFocused(true)}
-                    onBlur={() => {
-                        setTimeout(() => setIsFocused(false), 200);
-                    }}
+                    onBlur={handleBlur}
                     className="w-full"
                 />
 
