@@ -20,9 +20,3 @@ export type ReviewSummary = {
     total: number;
     distribution: Record<1 | 2 | 3 | 4 | 5, number>;
 };
-
-export type CreateReviewBody = {
-    routeId: string;
-    rating: number;
-    content?: string;
-};

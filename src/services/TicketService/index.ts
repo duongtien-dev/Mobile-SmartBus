@@ -9,7 +9,6 @@ class TicketService extends BaseService {
         return this.post("/create", body);
     }
 
-    /** Staff: POST /tickets/verify-scanned-qr — body `{ qrCode }` */
     verifyScanQRCode(body: object) {
         return this.post("/verify-scanned-qr", body);
     }

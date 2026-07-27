@@ -1,10 +1,5 @@
 import BaseService from "@/services/BaseService";
 
-/**
- * Routes — Backend-SmartBus `/api/routes/*`
- * - POST /listRoutes → Route[]
- * - POST /detail `{ id }` → Route
- */
 class RouteService extends BaseService {
     constructor() {
         super("/routes");
