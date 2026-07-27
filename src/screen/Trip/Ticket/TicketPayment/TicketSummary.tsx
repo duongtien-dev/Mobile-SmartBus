@@ -26,22 +26,22 @@ const TicketSummary = () => {
 
     const config = isSingleTicket
         ? {
-              badgeLabel: t("ticket.payment.badgeSingle"),
-              primaryLabel: t("ticket.payment.departure"),
-              primaryValue: `${singleForm.departureTime} • ${singleForm.departureDate}`,
-              countValue: t("ticket.payment.seatUnit", { n: quantity }),
-              pickupValue: bookingSelection?.startStopName || "—",
-          }
+            badgeLabel: t("ticket.payment.badgeSingle"),
+            primaryLabel: t("ticket.payment.departure"),
+            primaryValue: `${singleForm.departureTime} • ${singleForm.departureDate}`,
+            countValue: t("ticket.payment.seatUnit", { n: quantity }),
+            pickupValue: bookingSelection?.startStopName || "—",
+        }
         : {
-              badgeLabel:
-                  ticketType === "monthlyInterRoute"
-                      ? t("ticket.payment.badgeMonthlyInter")
-                      : t("ticket.payment.badgeMonthlySingle"),
-              primaryLabel: t("ticket.payment.useMonth"),
-              primaryValue: monthlyForm.usageMonth || "—",
-              countValue: t("ticket.payment.ticketUnit", { n: quantity }),
-              pickupValue: t("ticket.payment.unlimited"),
-          };
+            badgeLabel:
+                ticketType === "monthlyInterRoute"
+                    ? t("ticket.payment.badgeMonthlyInter")
+                    : t("ticket.payment.badgeMonthlySingle"),
+            primaryLabel: t("ticket.payment.useMonth"),
+            primaryValue: monthlyForm.usageMonth || "—",
+            countValue: t("ticket.payment.ticketUnit", { n: quantity }),
+            pickupValue: t("ticket.payment.unlimited"),
+        };
 
     return (
         <View className="mb-6 overflow-hidden rounded-2xl border border-border bg-surface shadow-sm">
