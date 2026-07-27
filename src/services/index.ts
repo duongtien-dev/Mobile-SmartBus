@@ -2,7 +2,7 @@ export { authService } from './AuthService';
 export { postService } from './PostService';
 export { default as UploadService } from './UploadService';
 export { routeService } from './RouteService';
-export { default as RouteReportService } from './RouteReportService';
+export { routeReportService } from './RouteReportService';
 export { reviewRouteService } from './ReivewRouteService';
 export { stopService } from './StopService';
 export { ticketService } from './TicketService';

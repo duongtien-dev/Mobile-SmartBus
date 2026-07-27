@@ -1,10 +1,5 @@
 import BaseService from "@/services/BaseService";
 
-/**
- * Stops — Backend-SmartBus `/api/stops/*`
- * - POST /listByRoute `{ routeId, page?, limit? }` → Stop[]
- * - POST /detail `{ id }` → Stop
- */
 class StopService extends BaseService {
     constructor() {
         super("/stops");

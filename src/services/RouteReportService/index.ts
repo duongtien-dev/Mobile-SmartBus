@@ -27,4 +27,4 @@ class RouteReportService extends BaseService {
 
 }
 
-export default RouteReportService;
+export const routeReportService = new RouteReportService();
