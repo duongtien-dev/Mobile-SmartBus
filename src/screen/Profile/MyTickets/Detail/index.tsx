@@ -1,4 +1,4 @@
-import { PageHeader } from "@/components/PageHeader";
+import { Button } from "@/components/Button";
 import { Card } from "@/components/ui/Card";
 import { StatusPill } from "@/components/ui/StatusPill";
 import { formatVnd } from "@/constants/ticket";
@@ -6,18 +6,21 @@ import useFetch from "@/hooks/useFetch";
 import type { ITicket } from "@/models/ticket";
 import { ticketService } from "@/services/TicketService";
 import {
+    getTicketDisplayCode,
     getTicketRouteTitle,
     getTicketStatusConfig,
-    getTicketSubtitle,
     getTicketTypeLabel,
     getTicketValidityLabel,
 } from "@/utils/ticket";
 import { Image } from "expo-image";
-import { useLocalSearchParams } from "expo-router";
+import { ArrowLeft } from "lucide-react-native";
+import { useLocalSearchParams, router } from "expo-router";
 import { useEffect } from "react";
-import { ActivityIndicator, ScrollView, Text, View } from "react-native";
+import { ActivityIndicator, Pressable, ScrollView, Text, View } from "react-native";
+import { useTranslation } from "@/i18n";
 
 export default function MyTicketDetailScreen() {
+    const { t } = useTranslation();
     const { id } = useLocalSearchParams<{ id: string }>();
     const { data: ticket, isLoading, loadFetchFn, } = useFetch<ITicket>({
         fetchFn: async () => {
@@ -42,75 +45,150 @@ export default function MyTicketDetailScreen() {
     if (!ticket) {
         return (
             <View className="flex-1 bg-app-shell">
-                <PageHeader title="Chi tiết vé" isIconBack />
+                <View className="flex-row items-center justify-between bg-primary px-5 py-3">
+                    <Pressable
+                        accessibilityRole="button"
+                        onPress={() => router.back()}
+                        className="h-10 w-10 items-center justify-center"
+                    >
+                        <ArrowLeft color="#fff" size={24} />
+                    </Pressable>
+                    <Text className="text-lg font-bold text-on-primary">
+                        {t("ticket.qr.title")}
+                    </Text>
+                    <View className="h-10 w-10" />
+                </View>
+
                 <Text className="px-5 py-10 text-center text-sm text-text-muted">
-                    Không tìm thấy vé
+                    {t("profile.ticketDetail.notFound")}
                 </Text>
             </View>
         );
     }
 
     const status = getTicketStatusConfig(ticket.status);
+    const displayCode = getTicketDisplayCode(ticket);
+
+    function statusToVariant(
+        s: ITicket["status"],
+    ): "success" | "warning" | "muted" | "danger" {
+        if (s === "paid" || s === "active") return "success";
+        if (s === "pending") return "warning";
+        if (s === "cancelled") return "danger";
+        return "muted";
+    }
+
+    const qrEmpty = !ticket.qrCodeImage && !ticket.qrCode;
 
     return (
         <View className="flex-1 bg-app-shell">
-            <PageHeader title="Chi tiết vé" isIconBack />
+            <View className="flex-row items-center justify-between bg-primary px-5 py-3">
+                <Pressable
+                    accessibilityRole="button"
+                    onPress={() => router.back()}
+                    className="h-10 w-10 items-center justify-center"
+                >
+                    <ArrowLeft color="#fff" size={24} />
+                </Pressable>
+                <Text className="text-lg font-bold text-on-primary">
+                    {t("ticket.qr.title")}
+                </Text>
+                <View className="h-10 w-10" />
+            </View>
 
             <ScrollView
                 className="flex-1"
-                contentContainerClassName="gap-4 px-5 pb-10 pt-5"
+                contentContainerClassName="gap-4 px-5 pb-28 pt-6"
                 showsVerticalScrollIndicator={false}
             >
-                <Card className="items-center" padding="lg">
-                    {ticket.qrCodeImage ? (
-                        <Image
-                            source={{ uri: ticket.qrCodeImage }}
-                            style={{ width: 220, height: 220 }}
-                            contentFit="contain"
-                        />
-                    ) : (
-                        <View className="h-[220px] w-[220px] items-center justify-center rounded-xl bg-surface">
-                            <Text className="text-sm text-text-muted">
-                                Chưa có mã QR
-                            </Text>
-                        </View>
-                    )}
-                    {ticket.qrCode ? (
-                        <Text className="mt-4 text-center text-sm text-text-muted">
-                            {ticket.qrCode}
+                <View className="items-center">
+                    <Text className="text-center text-[18px] font-extrabold text-text-primary">
+                        {t("ticket.qr.showToDriver")}
+                    </Text>
+                    <Text className="mt-2 text-center text-sm font-medium text-text-muted">
+                        {t("ticket.qr.prepare")}
+                    </Text>
+                </View>
+
+                <Card className="items-center border-border/60 bg-white" padding="lg" shadow={true}>
+                    <View className="items-center justify-center">
+                        {ticket.qrCodeImage ? (
+                            <Image
+                                source={{ uri: ticket.qrCodeImage }}
+                                style={{ width: 250, height: 250 }}
+                                contentFit="contain"
+                            />
+                        ) : (
+                            <View className="h-[250px] w-[250px] items-center justify-center rounded-2xl border border-border bg-surface">
+                                {qrEmpty ? (
+                                    <Text className="text-sm font-semibold text-text-muted">
+                                        {t("ticket.qr.empty")}
+                                    </Text>
+                                ) : (
+                                    <Text className="px-4 text-center text-sm font-semibold text-text-muted">
+                                        {ticket.qrCode}
+                                    </Text>
+                                )}
+                            </View>
+                        )}
+
+                        <Text className="mt-5 text-center text-sm font-semibold text-text-primary">
+                            {t("ticket.qr.codeLabel")} {displayCode}
                         </Text>
-                    ) : null}
+                        <Text className="mt-2 text-center text-sm text-text-muted">
+                            {t("ticket.qr.scanHint")}
+                        </Text>
+                    </View>
                 </Card>
 
-                <Card className="gap-4" padding="lg">
+                <Card className="gap-3" padding="lg">
                     <View className="flex-row items-start justify-between gap-3">
                         <Text className="flex-1 text-lg font-bold text-text-primary">
                             Tuyến {getTicketRouteTitle(ticket)}
                         </Text>
-                        <StatusPill label={status.label} variant="primary" />
+                        <StatusPill
+                            label={status.label}
+                            variant={statusToVariant(ticket.status)}
+                        />
                     </View>
 
-                    <DetailRow label="Loại vé" value={getTicketTypeLabel(ticket.ticketType)} />
-                    <DetailRow label="Lên xe tại" value={ticket.startStopName} />
-                    <DetailRow label="Xuống tại" value={ticket.endStopName} />
-                    <DetailRow label="Thời gian" value={getTicketSubtitle(ticket)} />
-                    <DetailRow label="Hiệu lực" value={getTicketValidityLabel(ticket)} />
-                    <DetailRow label="Số ghế" value={String(ticket.seatQuantity)} />
-                    <DetailRow
-                        label="Giá"
-                        value={formatVnd(ticket.price)}
-                    />
+                    <View className="rounded-2xl bg-surface px-4 py-3">
+                        <Text className="text-xs font-semibold text-text-muted">
+                            {getTicketTypeLabel(ticket.ticketType)}
+                        </Text>
+                        <Text className="mt-1 text-sm text-text-muted">
+                            {ticket.startStopName}
+                        </Text>
+                        <Text className="mt-1 text-sm font-semibold text-text-primary">
+                            {getTicketValidityLabel(ticket)}
+                        </Text>
+                    </View>
+
+                    <Text className="text-xs text-text-muted">
+                        Giá: {formatVnd(ticket.price)}
+                    </Text>
                 </Card>
             </ScrollView>
-        </View>
-    );
-}
 
-function DetailRow({ label, value }: { label: string; value: string }) {
-    return (
-        <View className="gap-1">
-            <Text className="text-xs text-text-muted">{label}</Text>
-            <Text className="text-sm font-medium text-text-primary">{value}</Text>
+            <View className="absolute bottom-0 left-0 right-0 border-t border-border bg-card px-5 py-5">
+                <Button
+                    type="primary"
+                    variant="bold"
+                    className="w-full rounded-2xl"
+                    onPress={() => router.push("/profile/my-tickets")}
+                >
+                    {t("ticket.qr.viewMyTickets")}
+                </Button>
+                <View className="h-3" />
+                <Button
+                    type="primary"
+                    variant="outline"
+                    className="w-full rounded-2xl"
+                    onPress={() => router.push("/(tabs)")}
+                >
+                    {t("ticket.qr.goHome")}
+                </Button>
+            </View>
         </View>
     );
 }

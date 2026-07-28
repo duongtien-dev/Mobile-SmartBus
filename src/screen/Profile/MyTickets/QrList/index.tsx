@@ -1,4 +1,5 @@
 import { PageHeader } from "@/components/PageHeader";
+import { useTranslation } from "@/i18n";
 import usePaginationList from "@/hooks/usePaginationList";
 import type { ITicket } from "@/models/ticket";
 import { QrTicketItem } from "@/screen/Profile/MyTickets/TicketItem";
@@ -8,6 +9,8 @@ import { useEffect } from "react";
 import { ActivityIndicator, FlatList, Text, View } from "react-native";
 
 export default function MyTicketQrListScreen() {
+    const { t } = useTranslation();
+
     const {
         list: tickets,
         loadFirstPage,
@@ -39,7 +42,7 @@ export default function MyTicketQrListScreen() {
 
     return (
         <View className="flex-1 bg-app-shell">
-            <PageHeader title="Mã QR khả dụng" isIconBack />
+            <PageHeader title={t("profile.qrList.title")} isIconBack />
 
             <FlatList
                 className="flex-1"
@@ -61,7 +64,7 @@ export default function MyTicketQrListScreen() {
                         </View>
                     ) : (
                         <Text className="px-5 py-10 text-center text-sm text-text-muted">
-                            Không có mã QR khả dụng
+                            {t("profile.qrList.empty")}
                         </Text>
                     )
                 }

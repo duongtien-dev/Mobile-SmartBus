@@ -1,11 +1,9 @@
 import { PageHeader } from "@/components/PageHeader";
 import TabContainer from "@/components/TabContainer";
-import { Card } from "@/components/ui/Card";
 import usePaginationList from "@/hooks/usePaginationList";
 import { useTranslation } from "@/i18n";
 import type { IPost } from "@/models/post";
 import { postService } from "@/services/PostService";
-import { Image } from "expo-image";
 import moment from "moment";
 import { useEffect, useMemo, useState } from "react";
 import { ActivityIndicator, SectionList, Text, View } from "react-native";
@@ -17,13 +15,10 @@ export default function NotificationsScreen() {
     const { t } = useTranslation();
     const [activeTab, setActiveTab] = useState<PostSort>("newest");
 
-    const listTabs = useMemo(
-        () => [
-            { label: t("notice.sortNewest"), key: "newest" as const },
-            { label: t("notice.sortOldest"), key: "oldest" as const },
-        ],
-        [t],
-    );
+    const listTabs = [
+        { label: t("notice.sortNewest"), key: "newest" as const },
+        { label: t("notice.sortOldest"), key: "oldest" as const },
+    ]
 
     const {
         list: posts,
@@ -75,42 +70,23 @@ export default function NotificationsScreen() {
         <View className="flex-1 bg-app-shell">
             <PageHeader title={t("notice.title")} isIconBack={false} />
 
-            <View className="gap-4 px-5 pt-4">
-                <Card padding="none" className="overflow-hidden">
-                    <View className="relative h-55 overflow-hidden">
-                        <Image
-                            source={require("../../../assets/images/banner-news.png")}
-                            style={{ width: "100%", height: "100%" }}
-                            contentFit="cover"
-                        />
-                    </View>
-
-                    <View className="px-4 pb-4">
-                        <TabContainer
-                            tabs={listTabs.map((tab) => ({
-                                key: tab.key,
-                                label: tab.label,
-                            }))}
-                            value={activeTab}
-                            onChange={(value) =>
-                                setActiveTab(value as PostSort)
-                            }
-                            variant="underline"
-                            tabListClassName="justify-center gap-10"
-                        />
-                    </View>
-                </Card>
+            <View className="border-b border-border">
+                <TabContainer
+                    tabs={listTabs}
+                    value={activeTab}
+                    onChange={(value) => setActiveTab(value as PostSort)}
+                    tabListClassName="justify-center"
+                />
             </View>
 
             <SectionList
                 className="flex-1"
                 sections={sections}
                 keyExtractor={(item) => item._id}
-                renderItem={({ item, index }) => (
-                    <NoticeCard item={item} index={index} />
-                )}
+                stickySectionHeadersEnabled={false}
+                renderItem={({ item }) => <NoticeCard item={item} />}
                 renderSectionHeader={({ section: { title } }) => (
-                    <Text className="bg-app-shell px-5 pb-2 pt-4 text-sm font-bold text-text-muted">
+                    <Text className="bg-app-shell px-5 pb-2 pt-5 text-xs font-semibold uppercase tracking-wide text-text-muted">
                         {title}
                     </Text>
                 )}
@@ -120,15 +96,15 @@ export default function NotificationsScreen() {
                 contentContainerClassName="px-5 pb-8"
                 ListEmptyComponent={
                     isSkeletonLoading ? (
-                        <Card className="items-center py-10">
+                        <View className="items-center py-16">
                             <ActivityIndicator color="#005f8b" />
-                        </Card>
+                        </View>
                     ) : (
-                        <Card>
-                            <Text className="py-6 text-center text-sm text-text-muted">
+                        <View className="items-center py-16">
+                            <Text className="text-sm text-text-muted">
                                 {t("notice.empty")}
                             </Text>
-                        </Card>
+                        </View>
                     )
                 }
                 ListFooterComponent={
