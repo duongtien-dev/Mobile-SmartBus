@@ -13,6 +13,7 @@ type TabContainerProps = {
     value?: string;
     onChange?: (value: string) => void;
     variant?: TabVariant;
+    columns?: 1 | 2;
     className?: string;
     tabListClassName?: string;
     triggerClassName?: string;
@@ -20,15 +21,17 @@ type TabContainerProps = {
 
 const variantStyles = {
     default: {
-        list: "gap-1 rounded-lg bg-muted p-1",
-        trigger: "min-h-9 rounded-md px-10",
-        triggerActive: "bg-background shadow-sm",
-        triggerInactive: "bg-transparent",
+        list: "rounded-full bg-slate-100 p-1 w-full",
+        trigger:
+            "flex-1 min-h-[40px] rounded-full flex-row items-center justify-center transition-all",
+        triggerActive: "bg-white shadow-sm border-b-2 border-teal-600",
+        triggerInactive: "bg-transparent border-b-2 border-transparent",
     },
     underline: {
-        list: "gap-1 bg-transparent p-0",
-        trigger: "rounded-none border-b-2 bg-transparent px-0",
-        triggerActive: "border-primary",
+        list: "gap-4 bg-transparent p-0 w-full",
+        trigger:
+            "flex-1 rounded-none border-b-2 bg-transparent flex-row items-center justify-center py-2",
+        triggerActive: "border-teal-600",
         triggerInactive: "border-transparent",
     },
 } as const;
@@ -38,6 +41,7 @@ export default function TabContainer({
     value,
     onChange,
     variant = "default",
+    columns = 1,
     className,
     tabListClassName,
     triggerClassName,
@@ -45,13 +49,15 @@ export default function TabContainer({
     if (!tabs.length) return null;
 
     const styles = variantStyles[variant];
+    const isTwoColumns = columns === 2;
 
     return (
-        <View className={cn("w-full", className)}>
+        <View className={cn("w-full bg-white px-4 py-2", className)}>
             <View
                 className={cn(
                     "flex-row items-center",
                     styles.list,
+                    isTwoColumns && "flex-wrap gap-x-0 gap-y-1",
                     tabListClassName,
                 )}
             >
@@ -64,22 +70,23 @@ export default function TabContainer({
                             accessibilityRole="tab"
                             accessibilityState={{ selected: isActive }}
                             className={cn(
-                                "items-center justify-center px-6 py-2 active:opacity-80",
                                 styles.trigger,
                                 isActive
                                     ? styles.triggerActive
                                     : styles.triggerInactive,
+                                isTwoColumns && "w-1/2 flex-none px-2",
                                 triggerClassName,
                             )}
                             onPress={() => onChange?.(tab.key)}
                         >
                             <Text
                                 className={cn(
-                                    "text-sm font-medium",
+                                    "text-center text-sm",
                                     isActive
-                                        ? "text-primary"
-                                        : "text-text-muted",
+                                        ? "font-bold text-teal-700"
+                                        : "font-medium text-slate-500",
                                 )}
+                                numberOfLines={1}
                             >
                                 {tab.label}
                             </Text>

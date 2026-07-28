@@ -25,7 +25,7 @@ export function InputOption({ value, onChange, options }: Props) {
                 </FormField>
             </View>
 
-            <View className="flex-1 gap-3">
+            <View className="flex-1 gap-2">
                 <Text className="text-sm font-medium text-primary">
                     {t("ticket.monthly.ticketCount")}{" "}
                     <Text className="text-alert">{t("common.required")}</Text>

@@ -21,6 +21,8 @@ type SelectProps = {
     onValueChange?: (value: string) => void;
     placeholder?: string;
     options?: SelectOptionType[];
+    /** Applied to outer wrapper (default `w-full`) */
+    containerClassName?: string;
     className?: string;
     triggerClassName?: string;
     contentClassName?: string;
@@ -34,6 +36,7 @@ export function Select({
     onValueChange,
     placeholder,
     options = [],
+    containerClassName,
     className,
     triggerClassName,
     contentClassName,
@@ -66,7 +69,11 @@ export function Select({
 
     return (
         <>
-            <View ref={triggerRef} collapsable={false} className="w-full">
+            <View
+                ref={triggerRef}
+                collapsable={false}
+                className={cn("w-full", containerClassName)}
+            >
                 <Pressable
                     accessibilityRole="button"
                     disabled={disabled}

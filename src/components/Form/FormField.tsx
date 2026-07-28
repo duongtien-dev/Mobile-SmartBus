@@ -13,7 +13,7 @@ export function FormField({...Props}: FormFieldProps) {
 
     return (
         <View className={cn("gap-2", className)} {...props}>
-            <Text>
+            <Text className="text-sm font-medium text-text-primary">
                 {labelText} {required ? <Text className="text-alert">*</Text> : null}
             </Text>
             {children}
