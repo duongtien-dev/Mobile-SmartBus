@@ -459,6 +459,8 @@
     "payment.methodVisa": "国際ブランドカード",
     "payment.methodNapas": "国内銀行口座 / カード",
     "payment.addCard": "カード追加",
+    "payment.nextCard": "次のカード",
+    "payment.prevCard": "前のカード",
     "payment.cardBalance": "残高",
     "payment.cardExp": "有効期限",
     "payment.cardNameLabel": "名義",

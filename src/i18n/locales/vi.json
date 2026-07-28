@@ -459,6 +459,8 @@
     "payment.methodVisa": "Thẻ quốc tế",
     "payment.methodNapas": "Tài khoản / Thẻ ngân hàng",
     "payment.addCard": "Thêm thẻ",
+    "payment.nextCard": "Thẻ tiếp theo",
+    "payment.prevCard": "Thẻ trước",
     "payment.cardBalance": "Chi tiêu",
     "payment.cardExp": "Hết hạn",
     "payment.cardNameLabel": "Chủ thẻ",
