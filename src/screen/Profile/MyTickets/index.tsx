@@ -4,12 +4,13 @@ import { SectionTitle } from "@/components/ui/SectionTitle";
 import { PageHeader } from "@/components/PageHeader";
 import usePaginationList from "@/hooks/usePaginationList";
 import { useTranslation } from "@/i18n";
-import type { ITicket } from "@/models/ticket";
+import type { ITicket, TicketType } from "@/models/ticket";
 import { MyTicketItem } from "@/screen/Profile/MyTickets/TicketItem";
 import { ticketService } from "@/services/TicketService";
 import { router } from "expo-router";
-import { useEffect } from "react";
-import { ActivityIndicator, FlatList, Text, View } from "react-native";
+import { useEffect, useMemo, useState } from "react";
+import { ActivityIndicator, FlatList, Pressable, Text, View } from "react-native";
+import { getTicketTypeLabel } from "@/utils/ticket";
 
 export default function MyTicketsScreen() {
     const { t } = useTranslation();
@@ -28,9 +29,16 @@ export default function MyTicketsScreen() {
         params: {},
     });
 
+    const [activeType, setActiveType] = useState<TicketType | "all">("all");
+
     useEffect(() => {
         loadFirstPage();
     }, []);
+
+    const filteredTickets = useMemo(() => {
+        if (activeType === "all") return tickets;
+        return tickets.filter((ticket) => ticket.ticketType === activeType);
+    }, [tickets, activeType]);
 
     const handleOpenQrList = () => {
         router.push("/profile/my-tickets/qr");
@@ -47,24 +55,78 @@ export default function MyTicketsScreen() {
         <View className="flex-1 bg-app-shell">
             <PageHeader title={t("profile.tickets.title")} isIconBack />
 
-            <View className="px-5 pt-4">
-                <Button
-                    type="primary"
-                    variant="bold"
-                    className="w-full rounded-xl"
-                    onPress={handleOpenQrList}
-                >
-                    {t("profile.tickets.availableQr")}
-                </Button>
-            </View>
-
             <FlatList
                 className="flex-1"
-                data={tickets}
+                data={filteredTickets}
                 keyExtractor={(item) => item._id}
                 ListHeaderComponent={
-                    <View className="px-5 pb-2 pt-4">
-                        <SectionTitle title={t("profile.tickets.allPurchased")} />
+                    <View className="pt-4">
+                        <View className="px-5">
+                            <Button
+                                type="primary"
+                                variant="bold"
+                                className="w-full rounded-2xl"
+                                onPress={handleOpenQrList}
+                            >
+                                {t("profile.tickets.availableQr")}
+                            </Button>
+                        </View>
+
+                        <View className="mt-4 px-5">
+                            <View className="flex-row items-center rounded-[28px] bg-surface p-1">
+                                {(
+                                    [
+                                        { value: "all" as const, label: t("common.all") },
+                                        {
+                                            value: "single" as const,
+                                            label: getTicketTypeLabel("single"),
+                                        },
+                                        {
+                                            value: "monthlySingleRoute" as const,
+                                            label: getTicketTypeLabel(
+                                                "monthlySingleRoute",
+                                            ),
+                                        },
+                                        {
+                                            value: "monthlyInterRoute" as const,
+                                            label: getTicketTypeLabel(
+                                                "monthlyInterRoute",
+                                            ),
+                                        },
+                                    ] as const
+                                ).map((seg) => {
+                                    const isActive = seg.value === activeType;
+                                    return (
+                                        <Pressable
+                                            key={seg.value}
+                                            accessibilityRole="button"
+                                            onPress={() => setActiveType(seg.value)}
+                                            className={`flex-1 rounded-[24px] px-3 py-2.5 ${
+                                                isActive
+                                                    ? "bg-primary"
+                                                    : "bg-transparent"
+                                            }`}
+                                        >
+                                            <Text
+                                                className={`text-center text-xs font-semibold ${
+                                                    isActive
+                                                        ? "text-on-primary"
+                                                        : "text-text-muted"
+                                                }`}
+                                            >
+                                                {seg.label}
+                                            </Text>
+                                        </Pressable>
+                                    );
+                                })}
+                            </View>
+                        </View>
+
+                        <View className="px-5 pb-2 pt-4">
+                            <SectionTitle
+                                title={t("profile.tickets.allPurchased")}
+                            />
+                        </View>
                     </View>
                 }
                 renderItem={({ item }) => (
