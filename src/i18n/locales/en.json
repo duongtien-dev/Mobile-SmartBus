@@ -480,6 +480,7 @@
     "notice.groupEarlier": "Earlier",
     "notice.empty": "No notifications yet",
     "notice.newsTitle": "News",
+    "notice.heroSubtitle": "Route updates, promos, and the latest service notices",
     "notice.newsEmpty": "No news yet",
     "notice.detailTitle": "Details",
     "notice.detailNotFound": "Content not found",
