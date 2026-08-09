@@ -29,6 +29,7 @@ export function NewsCard({ item }: NewsCardProps) {
             <View
                 className="overflow-hidden rounded-lg bg-card"
                 style={{
+                    height: 280,
                     borderWidth: 1,
                     borderColor: "#e2e8f0",
                 }}
@@ -51,22 +52,22 @@ export function NewsCard({ item }: NewsCardProps) {
                     </View>
                 </View>
 
-                <View className="gap-2 p-3.5">
-                    <Text
-                        className="text-[15px] font-bold leading-5 text-text-primary"
-                        numberOfLines={2}
-                    >
-                        {item.title}
-                    </Text>
+                <View className="min-h-0 flex-1 justify-between gap-2 p-3.5">
+                    <View className="gap-2">
+                        <Text
+                            className="text-[15px] font-bold leading-5 text-text-primary"
+                            numberOfLines={2}
+                        >
+                            {item.title}
+                        </Text>
 
-                    {item.summary ? (
                         <Text
                             className="text-xs leading-4 text-text-muted"
                             numberOfLines={2}
                         >
-                            {item.summary}
+                            {item.summary?.trim() || " "}
                         </Text>
-                    ) : null}
+                    </View>
 
                     <Text className="text-[11px] font-medium text-text-secondary">
                         {dateLabel}

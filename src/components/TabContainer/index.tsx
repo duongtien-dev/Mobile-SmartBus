@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import { Pressable, Text, View } from "react-native";
+import { Pressable, ScrollView, Text, View } from "react-native";
 
 export type TabItem = {
     key: string;
@@ -14,6 +14,8 @@ type TabContainerProps = {
     onChange?: (value: string) => void;
     variant?: TabVariant;
     columns?: 1 | 2;
+    /** Tab nhiều / nhãn dài → cuộn ngang */
+    scrollable?: boolean;
     className?: string;
     tabListClassName?: string;
     triggerClassName?: string;
@@ -42,6 +44,7 @@ export default function TabContainer({
     onChange,
     variant = "default",
     columns = 1,
+    scrollable = false,
     className,
     tabListClassName,
     triggerClassName,
@@ -50,50 +53,62 @@ export default function TabContainer({
 
     const styles = variantStyles[variant];
     const isTwoColumns = columns === 2;
+    const canScroll = scrollable && !isTwoColumns;
+
+    const tabTriggers = tabs.map((tab) => {
+        const isActive = value === tab.key;
+
+        return (
+            <Pressable
+                key={tab.key}
+                accessibilityRole="tab"
+                accessibilityState={{ selected: isActive }}
+                className={cn(
+                    styles.trigger,
+                    isActive ? styles.triggerActive : styles.triggerInactive,
+                    isTwoColumns && "w-1/2 flex-none px-2",
+                    canScroll && "flex-none shrink-0 px-1",
+                    triggerClassName,
+                )}
+                onPress={() => onChange?.(tab.key)}
+            >
+                <Text
+                    className={cn(
+                        "text-center text-sm",
+                        isActive
+                            ? "font-bold text-teal-700"
+                            : "font-medium text-slate-500",
+                    )}
+                    numberOfLines={1}
+                >
+                    {tab.label}
+                </Text>
+            </Pressable>
+        );
+    });
+
+    const listClassName = cn(
+        "flex-row items-center",
+        styles.list,
+        isTwoColumns && "flex-wrap gap-x-0 gap-y-1",
+        canScroll && "w-auto",
+        tabListClassName,
+    );
 
     return (
         <View className={cn("w-full bg-white px-4 py-2", className)}>
-            <View
-                className={cn(
-                    "flex-row items-center",
-                    styles.list,
-                    isTwoColumns && "flex-wrap gap-x-0 gap-y-1",
-                    tabListClassName,
-                )}
-            >
-                {tabs.map((tab) => {
-                    const isActive = value === tab.key;
-
-                    return (
-                        <Pressable
-                            key={tab.key}
-                            accessibilityRole="tab"
-                            accessibilityState={{ selected: isActive }}
-                            className={cn(
-                                styles.trigger,
-                                isActive
-                                    ? styles.triggerActive
-                                    : styles.triggerInactive,
-                                isTwoColumns && "w-1/2 flex-none px-2",
-                                triggerClassName,
-                            )}
-                            onPress={() => onChange?.(tab.key)}
-                        >
-                            <Text
-                                className={cn(
-                                    "text-center text-sm",
-                                    isActive
-                                        ? "font-bold text-teal-700"
-                                        : "font-medium text-slate-500",
-                                )}
-                                numberOfLines={1}
-                            >
-                                {tab.label}
-                            </Text>
-                        </Pressable>
-                    );
-                })}
-            </View>
+            {canScroll ? (
+                <ScrollView
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    bounces={false}
+                    contentContainerClassName={listClassName}
+                >
+                    {tabTriggers}
+                </ScrollView>
+            ) : (
+                <View className={listClassName}>{tabTriggers}</View>
+            )}
         </View>
     );
 }

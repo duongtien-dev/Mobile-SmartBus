@@ -186,7 +186,9 @@ export default function RouteDetailScreen() {
                     value={activeTab}
                     onChange={(value) => setActiveTab(value as DetailTab)}
                     variant="underline"
-                    tabListClassName="gap-5 justify-between"
+                    scrollable
+                    className="px-0"
+                    tabListClassName="gap-5"
                     triggerClassName="px-0"
                 />
             </View>

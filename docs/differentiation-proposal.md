@@ -166,6 +166,7 @@ Nếu ≥ 3 câu “có” → đưa vào danh sách ngoài README; nếu không
 ## 8. Liên kết tài liệu liên quan
 
 - Tính năng đã có (app): `Mobile-SmartBus/README.md`  
+- **Flow hệ thống + flow code Trục A (chi tiết):** [`truc-a-system-code-flows.md`](./truc-a-system-code-flows.md)  
 - Tổng quan backend: `Backend-SmartBus/doc/project.md`  
 - Role API: `Backend-SmartBus/doc/roles/*.md`
 
