@@ -5,6 +5,13 @@ export type IActiveShift = {
     routeId?: string | { _id: string; code?: string; name?: string } | null;
     routeName?: string;
     routeCode?: string;
+    vehicleId?: string | null;
+    plateNumber?: string;
+    currentStopOrder?: number;
+    lastLat?: number | null;
+    lastLng?: number | null;
+    lastLocationAt?: string | null;
+    heading?: number | null;
     shiftStartAt: string;
     shiftEndAt?: string | null;
     status: "active" | "ended";

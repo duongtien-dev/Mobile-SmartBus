@@ -16,6 +16,19 @@ class StaffShiftService extends BaseService {
     end() {
         return this.post("/end", {});
     }
+
+    updateLocation(body: {
+        lat: number;
+        lng: number;
+        heading?: number;
+        currentStopOrder?: number;
+    }) {
+        return this.post("/location", body);
+    }
+
+    advanceStop(body: { stopIndex?: number } = {}) {
+        return this.post("/advance-stop", body);
+    }
 }
 
 export const staffShiftService = new StaffShiftService();
