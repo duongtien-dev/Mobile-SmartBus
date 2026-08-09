@@ -8,7 +8,8 @@
 
 Hỗ trợ đa ngôn ngữ: **Tiếng Việt**, **English**, **日本語**.
 
-> Roadmap / đề xuất khác biệt: [`docs/differentiation-proposal.md`](docs/differentiation-proposal.md) — **Trục A (live) đã ship MVP**; **Trục B (B2B / Admin Console)** là mặt trận tiếp theo (API có, UI console chưa).
+> Roadmap / đề xuất khác biệt: [`docs/differentiation-proposal.md`](docs/differentiation-proposal.md) — **Trục A (live) đã ship MVP**; **Trục B (B2B / Admin Console)** là mặt trận tiếp theo (API có, UI console chưa).  
+> Flow hệ thống + flow code Trục A: [`docs/truc-a-system-code-flows.md`](docs/truc-a-system-code-flows.md).
 
 <p align="center">
   <img src="assets/images/logo.png" alt="DanaBus logo" width="120" />
@@ -108,7 +109,8 @@ App **không** có màn hình admin. Năng lực do **Backend API** cung cấp:
 
 ## Live transit — Trục A (mới)
 
-Chi tiết thiết kế: [`docs/differentiation-proposal.md`](docs/differentiation-proposal.md).
+Chi tiết thiết kế product: [`docs/differentiation-proposal.md`](docs/differentiation-proposal.md).  
+**Flow hệ thống + flow code (A1–A5):** [`docs/truc-a-system-code-flows.md`](docs/truc-a-system-code-flows.md).
 
 | Mã | Chức năng | User app | Staff app | Backend |
 |----|-----------|:--------:|:---------:|:-------:|
@@ -502,7 +504,8 @@ Mobile-SmartBus/
 ├── public/                      # Ảnh chụp màn hình (README)
 ├── assets/images/               # Logo, icon, banner
 ├── docs/
-│   └── differentiation-proposal.md   # Roadmap Trục A–E
+│   ├── differentiation-proposal.md   # Roadmap Trục A–E / B2B
+│   └── truc-a-system-code-flows.md   # Flow hệ thống + flow code Trục A
 ├── src/
 │   ├── app/                     # Routes (expo-router)
 │   │   ├── (auth)/              # Login, register, OTP, quên MK
@@ -535,6 +538,7 @@ Mobile-SmartBus/
 - Backend API: repo `Backend-SmartBus` (role `user` / `staff` / `admin`)
 - **Kiến trúc & B2B:** xem mục [Kiến trúc hệ thống & B2B](#kiến-trúc-hệ-thống--b2b) ở trên
 - Đề xuất chức năng khác biệt (Trục A–E, killer combo, wave): [`docs/differentiation-proposal.md`](docs/differentiation-proposal.md)
+- **Flow Trục A (hệ thống + code):** [`docs/truc-a-system-code-flows.md`](docs/truc-a-system-code-flows.md)
 - API admin / role: `Backend-SmartBus/doc/admin_api.md`, `Backend-SmartBus/doc/roles/*.md`
 - Ảnh demo README: [`public/`](./public/) (`image_1.jpg` … `image_21.jpg`) — chưa gồm screenshot tab live
 - **Admin Web Console (B1)** chưa nằm trong repo — B2B hiện chỉ qua API backend
