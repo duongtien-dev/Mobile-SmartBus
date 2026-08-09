@@ -3,7 +3,7 @@ import { create } from "zustand";
 
 /**
  * UI state tạm cho ca đang chạy (điểm dừng / index).
- * Phiên ca + lịch sử quét lấy từ API (`staff-shifts`, `scan-logs`).
+ * Index đồng bộ với ActiveShift.currentStopOrder trên server.
  */
 export type StaffShiftUiState = {
     stopIndex: number;
@@ -12,7 +12,8 @@ export type StaffShiftUiState = {
 
 type StaffShiftState = {
     ui: StaffShiftUiState;
-    setStops: (stops: IStop[]) => void;
+    setStops: (stops: IStop[], stopIndex?: number) => void;
+    setStopIndex: (stopIndex: number) => void;
     advanceStop: () => void;
     resetUi: () => void;
 };
@@ -25,13 +26,27 @@ const initialUi: StaffShiftUiState = {
 const useStaffShiftStore = create<StaffShiftState>((set) => ({
     ui: initialUi,
 
-    setStops: (stops) =>
+    setStops: (stops, stopIndex = 0) =>
         set({
             ui: {
                 stops,
-                stopIndex: 0,
+                stopIndex: Math.min(
+                    Math.max(stopIndex, 0),
+                    Math.max(stops.length - 1, 0),
+                ),
             },
         }),
+
+    setStopIndex: (stopIndex) =>
+        set((state) => ({
+            ui: {
+                ...state.ui,
+                stopIndex: Math.min(
+                    Math.max(stopIndex, 0),
+                    Math.max(state.ui.stops.length - 1, 0),
+                ),
+            },
+        })),
 
     advanceStop: () =>
         set((state) => {

@@ -15,3 +15,6 @@ export { leaveRequestService } from './LeaveRequestService';
 export { staffShiftService } from './StaffShiftService';
 export { staffScheduleService } from './StaffScheduleService';
 export { scanLogService } from './ScanLogService';
+export { liveService } from './LiveService';
+export { tourPackService } from './TourPackService';
+export { notifyService } from './NotifyService';

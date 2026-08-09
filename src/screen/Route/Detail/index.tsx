@@ -3,16 +3,21 @@ import { useTranslation } from "@/i18n";
 import type { IRoute } from "@/models/route";
 import type { IStop } from "@/models/stop";
 import { InfoTab } from "@/screen/Route/Detail/InfoTab";
+import { LiveTab } from "@/screen/Route/Detail/LiveTab";
 import { ReviewsTab } from "@/screen/Route/Detail/ReviewsTab";
 import { RouteDetailMap } from "@/screen/Route/Detail/RouteDetailMap";
 import { ScheduleTab } from "@/screen/Route/Detail/ScheduleTab";
 import { StopsTab } from "@/screen/Route/Detail/StopsTab";
 import { getRouteTitle } from "@/screen/Route/Detail/utils";
+import {
+    liveService,
+    type LiveVehicle,
+} from "@/services/LiveService";
 import { routeService } from "@/services/RouteService";
 import { stopService } from "@/services/StopService";
 import { router, useLocalSearchParams } from "expo-router";
 import { ArrowLeft } from "lucide-react-native";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
     ActivityIndicator,
     Pressable,
@@ -21,7 +26,7 @@ import {
     View,
 } from "react-native";
 
-const DETAIL_TAB_KEYS = ["schedule", "stops", "info", "reviews"] as const;
+const DETAIL_TAB_KEYS = ["live", "schedule", "stops", "info", "reviews"] as const;
 
 type DetailTab = (typeof DETAIL_TAB_KEYS)[number];
 
@@ -30,9 +35,10 @@ export default function RouteDetailScreen() {
     const { id } = useLocalSearchParams<{ id: string }>();
     const routeId = Array.isArray(id) ? id[0] : id;
 
-    const [activeTab, setActiveTab] = useState<DetailTab>("schedule");
+    const [activeTab, setActiveTab] = useState<DetailTab>("live");
     const [route, setRoute] = useState<IRoute | null>(null);
     const [stops, setStops] = useState<IStop[]>([]);
+    const [liveVehicles, setLiveVehicles] = useState<LiveVehicle[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
@@ -78,6 +84,23 @@ export default function RouteDetailScreen() {
             mounted = false;
         };
     }, [routeId, t]);
+
+    const loadLiveVehicles = useCallback(async () => {
+        if (!routeId) return;
+        try {
+            const response = await liveService.listRouteVehicles({ routeId });
+            setLiveVehicles(response.data?.items ?? []);
+        } catch {
+            setLiveVehicles([]);
+        }
+    }, [routeId]);
+
+    useEffect(() => {
+        if (!routeId || isLoading || error) return;
+        loadLiveVehicles();
+        const timer = setInterval(loadLiveVehicles, 15000);
+        return () => clearInterval(timer);
+    }, [routeId, isLoading, error, loadLiveVehicles]);
 
     if (isLoading) {
         return (
@@ -135,7 +158,7 @@ export default function RouteDetailScreen() {
             </View>
 
             <View className="h-48">
-                <RouteDetailMap stops={stops} />
+                <RouteDetailMap stops={stops} vehicles={liveVehicles} />
             </View>
 
             <View className="flex-row items-center gap-3 border-b border-border px-5 py-4">
@@ -170,6 +193,14 @@ export default function RouteDetailScreen() {
 
             {activeTab === "reviews" ? (
                 <ReviewsTab routeId={route._id} />
+            ) : activeTab === "live" ? (
+                <ScrollView
+                    className="flex-1"
+                    showsVerticalScrollIndicator={false}
+                    contentContainerClassName="pb-8"
+                >
+                    <LiveTab routeId={route._id} stops={stops} />
+                </ScrollView>
             ) : (
                 <ScrollView
                     className="flex-1"
