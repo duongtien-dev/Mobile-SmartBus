@@ -97,9 +97,15 @@ export default function MyTicketDetailScreen() {
             </View>
 
             <ScrollView
-                className="flex-1"
-                contentContainerClassName="gap-4 px-5 pb-28 pt-6"
+                style={{ flex: 1 }}
+                contentContainerStyle={{
+                    gap: 16,
+                    paddingHorizontal: 20,
+                    paddingTop: 24,
+                    paddingBottom: 24,
+                }}
                 showsVerticalScrollIndicator={false}
+                keyboardShouldPersistTaps="handled"
             >
                 <View className="items-center">
                     <Text className="text-center text-[18px] font-extrabold text-text-primary">
@@ -170,7 +176,7 @@ export default function MyTicketDetailScreen() {
                 </Card>
             </ScrollView>
 
-            <View className="absolute bottom-0 left-0 right-0 border-t border-border bg-card px-5 py-5">
+            <View className="border-t border-border bg-card px-5 py-5">
                 <Button
                     type="primary"
                     variant="bold"

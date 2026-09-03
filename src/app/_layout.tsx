@@ -1,3 +1,5 @@
+import { usePushNotifications } from "@/hooks/usePushNotifications";
+import useLocaleStore from "@/store/locale.store";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
@@ -9,6 +11,7 @@ import "../global.css";
 
 export default function RootLayout() {
     const hydrateLocale = useLocaleStore((state) => state.hydrate);
+    usePushNotifications();
 
     useEffect(() => {
         void hydrateLocale();

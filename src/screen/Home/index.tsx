@@ -28,9 +28,11 @@ import { FaqPreview } from "./FaqPreview";
 import { FeaturedRouteCard } from "./FeaturedRouteCard";
 import { NewsCard } from "./NewCard";
 import { QuickActionButton } from "./QuickAction";
+import { ReviewPromptCard } from "./ReviewPromptCard";
 import { SectionHeader } from "./SectionHeader";
 import { SuggestLocationInput } from "./SuggestLocationInput";
 import { TipCard } from "./TipCard";
+import { TourPackPreview } from "./TourPackPreview";
 
 const FEATURED_ROUTES_LIMIT = 6;
 
@@ -219,6 +221,9 @@ export default function HomeScreen() {
                         ))}
                     </View>
                 </Card>
+
+                <ReviewPromptCard />
+                <TourPackPreview />
 
                 <View style={{ gap: 14 }}>
                     <SectionHeader

@@ -1,5 +1,6 @@
 import { StaffHeader } from "@/components/StaffHeader";
 import useFetch from "@/hooks/useFetch";
+import { useStaffShiftLocation } from "@/hooks/useStaffShiftLocation";
 import { useTranslation } from "@/i18n";
 import type { IActiveShift } from "@/models/activeShift";
 import type { IScanLogItem } from "@/models/scanLog";
@@ -46,7 +47,8 @@ export default function StaffActiveShiftScreen() {
     const { t } = useTranslation();
     const ui = useStaffShiftStore((state) => state.ui);
     const setStops = useStaffShiftStore((state) => state.setStops);
-    const advanceStop = useStaffShiftStore((state) => state.advanceStop);
+    const setStopIndex = useStaffShiftStore((state) => state.setStopIndex);
+    const advanceStopLocal = useStaffShiftStore((state) => state.advanceStop);
     const resetUi = useStaffShiftStore((state) => state.resetUi);
 
     const [scanOpen, setScanOpen] = useState(false);
@@ -133,7 +135,21 @@ export default function StaffActiveShiftScreen() {
     const scanCount = scans.length;
     const validCount = scans.filter((item) => item.isValid).length;
 
+    useStaffShiftLocation({
+        enabled: Boolean(activeShift && shiftReady),
+        currentStopOrder: ui.stopIndex,
+    });
+
     const mapCenter = useMemo(() => {
+        if (
+            activeShift?.lastLat != null &&
+            activeShift?.lastLng != null
+        ) {
+            return {
+                latitude: activeShift.lastLat,
+                longitude: activeShift.lastLng,
+            };
+        }
         return (
             toLatLng(currentStop?.location?.coordinates) ??
             toLatLng(nextStop?.location?.coordinates) ?? {
@@ -141,7 +157,7 @@ export default function StaffActiveShiftScreen() {
                 longitude: 108.2022,
             }
         );
-    }, [currentStop, nextStop]);
+    }, [activeShift?.lastLat, activeShift?.lastLng, currentStop, nextStop]);
 
     const nextStopCoordinate = useMemo(() => {
         return (
@@ -208,9 +224,9 @@ export default function StaffActiveShiftScreen() {
 
     useEffect(() => {
         if (fetchedStops) {
-            setStops(fetchedStops);
+            setStops(fetchedStops, activeShift?.currentStopOrder ?? 0);
         }
-    }, [fetchedStops, setStops]);
+    }, [fetchedStops, setStops, activeShift?.currentStopOrder]);
 
     useEffect(() => {
         if (!stopsError) return;
@@ -249,6 +265,10 @@ export default function StaffActiveShiftScreen() {
         try {
             const response = await ticketService.verifyScanQRCode({
                 qrCode: code,
+                shiftId: activeShift?._id,
+                stopId: currentStop?._id,
+                lat: activeShift?.lastLat ?? undefined,
+                lng: activeShift?.lastLng ?? undefined,
             });
             const result = response.data;
 
@@ -354,7 +374,7 @@ export default function StaffActiveShiftScreen() {
         }
     };
 
-    const handleConfirmPassStop = () => {
+    const handleConfirmPassStop = async () => {
         if (!ui.stops.length) {
             Toast.show({
                 type: "error",
@@ -373,12 +393,29 @@ export default function StaffActiveShiftScreen() {
             return;
         }
 
-        advanceStop();
-        Toast.show({
-            type: "success",
-            text1: t("staff.shift.passStopSuccess"),
-            text2: nextStop?.name,
-        });
+        try {
+            const response = await staffShiftService.advanceStop({});
+            const nextIndex = response.data?.stopIndex;
+            if (typeof nextIndex === "number") {
+                setStopIndex(nextIndex);
+            } else {
+                advanceStopLocal();
+            }
+            await loadActiveShift();
+            Toast.show({
+                type: "success",
+                text1: t("staff.shift.passStopSuccess"),
+                text2:
+                    response.data?.currentStop?.name || nextStop?.name,
+            });
+        } catch {
+            advanceStopLocal();
+            Toast.show({
+                type: "success",
+                text1: t("staff.shift.passStopSuccess"),
+                text2: nextStop?.name,
+            });
+        }
     };
 
     if (!shiftReady || isShiftLoading || !activeShift) {

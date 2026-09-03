@@ -42,6 +42,14 @@
         }
       ],
       [
+        "expo-notifications",
+        {
+          "icon": "./assets/images/icon.png",
+          "color": "#005f8b",
+          "defaultChannel": "default"
+        }
+      ],
+      [
         "expo-camera",
         {
           "cameraPermission": "DanaBus cần quyền camera để quét mã QR vé khách.",

@@ -1,4 +1,5 @@
 import type { IStop } from "@/models/stop";
+import type { LiveVehicle } from "@/services/LiveService";
 import { useEffect, useMemo, useRef } from "react";
 import MapView, { Marker, type Region } from "react-native-maps";
 
@@ -9,6 +10,7 @@ type Coordinate = {
 
 type RouteDetailMapProps = {
     stops: IStop[];
+    vehicles?: LiveVehicle[];
 };
 
 function toCoordinate(stop: IStop): Coordinate | null {
@@ -18,6 +20,16 @@ function toCoordinate(stop: IStop): Coordinate | null {
     return {
         longitude: coordinates[0],
         latitude: coordinates[1],
+    };
+}
+
+function vehicleCoordinate(vehicle: LiveVehicle): Coordinate | null {
+    if (vehicle.location?.lat == null || vehicle.location?.lng == null) {
+        return null;
+    }
+    return {
+        latitude: vehicle.location.lat,
+        longitude: vehicle.location.lng,
     };
 }
 
@@ -46,10 +58,13 @@ function getInitialRegion(coordinates: Coordinate[]): Region {
     };
 }
 
-export function RouteDetailMap({ stops }: RouteDetailMapProps) {
+export function RouteDetailMap({
+    stops,
+    vehicles = [],
+}: RouteDetailMapProps) {
     const mapRef = useRef<MapView>(null);
 
-    const coordinates = useMemo(
+    const stopCoordinates = useMemo(
         () =>
             stops
                 .map(toCoordinate)
@@ -57,27 +72,42 @@ export function RouteDetailMap({ stops }: RouteDetailMapProps) {
         [stops],
     );
 
-    const initialRegion = useMemo(
-        () => getInitialRegion(coordinates),
-        [coordinates],
+    const vehicleCoordinates = useMemo(
+        () =>
+            vehicles
+                .map(vehicleCoordinate)
+                .filter((point): point is Coordinate => point != null),
+        [vehicles],
     );
 
-    useEffect(() => {
-        if (!coordinates.length) return;
+    const fitCoordinates = useMemo(
+        () => [...stopCoordinates, ...vehicleCoordinates],
+        [stopCoordinates, vehicleCoordinates],
+    );
 
-        mapRef.current?.fitToCoordinates(coordinates, {
-            edgePadding: { top: 24, right: 24, bottom: 24, left: 24 },
+    const initialRegion = useMemo(
+        () => getInitialRegion(fitCoordinates),
+        [fitCoordinates],
+    );
+
+    const interactive = vehicleCoordinates.length > 0;
+
+    useEffect(() => {
+        if (!fitCoordinates.length) return;
+
+        mapRef.current?.fitToCoordinates(fitCoordinates, {
+            edgePadding: { top: 28, right: 28, bottom: 28, left: 28 },
             animated: false,
         });
-    }, [coordinates]);
+    }, [fitCoordinates]);
 
     return (
         <MapView
             ref={mapRef}
             style={{ flex: 1 }}
             initialRegion={initialRegion}
-            scrollEnabled={false}
-            zoomEnabled={false}
+            scrollEnabled={interactive}
+            zoomEnabled={interactive}
             rotateEnabled={false}
             pitchEnabled={false}
         >
@@ -91,6 +121,31 @@ export function RouteDetailMap({ stops }: RouteDetailMapProps) {
                         coordinate={coordinate}
                         title={stop.name}
                         pinColor={index === 0 ? "#e50049" : "#005f8b"}
+                    />
+                );
+            })}
+
+            {vehicles.map((vehicle) => {
+                const coordinate = vehicleCoordinate(vehicle);
+                if (!coordinate) return null;
+
+                const title =
+                    vehicle.plateNumber ||
+                    vehicle.routeCode ||
+                    "Xe đang chạy";
+                const eta =
+                    vehicle.etaMinutes != null
+                        ? `ETA ~${vehicle.etaMinutes} phút`
+                        : vehicle.currentStop?.name || "Đang chạy";
+
+                return (
+                    <Marker
+                        key={`bus-${vehicle.shiftId}`}
+                        coordinate={coordinate}
+                        title={title}
+                        description={eta}
+                        pinColor="#f59e0b"
+                        tracksViewChanges={false}
                     />
                 );
             })}
