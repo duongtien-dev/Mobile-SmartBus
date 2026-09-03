@@ -19,6 +19,7 @@ export type ChatMessagePayload = {
 export type ChatReply = {
     reply: string;
     actions?: ChatAction[];
+    conversationId?: string;
 };
 
 export type ChatUiMessage = {

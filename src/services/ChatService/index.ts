@@ -7,7 +7,11 @@ class ChatService extends BaseService {
         super("/chat");
     }
 
-    send(body: { messages: ChatMessagePayload[]; locale: string }) {
+    send(body: {
+        messages: ChatMessagePayload[];
+        locale: string;
+        conversationId?: string | null;
+    }) {
         return this.api
             .post<ApiResponse<ChatReply>>("/", body, { timeout: 45000 })
             .then(({ data }) => data);

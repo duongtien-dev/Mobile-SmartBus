@@ -3,10 +3,10 @@ import type { TranslationKey } from "@/i18n/translations";
 import { Pressable, Text, View } from "react-native";
 
 const PROMPTS: TranslationKey[] = [
+    "chat.prompt.routes",
+    "chat.prompt.myTickets",
     "chat.prompt.ticketHow",
     "chat.prompt.monthlyQr",
-    "chat.prompt.lost",
-    "chat.prompt.lang",
 ];
 
 type Props = {

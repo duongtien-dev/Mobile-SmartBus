@@ -21,6 +21,10 @@ export function useDanaChat() {
     const setDraft = useChatStore((state) => state.setDraft);
     const setSending = useChatStore((state) => state.setSending);
     const setMessages = useChatStore((state) => state.setMessages);
+    const ensureConversationId = useChatStore(
+        (state) => state.ensureConversationId,
+    );
+    const setConversationId = useChatStore((state) => state.setConversationId);
 
     useEffect(() => {
         setMessages((current) => {
@@ -76,12 +80,17 @@ export function useDanaChat() {
         setMessages((current) => [...current, userMessage, pending]);
 
         try {
+            const conversationId = ensureConversationId();
             const response = await chatService.send({
                 messages: [...historyPayload, { role: "user", text }],
                 locale,
+                conversationId,
             });
             const reply = response.data?.reply?.trim() || t("chat.error");
             const actions = response.data?.actions;
+            if (response.data?.conversationId) {
+                setConversationId(response.data.conversationId);
+            }
 
             setMessages((current) =>
                 current.map((item) =>
