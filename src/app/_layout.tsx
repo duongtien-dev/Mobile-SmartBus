@@ -3,6 +3,7 @@ import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
+import { ChatWidget } from "@/components/Chat/ChatWidget";
 import useLocaleStore from "@/store/locale.store";
 import "../global.css";
 
@@ -28,6 +29,7 @@ export default function RootLayout() {
                     <Stack.Screen name="(auth)" />
                     <Stack.Screen name="(dev-demo)" />
                 </Stack>
+                <ChatWidget />
                 <Toast />
             </SafeAreaView>
         </SafeAreaProvider>
