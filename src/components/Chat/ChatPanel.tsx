@@ -1,5 +1,5 @@
 import type { ChatAction } from "@/models/chat";
-import { useDaGoChat } from "@/hooks/useDaGoChat";
+import { useDaGoChat } from "@/hooks/useDanaChat";
 import { useRef } from "react";
 import { FlatList, View } from "react-native";
 import { ChatComposer } from "./ChatComposer";
