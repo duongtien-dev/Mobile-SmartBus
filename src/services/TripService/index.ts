@@ -1,11 +1,13 @@
 import BaseService from '@/services/BaseService';
+import type { ISuggestLocation } from '@/models/suggestLocation';
+import type { ApiResponse } from '@/services/type';
 
 class TripService extends BaseService {
     constructor() {
         super('');
     }
-    suggestLocations(body: object) {
-        return this.post('/suggest-locations', body);
+    suggestLocations(body: { keyword: string }) {
+        return this.post<ApiResponse<ISuggestLocation[]>>('/suggest-locations', body);
     }
 
     searchTrips(body: object) {

@@ -1,4 +1,5 @@
 {
+    "common.locationSearchError": "場所を検索できません。再入力してお試しください。",
     "profile.title": "アカウント",
     "profile.section.account": "アカウント",
     "profile.section.services": "サービス",

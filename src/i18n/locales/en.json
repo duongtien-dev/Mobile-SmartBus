@@ -1,4 +1,5 @@
 {
+    "common.locationSearchError": "Unable to search places. Please type again to retry.",
     "profile.title": "Account",
     "profile.section.account": "Account",
     "profile.section.services": "Services",

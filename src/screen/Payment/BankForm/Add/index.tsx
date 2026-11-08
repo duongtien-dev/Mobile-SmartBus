@@ -15,7 +15,7 @@ import {
     type FieldErrors,
 } from "@/utils/validators";
 import { router } from "expo-router";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import {
     ActivityIndicator,
     KeyboardAvoidingView,
@@ -31,11 +31,6 @@ export default function AddBankFormScreen() {
     const [formData, setFormData] = useState<BankFormData>(INITIAL_BANK_FORM);
     const [errors, setErrors] = useState<FieldErrors<keyof BankFormData>>({});
     const showToast = useToastify();
-
-    const isFormValid = useMemo(
-        () => validateSchema(bankFormSchema, formData).ok,
-        [formData],
-    );
 
     const handleChange = (key: keyof BankFormData, value: string) => {
         setFormData((prev) => ({ ...prev, [key]: value }));
@@ -118,7 +113,7 @@ export default function AddBankFormScreen() {
                         type="primary"
                         variant="bold"
                         className="w-full rounded-lg"
-                        disabled={!isFormValid || isSubmitting}
+                        disabled={isSubmitting}
                         onPress={handleSubmit}
                     >
                         {isSubmitting ? (

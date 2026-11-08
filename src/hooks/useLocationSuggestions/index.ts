@@ -1,4 +1,3 @@
-import useFetch from "@/hooks/useFetch";
 import type { ISuggestLocation } from "@/models/suggestLocation";
 import { tripService } from "@/services/TripService";
 import { useEffect, useState } from "react";
@@ -20,34 +19,47 @@ export default function useLocationSuggestions(
     const [isFocused, setIsFocused] = useState(false);
     const trimmedKeyword = keyword.trim();
 
-    const {
-        data: suggestions,
-        isLoading,
-        loadFetchFn,
-    } = useFetch<ISuggestLocation[]>({
-        fetchFn: async () => {
-            const response = await tripService.suggestLocations({
-                keyword: trimmedKeyword,
-            });
-            return response.data ?? [];
-        },
-    });
+    const [result, setResult] = useState<{
+        keyword: string;
+        data: ISuggestLocation[];
+        isLoading: boolean;
+        hasError: boolean;
+    }>({ keyword: "", data: [], isLoading: false, hasError: false });
 
     useEffect(() => {
-        if (!trimmedKeyword) return;
+        if (!trimmedKeyword || !isFocused) return;
 
+        let active = true;
         const timer = setTimeout(() => {
-            loadFetchFn();
+            setResult({ keyword: trimmedKeyword, data: [], isLoading: true, hasError: false });
+            tripService.suggestLocations({ keyword: trimmedKeyword })
+                .then((response) => {
+                    if (!response.success) throw new Error(response.message);
+                    if (active) {
+                        setResult({ keyword: trimmedKeyword, data: response.data ?? [], isLoading: false, hasError: false });
+                    }
+                })
+                .catch(() => {
+                    if (active) {
+                        setResult({ keyword: trimmedKeyword, data: [], isLoading: false, hasError: true });
+                    }
+                });
         }, debounceMs);
 
-        return () => clearTimeout(timer);
-    }, [trimmedKeyword, debounceMs, loadFetchFn]);
+        return () => {
+            active = false;
+            clearTimeout(timer);
+        };
+    }, [trimmedKeyword, debounceMs, isFocused]);
 
-    const suggestionList = suggestions ?? [];
+    const isCurrent = result.keyword === trimmedKeyword && trimmedKeyword.length > 0;
+    const suggestionList = isCurrent ? result.data : [];
+    const isLoading = isCurrent && result.isLoading;
+    const hasError = isCurrent && result.hasError;
     const showSuggestions =
         isFocused &&
         trimmedKeyword.length > 0 &&
-        (isLoading || suggestionList.length > 0);
+        (isLoading || hasError || suggestionList.length > 0);
 
     const handleBlur = () => {
         setTimeout(() => setIsFocused(false), BLUR_DELAY_MS);
@@ -60,6 +72,7 @@ export default function useLocationSuggestions(
         trimmedKeyword,
         suggestionList,
         isLoading,
+        hasError,
         showSuggestions,
     };
 }

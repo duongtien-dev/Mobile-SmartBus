@@ -1,5 +1,6 @@
 import InputText from "@/components/Input/InputText";
 import useLocationSuggestions from "@/hooks/useLocationSuggestions";
+import { useTranslation } from "@/i18n";
 import type { ISuggestLocation } from "@/models/suggestLocation";
 import {
     ActivityIndicator,
@@ -27,11 +28,13 @@ export function SuggestLocationInput({
     onSelect,
     zIndex = 30,
 }: Props) {
+    const { t } = useTranslation();
     const {
         setIsFocused,
         handleBlur,
         suggestionList,
         isLoading,
+        hasError,
         showSuggestions,
     } = useLocationSuggestions(value);
 
@@ -85,6 +88,10 @@ export function SuggestLocationInput({
                                     size="small"
                                 />
                             </View>
+                        ) : hasError ? (
+                            <Text className="px-3 py-3 text-sm text-text-primary">
+                                {t("common.locationSearchError")}
+                            </Text>
                         ) : (
                             <ScrollView
                                 nestedScrollEnabled

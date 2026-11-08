@@ -28,6 +28,7 @@ export function NearbySearchBar({
         handleBlur,
         suggestionList,
         isLoading,
+        hasError,
         showSuggestions,
     } = useLocationSuggestions(keyword);
 
@@ -73,6 +74,10 @@ export function NearbySearchBar({
                                     size="small"
                                 />
                             </View>
+                        ) : hasError ? (
+                            <Text className="px-4 py-3 text-sm text-text-primary">
+                                {t("common.locationSearchError")}
+                            </Text>
                         ) : (
                             <ScrollView
                                 keyboardShouldPersistTaps="handled"

@@ -17,7 +17,7 @@ import {
     type FieldErrors,
 } from "@/utils/validators";
 import { router, useLocalSearchParams } from "expo-router";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import {
     ActivityIndicator,
     KeyboardAvoidingView,
@@ -45,11 +45,6 @@ export default function UpdateBankFormScreen() {
             return response.data;
         },
     });
-
-    const isFormValid = useMemo(
-        () => validateSchema(bankFormSchema, formData).ok,
-        [formData],
-    );
 
     useEffect(() => {
         if (!id) {
@@ -165,7 +160,7 @@ export default function UpdateBankFormScreen() {
                         type="primary"
                         variant="bold"
                         className="w-full rounded-lg"
-                        disabled={!isFormValid || isSubmitting}
+                        disabled={isSubmitting}
                         onPress={handleSubmit}
                     >
                         {isSubmitting ? (

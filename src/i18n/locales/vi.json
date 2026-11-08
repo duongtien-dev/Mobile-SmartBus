@@ -1,4 +1,5 @@
 {
+    "common.locationSearchError": "Không thể tìm địa điểm. Vui lòng nhập lại để thử.",
     "profile.title": "Tài khoản",
     "profile.section.account": "Tài khoản",
     "profile.section.services": "Dịch vụ",
