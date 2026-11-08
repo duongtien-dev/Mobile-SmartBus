@@ -1,4 +1,7 @@
 {
+    "payment.methodsLoadError": "Unable to refresh payment methods. Previously loaded data is kept.",
+    "payment.expensesLoadError": "Unable to refresh expenses. Please try again.",
+    "payment.retry": "Retry",
     "common.locationSearchError": "Unable to search places. Please type again to retry.",
     "profile.title": "Account",
     "profile.section.account": "Account",

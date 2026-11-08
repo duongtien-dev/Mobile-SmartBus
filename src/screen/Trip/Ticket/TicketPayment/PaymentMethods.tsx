@@ -7,7 +7,9 @@ import useTripBookingStore from "@/store/tripBooking.store";
 import { getPaymentSubtitle, getPaymentTitle } from "@/utils/payment";
 import { Image } from "expo-image";
 import { CreditCard } from "lucide-react-native";
-import { useEffect } from "react";
+import { useCallback } from "react";
+import { useFocusEffect } from "expo-router";
+import { formatVnd } from "@/constants/ticket";
 import { Pressable, Text, View } from "react-native";
 
 interface ItemProps {
@@ -41,6 +43,9 @@ const PaymentMethodItem = ({ method, isSelected, onSelect }: ItemProps) => (
             <Text className="mt-0.5 text-xs text-text-muted">
                 {getPaymentSubtitle(method)}
             </Text>
+            <Text className="mt-0.5 text-xs text-text-muted">
+                {formatVnd(method.balance ?? 0)}
+            </Text>
         </View>
 
         <View
@@ -72,9 +77,9 @@ const PaymentMethods = () => {
         },
     });
 
-    useEffect(() => {
-        loadFetchFn();
-    }, []);
+    useFocusEffect(useCallback(() => {
+        void loadFetchFn();
+    }, [loadFetchFn]));
 
     const hasMethods = paymentMethods && paymentMethods.length > 0;
 

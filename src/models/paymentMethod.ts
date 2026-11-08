@@ -9,6 +9,7 @@ export interface IPaymentMethod {
     _id: string;
     user: string;
     provider: PaymentProvider;
+    balance: number;
     cardNumber?: string | null;
     expiryDate?: string | null;
     csc?: string | null;

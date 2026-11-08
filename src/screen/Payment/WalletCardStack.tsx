@@ -1,4 +1,5 @@
 import { useTranslation } from "@/i18n";
+import { formatVnd } from "@/constants/ticket";
 import type { IPaymentMethod } from "@/models/paymentMethod";
 import useAuthStore from "@/store/auth.store";
 import { getPaymentSubtitle, getPaymentTitle } from "@/utils/payment";
@@ -24,7 +25,6 @@ const SWIPE_THRESHOLD = 48;
 
 type WalletCardStackProps = {
     methods: IPaymentMethod[];
-    balanceValue: string;
     onAdd: () => void;
     onCardPress: (method: IPaymentMethod) => void;
 };
@@ -42,18 +42,11 @@ function maskNumber(method: IPaymentMethod) {
 
 function formatExp(method: IPaymentMethod) {
     if (method.expiryDate) return method.expiryDate;
-    if (method.createdAt) {
-        const d = new Date(method.createdAt);
-        const mm = String(d.getMonth() + 1).padStart(2, "0");
-        const yy = String(d.getFullYear()).slice(-2);
-        return `${mm}/${yy}`;
-    }
     return "—";
 }
 
 export function WalletCardStack({
     methods,
-    balanceValue,
     onAdd,
     onCardPress,
 }: WalletCardStackProps) {
@@ -63,21 +56,22 @@ export function WalletCardStack({
     const dragX = useRef(new Animated.Value(0)).current;
 
     const count = methods.length;
+    const currentIndex = count > 0 ? activeIndex % count : 0;
 
     useEffect(() => {
-        if (activeIndex >= count && count > 0) {
+        if (activeIndex >= count && activeIndex !== 0) {
             setActiveIndex(0);
         }
     }, [activeIndex, count]);
 
-    const front = count > 0 ? methods[activeIndex] : undefined;
+    const front = count > 0 ? methods[currentIndex] : undefined;
     const back =
-        count > 1 ? methods[(activeIndex + 1) % count] : undefined;
+        count > 1 ? methods[(currentIndex + 1) % count] : undefined;
 
     const frontColors =
-        CARD_GRADIENTS[activeIndex % CARD_GRADIENTS.length];
+        CARD_GRADIENTS[currentIndex % CARD_GRADIENTS.length];
     const backColors =
-        CARD_GRADIENTS[(activeIndex + 1) % CARD_GRADIENTS.length];
+        CARD_GRADIENTS[(currentIndex + 1) % CARD_GRADIENTS.length];
 
     const holderName =
         front?.cardHolderName || user?.full_name || t("payment.cardGuest");
@@ -174,7 +168,7 @@ export function WalletCardStack({
                             colors={backColors}
                             start={{ x: 0, y: 0 }}
                             end={{ x: 1, y: 1 }}
-                            className="flex-1 justify-between p-5"
+                            style={{ flex: 1, justifyContent: "space-between", padding: 20 }}
                         >
                             <Text className="text-sm font-bold text-white/90">
                                 {getPaymentTitle(back)}
@@ -190,7 +184,7 @@ export function WalletCardStack({
                             colors={["#F5B897", "#ECA888"]}
                             start={{ x: 0, y: 0 }}
                             end={{ x: 1, y: 1 }}
-                            className="flex-1"
+                            style={{ flex: 1 }}
                         />
                     </View>
                 )}
@@ -231,12 +225,12 @@ export function WalletCardStack({
                             colors={frontColors}
                             start={{ x: 0, y: 0 }}
                             end={{ x: 1, y: 1 }}
-                            className="flex-1 px-[22px] pb-14 pt-5"
+                            style={{ flex: 1, justifyContent: "space-between", paddingHorizontal: 22, paddingVertical: 16 }}
                         >
                             {front ? (
                                 <>
                                     <View className="flex-row items-start justify-between">
-                                        <Text className="text-lg font-extrabold tracking-wide text-white">
+                                        <Text numberOfLines={1} className="flex-1 pr-2 text-lg font-extrabold tracking-wide text-white">
                                             {getPaymentTitle(front).toUpperCase()}
                                         </Text>
                                         <Text className="text-[13px] font-medium tracking-wider text-white/90">
@@ -244,7 +238,7 @@ export function WalletCardStack({
                                         </Text>
                                     </View>
 
-                                    <View className="mb-[18px] mt-7 flex-row justify-between">
+                                    <View className="flex-row justify-between">
                                         <View className="flex-1 pr-3">
                                             <Text className="text-xs font-medium text-white/70">
                                                 {t("payment.cardBalance")}
@@ -253,7 +247,7 @@ export function WalletCardStack({
                                                 className="mt-1 text-[26px] font-extrabold text-white"
                                                 numberOfLines={1}
                                             >
-                                                {balanceValue}
+                                                {formatVnd(front.balance ?? 0)}
                                             </Text>
                                         </View>
                                         <View className="items-end">
@@ -266,7 +260,7 @@ export function WalletCardStack({
                                         </View>
                                     </View>
 
-                                    <View>
+                                    <View className="pr-[138px]">
                                         <Text className="text-xs font-medium text-white/70">
                                             {t("payment.cardNameLabel")}
                                         </Text>
@@ -328,7 +322,7 @@ export function WalletCardStack({
                                 accessibilityRole="button"
                                 onPress={() => goTo(index)}
                                 className={`h-2 rounded-full ${
-                                    index === activeIndex
+                                    index === currentIndex
                                         ? "w-5 bg-[#6B4EFF]"
                                         : "w-2 bg-black/20"
                                 }`}

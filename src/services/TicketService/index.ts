@@ -5,8 +5,10 @@ class TicketService extends BaseService {
         super("/tickets");
     }
 
-    createTicket(body: object) {
-        return this.post("/create", body);
+    createTicket(body: object & { purchaseKey?: string }) {
+        const purchaseKey = body.purchaseKey ??
+            `purchase-${Date.now()}-${Math.random().toString(36).slice(2)}-${Math.random().toString(36).slice(2)}`;
+        return this.post("/create", { ...body, purchaseKey });
     }
 
     verifyScanQRCode(body: object) {

@@ -1,4 +1,7 @@
 {
+    "payment.methodsLoadError": "支払い方法を更新できません。読み込み済みのデータを表示しています。",
+    "payment.expensesLoadError": "支出を更新できません。もう一度お試しください。",
+    "payment.retry": "再試行",
     "common.locationSearchError": "場所を検索できません。再入力してお試しください。",
     "profile.title": "アカウント",
     "profile.section.account": "アカウント",

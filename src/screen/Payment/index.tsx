@@ -1,59 +1,18 @@
-import { formatVnd } from "@/constants/ticket";
-import useFetch from "@/hooks/useFetch";
 import { useTranslation } from "@/i18n";
 import type { IPaymentMethod } from "@/models/paymentMethod";
 import type { ITicket } from "@/models/ticket";
 import { ExpenseSection } from "@/screen/Payment/ExpenseSection";
 import { PaymentQuickActions } from "@/screen/Payment/PaymentQuickActions";
 import { WalletCardStack } from "@/screen/Payment/WalletCardStack";
-import { paymentService } from "@/services/PaymentService";
-import { ticketService } from "@/services/TicketService";
+import usePaymentOverview from "./usePaymentOverview";
 import { useRouter } from "expo-router";
-import { useEffect, useMemo } from "react";
-import { ActivityIndicator, ScrollView, Text, View } from "react-native";
+import { ActivityIndicator, Pressable, RefreshControl, ScrollView, Text, View } from "react-native";
 
 export default function PaymentScreen() {
     const { t } = useTranslation();
     const router = useRouter();
 
-    const {
-        data: paymentMethods,
-        isLoading,
-        loadFetchFn,
-    } = useFetch<IPaymentMethod[]>({
-        fetchFn: async () => {
-            const response = await paymentService.getMyPaymentMethods({});
-            return response.data ?? [];
-        },
-    });
-
-    const {
-        data: recentTickets,
-        isLoading: isTicketsLoading,
-        loadFetchFn: loadTickets,
-    } = useFetch<ITicket[]>({
-        fetchFn: async () => {
-            const response = await ticketService.getMyTickets({
-                page: 1,
-                limit: 6,
-            });
-            return response.data?.items ?? [];
-        },
-    });
-
-    useEffect(() => {
-        loadFetchFn();
-        loadTickets();
-    }, []);
-
-    const methods = paymentMethods ?? [];
-    const tickets = recentTickets ?? [];
-
-    const balanceValue = useMemo(() => {
-        if (tickets.length === 0) return formatVnd(0);
-        const total = tickets.reduce((sum, item) => sum + (item.price || 0), 0);
-        return formatVnd(total);
-    }, [tickets]);
+    const { methods, tickets, isLoading, hasLoaded, methodsError, ticketsError, refresh } = usePaymentOverview();
 
     const openAdd = () => router.push("/payment/add");
     const openBank = (method: IPaymentMethod) =>
@@ -75,7 +34,7 @@ export default function PaymentScreen() {
                 </Text>
             </View>
 
-            {isLoading ? (
+            {isLoading && !hasLoaded ? (
                 <View className="mt-16 items-center">
                     <ActivityIndicator color="#6B4EFF" />
                 </View>
@@ -84,21 +43,29 @@ export default function PaymentScreen() {
                     className="flex-1"
                     showsVerticalScrollIndicator={false}
                     contentContainerClassName="pb-10"
+                    refreshControl={<RefreshControl refreshing={isLoading} onRefresh={refresh} tintColor="#6B4EFF" />}
                 >
-                    <WalletCardStack
+                    {methodsError || ticketsError ? (
+                        <Pressable
+                            accessibilityRole="button"
+                            onPress={refresh}
+                            disabled={isLoading}
+                            className="mx-5 mt-3 rounded-xl bg-white p-4"
+                        >
+                            {methodsError ? <Text className="text-sm text-alert">{t("payment.methodsLoadError")}</Text> : null}
+                            {ticketsError ? <Text className="text-sm text-alert">{t("payment.expensesLoadError")}</Text> : null}
+                            <Text className="mt-2 text-sm font-bold text-primary">{t("payment.retry")}</Text>
+                        </Pressable>
+                    ) : null}
+                    {!methodsError || methods.length > 0 ? <WalletCardStack
                         methods={methods}
-                        balanceValue={balanceValue}
                         onAdd={openAdd}
                         onCardPress={openBank}
-                    />
+                    /> : null}
 
                     <PaymentQuickActions onAdd={openAdd} />
 
-                    {isTicketsLoading && tickets.length === 0 ? (
-                        <View className="mt-10 items-center">
-                            <ActivityIndicator color="#6B4EFF" />
-                        </View>
-                    ) : (
+                    {!ticketsError || tickets.length > 0 ? (
                         <ExpenseSection
                             tickets={tickets}
                             onViewAll={() =>
@@ -106,7 +73,7 @@ export default function PaymentScreen() {
                             }
                             onItemPress={openTicket}
                         />
-                    )}
+                    ) : null}
                 </ScrollView>
             )}
         </View>

@@ -1,4 +1,7 @@
 {
+    "payment.methodsLoadError": "Không thể cập nhật phương thức thanh toán. Dữ liệu đã tải được giữ lại.",
+    "payment.expensesLoadError": "Không thể cập nhật chi tiêu. Vui lòng thử lại.",
+    "payment.retry": "Thử lại",
     "common.locationSearchError": "Không thể tìm địa điểm. Vui lòng nhập lại để thử.",
     "profile.title": "Tài khoản",
     "profile.section.account": "Tài khoản",
@@ -486,7 +489,7 @@
     "payment.addCard": "Thêm thẻ",
     "payment.nextCard": "Thẻ tiếp theo",
     "payment.prevCard": "Thẻ trước",
-    "payment.cardBalance": "Chi tiêu",
+    "payment.cardBalance": "Số dư",
     "payment.cardExp": "Hết hạn",
     "payment.cardNameLabel": "Chủ thẻ",
     "payment.cardGuest": "Khách",

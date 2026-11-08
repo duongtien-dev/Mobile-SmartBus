@@ -1,5 +1,7 @@
 import type { ReactNode } from "react";
-import { Pressable, Text, type PressableProps } from "react-native";
+import type { PressableProps } from "react-native";
+import { Pressable, Text } from "react-native-css/components";
+import { cn } from "@/lib/utils";
 
 type ButtonVariant = "outline" | "bold";
 type ButtonType = "primary" | "secondary" | "danger" | "accent";
@@ -20,23 +22,38 @@ const baseClass =
 const buttonClasses = {
     outline: {
         primary:
-            "border border-primary bg-transparent active:bg-primary disabled:border-primary-muted disabled:opacity-70",
+            "border border-primary bg-transparent active:bg-primary",
         secondary:
-            "border border-border-strong bg-transparent active:bg-text-secondary disabled:opacity-70",
+            "border border-border-strong bg-transparent active:bg-text-secondary",
         danger:
-            "border border-alert bg-transparent active:bg-alert disabled:border-alert-muted disabled:opacity-70",
+            "border border-alert bg-transparent active:bg-alert",
         accent:
-            "border border-accent bg-transparent active:bg-accent disabled:border-accent-muted disabled:opacity-70",
+            "border border-accent bg-transparent active:bg-accent",
     },
     bold: {
         primary:
-            "bg-primary active:bg-primary-dark disabled:bg-primary-muted disabled:opacity-70",
+            "bg-primary active:bg-primary-dark",
         secondary:
-            "bg-text-secondary active:bg-text-primary disabled:bg-disabled disabled:opacity-70",
+            "bg-text-secondary active:bg-text-primary",
         danger:
-            "bg-alert active:bg-alert-dark disabled:bg-alert-muted disabled:opacity-70",
+            "bg-alert active:bg-alert-dark",
         accent:
-            "bg-accent active:bg-accent-dark disabled:bg-accent-muted disabled:opacity-70",
+            "bg-accent active:bg-accent-dark",
+    },
+} as const;
+
+const disabledClasses = {
+    outline: {
+        primary: "border-primary-muted",
+        secondary: "",
+        danger: "border-alert-muted",
+        accent: "border-accent-muted",
+    },
+    bold: {
+        primary: "bg-primary-muted",
+        secondary: "bg-disabled",
+        danger: "bg-alert-muted",
+        accent: "bg-accent-muted",
     },
 } as const;
 
@@ -67,7 +84,8 @@ export function Button({
     size = "md",
     className = "",
     labelClassName = "",
-    disabled,
+    disabled = false,
+    accessibilityState,
     ...props
 }: ButtonProps) {
     const content =
@@ -85,12 +103,15 @@ export function Button({
         <Pressable
             accessibilityRole="button"
             disabled={disabled}
-            className={`
-                ${baseClass}
-                ${buttonClasses[variant][type]}
-                ${sizeClasses[size]}
-                ${className}
-            `}
+            accessibilityState={{ ...accessibilityState, disabled: Boolean(disabled) }}
+            className={cn(
+                baseClass,
+                buttonClasses[variant][type],
+                sizeClasses[size],
+                className,
+                disabled && disabledClasses[variant][type],
+                disabled && "opacity-70",
+            )}
             {...props}
         >
             {content}
