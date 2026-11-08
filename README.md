@@ -1,6 +1,6 @@
-# DanaBus — Ứng dụng xe buýt thông minh
+# DagoBus — Ứng dụng xe buýt thông minh
 
-Ứng dụng di động **DanaBus** (Expo / React Native) cho hệ thống xe buýt thông minh:
+Ứng dụng di động **DagoBus** (Expo / React Native) cho hệ thống xe buýt thông minh:
 
 - **Hành khách (`user`)**: tra cứu tuyến, tìm đường, mua vé QR, thanh toán, **theo dõi xe realtime + ETA**, **mức đông**, **nhắc khi xe sắp tới**, gợi ý đánh giá sau chuyến, gói du lịch.
 - **Nhân viên (`staff`)**: nhận ca, **gửi GPS**, chuyển trạm, quét vé QR, báo cáo ca, nghỉ phép.
@@ -12,7 +12,7 @@ Hỗ trợ đa ngôn ngữ: **Tiếng Việt**, **English**, **日本語**.
 > Flow hệ thống + flow code Trục A: [`docs/truc-a-system-code-flows.md`](docs/truc-a-system-code-flows.md).
 
 <p align="center">
-  <img src="assets/images/logo.png" alt="DanaBus logo" width="120" />
+  <img src="assets/images/logo.png" alt="DagoBus logo" width="120" />
 </p>
 
 ---
@@ -64,7 +64,7 @@ Sau đăng nhập, app điều hướng theo role (`staff` → `/staff`, còn l�
 | **Du lịch (A5)** | Card Home “Dành cho khách du lịch”; gói POI / hướng dẫn mua vé theo locale `vi` · `en` · `ja` (API `/api/tour-packs`) |
 | **Thanh toán** | Quản lý phương thức đã lưu; thêm / cập nhật tài khoản–thẻ ngân hàng; xem chi tiêu vé gần đây |
 | **Thông báo / tin tức** | Feed tin tức & thông báo dịch vụ; sắp xếp mới / cũ; chi tiết bài viết |
-| **Hồ sơ & cài đặt** | Thẻ người dùng; menu tài khoản / dịch vụ / cài đặt; đổi ngôn ngữ; Trung tâm trợ giúp (FAQ); Điều khoản; Chính sách bảo mật; Về DanaBus |
+| **Hồ sơ & cài đặt** | Thẻ người dùng; menu tài khoản / dịch vụ / cài đặt; đổi ngôn ngữ; Trung tâm trợ giúp (FAQ); Điều khoản; Chính sách bảo mật; Về DagoBus |
 | **Đa ngôn ngữ (i18n)** | `vi` · `en` · `ja` — **Tài khoản → Ngôn ngữ** (`src/i18n/locales/`) |
 
 > **Ghi chú hành khách:** Quét QR lên xe do **nhân viên** thực hiện trong ca (tab “Quét QR” hành khách là stub). Báo cáo sự cố tuyến có API backend nhưng **chưa có màn hình** trong app. **Remote push không chạy trên Expo Go** (SDK 53+) — cần development build / production build.
@@ -132,13 +132,13 @@ Chi tiết thiết kế product: [`docs/differentiation-proposal.md`](docs/diffe
 
 ## Kiến trúc hệ thống & B2B
 
-> Mục này giúp người mới / reviewer / viết proposal hiểu: **DanaBus không chỉ là app hành khách**, mà là nền tảng khép kín **B2C (hành khách) + vận hành (nhân viên) + B2B (nhà xe / Sở)**.  
+> Mục này giúp người mới / reviewer / viết proposal hiểu: **DagoBus không chỉ là app hành khách**, mà là nền tảng khép kín **B2C (hành khách) + vận hành (nhân viên) + B2B (nhà xe / Sở)**.  
 > Chi tiết product roadmap: [`docs/differentiation-proposal.md`](docs/differentiation-proposal.md).  
 > API admin: `Backend-SmartBus/doc/admin_api.md`, `Backend-SmartBus/doc/roles/admin.md`.
 
 ### 1. Narrative một câu (dùng khi pitch)
 
-> *DanaBus không chỉ là app tra cứu tuyến — mà là nền tảng khép kín từ hành khách mua vé QR, nhân viên soát vé theo ca (kèm GPS/live), đến quản trị theo dõi KPI, lịch ca và phản hồi sự cố.*
+> *DagoBus không chỉ là app tra cứu tuyến — mà là nền tảng khép kín từ hành khách mua vé QR, nhân viên soát vé theo ca (kèm GPS/live), đến quản trị theo dõi KPI, lịch ca và phản hồi sự cố.*
 
 Google Maps / Moovit **không bán** gói này cho một nhà xe địa phương. Điểm bán B2B nằm ở **đóng vòng vận hành**, không chỉ ở màn hình tìm đường.
 
@@ -533,7 +533,7 @@ Mobile-SmartBus/
 
 ## Liên hệ / ghi chú
 
-- Brand trong sản phẩm: **DanaBus**
+- Brand trong sản phẩm: **DagoBus**
 - Repo package: `app-native-smartbus` · thư mục: `Mobile-SmartBus`
 - Backend API: repo `Backend-SmartBus` (role `user` / `staff` / `admin`)
 - **Kiến trúc & B2B:** xem mục [Kiến trúc hệ thống & B2B](#kiến-trúc-hệ-thống--b2b) ở trên

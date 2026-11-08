@@ -12,7 +12,7 @@ function nextId() {
     return `chat-${messageSeq}`;
 }
 
-export function useDanaChat() {
+export function useDaGoChat() {
     const { t, locale } = useTranslation();
     const showToast = useToastify();
     const messages = useChatStore((state) => state.messages);

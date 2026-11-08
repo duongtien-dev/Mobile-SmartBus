@@ -1,6 +1,6 @@
 # Routing
 
-Expo Router file structure cho dự án DanaBus. Mục tiêu: **tab chỉ là tab**, màn **push/back** nằm riêng — tránh lẫn stack giữa các tab.
+Expo Router file structure cho dự án DagoBus. Mục tiêu: **tab chỉ là tab**, màn **push/back** nằm riêng — tránh lẫn stack giữa các tab.
 
 ## Cây thư mục
 

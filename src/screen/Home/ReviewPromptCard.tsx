@@ -10,7 +10,7 @@ import { Star } from "lucide-react-native";
 import { useEffect, useState } from "react";
 import { Pressable, Text, View } from "react-native";
 
-const DISMISS_KEY = "danabus.reviewPrompt.dismissedAt";
+const DISMISS_KEY = "DagoBus.reviewPrompt.dismissedAt";
 const DISMISS_COOLDOWN_MS = 24 * 60 * 60 * 1000;
 
 /**

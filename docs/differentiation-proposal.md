@@ -1,4 +1,4 @@
-# DanaBus — Đề xuất chức năng khác biệt (Differentiation)
+# DagoBus — Đề xuất chức năng khác biệt (Differentiation)
 
 > Tài liệu độc lập phục vụ proposal / product roadmap.  
 > Không thay thế README tính năng hiện có.  
@@ -18,7 +18,7 @@ Các app xe buýt / giao thông công cộng phổ biến trên thị trường 
 | Tin tức / thông báo | Cơ bản |
 | Đa ngôn ngữ | Một số app lớn |
 
-**DanaBus đã có lợi thế tương đối:**
+**DagoBus đã có lợi thế tương đối:**
 
 - Gói **hành khách + nhân viên soát vé** trong cùng một sản phẩm (ít app địa phương làm đủ cả hai).
 - Luồng **vé QR + ca làm + báo cáo ca + xin nghỉ** gắn với vận hành thực tế.
@@ -93,7 +93,7 @@ Thay vì liệt kê 20 tính năng, nên **cam kết 1 gói khác biệt** gồm
 
 Narrative một câu:
 
-> *DanaBus không chỉ là app tra cứu tuyến — mà là nền tảng khép kín từ hành khách mua vé QR, nhân viên soát vé theo ca, đến quản trị theo dõi KPI và phản hồi sự cố theo thời gian thực.*
+> *DagoBus không chỉ là app tra cứu tuyến — mà là nền tảng khép kín từ hành khách mua vé QR, nhân viên soát vé theo ca, đến quản trị theo dõi KPI và phản hồi sự cố theo thời gian thực.*
 
 Đây là câu chuyện **Google Maps / Moovit không bán** cho một nhà xe địa phương.
 
@@ -155,7 +155,7 @@ Trước khi thêm vào backlog proposal, hỏi:
 
 1. Hành khách **cảm nhận được trong 1 tuần** dùng thử không?  
 2. Nhà xe / admin **giảm việc giấy tờ** rõ ràng không?  
-3. Có tận dụng dữ liệu **chỉ DanaBus mới có** (scan, ca, vé) không?  
+3. Có tận dụng dữ liệu **chỉ DagoBus mới có** (scan, ca, vé) không?  
 4. Đối thủ lớn **khó copy nhanh** ở quy mô địa phương không?  
 5. Effort có nằm trong Wave tương ứng không?
 

@@ -1,5 +1,5 @@
 import type { ChatAction } from "@/models/chat";
-import { useDanaChat } from "@/hooks/useDanaChat";
+import { useDaGoChat } from "@/hooks/useDaGoChat";
 import { useRef } from "react";
 import { FlatList, View } from "react-native";
 import { ChatComposer } from "./ChatComposer";
@@ -12,7 +12,7 @@ type Props = {
 
 export function ChatPanel({ onAction }: Props) {
     const listRef = useRef<FlatList>(null);
-    const { messages, draft, sending, setDraft, sendText } = useDanaChat();
+    const { messages, draft, sending, setDraft, sendText } = useDaGoChat();
 
     return (
         <View className="flex-1 bg-app-shell">
